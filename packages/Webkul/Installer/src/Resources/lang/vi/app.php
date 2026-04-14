@@ -120,7 +120,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin'            => 'Administrador',
-                'krayin'           => 'Krayin',
+                'Java CRM'           => 'Java CRM',
                 'confirm-password' => 'Confirmar Senha',
                 'email'            => 'Email',
                 'email-address'    => 'admin@exemplo.com',
@@ -135,7 +135,7 @@ return [
                 'application-name'            => 'Nome da Aplicação',
                 'argentine-peso'              => 'Peso Argentino (ARS)',
                 'australian-dollar'           => 'Dólar Australiano (AUD)',
-                'krayin'                      => 'Krayin',
+                'Java CRM'                      => 'Java CRM',
                 'bangladeshi-taka'            => 'Taka de Bangladesh (BDT)',
                 'brazilian-real'              => 'Real Brasileiro (BRL)',
                 'british-pound-sterling'      => 'Libra Esterlina (GBP)',
@@ -218,24 +218,24 @@ return [
             ],
 
             'installation-processing' => [
-                'krayin'       => 'Instalação do Krayin',
-                'krayin-info'  => 'Criando as tabelas do banco de dados, isso pode levar alguns momentos',
+                'Java CRM'       => 'Instalação do Java CRM',
+                'Java CRM-info'  => 'Criando as tabelas do banco de dados, isso pode levar alguns momentos',
                 'title'        => 'Instalação',
             ],
 
             'installation-completed' => [
                 'admin-panel'                => 'Painel de Administração',
-                'krayin-forums'              => 'Fórum do Krayin',
+                'Java CRM-forums'              => 'Fórum do Java CRM',
                 'customer-panel'             => 'Painel do Cliente',
-                'explore-krayin-extensions'  => 'Explorar Extensões do Krayin',
+                'explore-Java CRM-extensions'  => 'Explorar Extensões do Java CRM',
                 'title'                      => 'Instalação Concluída',
-                'title-info'                 => 'O Krayin foi instalado com sucesso no seu sistema.',
+                'title-info'                 => 'O Java CRM foi instalado com sucesso no seu sistema.',
             ],
 
             'ready-for-installation' => [
                 'create-databsae-table'   => 'Criar as tabelas do banco de dados',
                 'install'                 => 'Instalar',
-                'install-info'            => 'Krayin para Instalação',
+                'install-info'            => 'Java CRM para Instalação',
                 'install-info-button'     => 'Clique no botão abaixo para',
                 'populate-database-table' => 'Preencher as tabelas do banco de dados',
                 'start-installation'      => 'Iniciar Instalação',
@@ -246,8 +246,8 @@ return [
                 'locale'        => 'Localidade',
                 'main'          => 'Início',
                 'select-locale' => 'Selecionar Localidade',
-                'title'         => 'Instalação do Krayin',
-                'welcome-title' => 'Bem-vindo ao Krayin',
+                'title'         => 'Instalação do Java CRM',
+                'welcome-title' => 'Bem-vindo ao Java CRM',
             ],
 
             'server-requirements' => [
@@ -274,15 +274,15 @@ return [
             ],
 
             'back'                     => 'Voltar',
-            'krayin'                   => 'Krayin',
-            'krayin-info'              => 'um Projeto Comunitário por',
-            'krayin-logo'              => 'Logotipo Krayin',
+            'Java CRM'                   => 'Java CRM',
+            'Java CRM-info'              => 'um Projeto Comunitário por',
+            'Java CRM-logo'              => 'Logotipo Java CRM',
             'continue'                 => 'Continuar',
-            'installation-description' => 'A instalação do Krayin geralmente envolve várias etapas. Aqui está um resumo do processo de instalação do Krayin.',
+            'installation-description' => 'A instalação do Java CRM geralmente envolve várias etapas. Aqui está um resumo do processo de instalação do Java CRM.',
             'installation-info'        => 'Estamos felizes em vê-lo aqui!',
             'installation-title'       => 'Bem-vindo à Instalação',
             'installation-wizard'      => 'Assistente de Instalação - Idioma',
-            'title'                    => 'Instalador do Krayin',
+            'title'                    => 'Instalador do Java CRM',
             'webkul'                   => 'Webkul',
         ],
     ],

@@ -120,7 +120,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin'            => 'مدير',
-                'krayin'           => 'Krayin',
+                'Java CRM'           => 'Java CRM',
                 'confirm-password' => 'تأكيد كلمة المرور',
                 'email'            => 'البريد الإلكتروني',
                 'email-address'    => 'admin@example.com',
@@ -135,7 +135,7 @@ return [
                 'application-name'            => 'اسم التطبيق',
                 'argentine-peso'              => 'البيزو الأرجنتيني (ARS)',
                 'australian-dollar'           => 'الدولار الأسترالي (AUD)',
-                'krayin'                      => 'Krayin',
+                'Java CRM'                      => 'Java CRM',
                 'bangladeshi-taka'            => 'التاكا البنغلاديشي (BDT)',
                 'brazilian-real'              => 'الريال البرازيلي (BRL)',
                 'british-pound-sterling'      => 'الجنيه الإسترليني البريطاني (GBP)',
@@ -218,24 +218,24 @@ return [
             ],
 
             'installation-processing' => [
-                'krayin'       => 'تثبيت Krayin',
-                'krayin-info'  => 'إنشاء جداول قاعدة البيانات، وقد يستغرق ذلك بضع دقائق',
+                'Java CRM'       => 'تثبيت Java CRM',
+                'Java CRM-info'  => 'إنشاء جداول قاعدة البيانات، وقد يستغرق ذلك بضع دقائق',
                 'title'        => 'التثبيت',
             ],
 
             'installation-completed' => [
                 'admin-panel'                => 'لوحة المشرف',
-                'krayin-forums'              => 'منتديات Krayin',
+                'Java CRM-forums'              => 'منتديات Java CRM',
                 'customer-panel'             => 'لوحة العميل',
-                'explore-krayin-extensions'  => 'استكشاف امتدادات Krayin',
+                'explore-Java CRM-extensions'  => 'استكشاف امتدادات Java CRM',
                 'title'                      => 'اكتمال التثبيت',
-                'title-info'                 => 'تم تثبيت Krayin بنجاح على نظامك.',
+                'title-info'                 => 'تم تثبيت Java CRM بنجاح على نظامك.',
             ],
 
             'ready-for-installation' => [
                 'create-databsae-table'   => 'إنشاء جدول قاعدة البيانات',
                 'install'                 => 'التثبيت',
-                'install-info'            => 'Krayin للتثبيت',
+                'install-info'            => 'Java CRM للتثبيت',
                 'install-info-button'     => 'انقر على الزر أدناه ل',
                 'populate-database-table' => 'ملء جداول قاعدة البيانات',
                 'start-installation'      => 'بدء التثبيت',
@@ -246,8 +246,8 @@ return [
                 'locale'        => 'اللغة',
                 'main'          => 'بداية',
                 'select-locale' => 'اختر اللغة',
-                'title'         => 'تثبيت Krayin الخاص بك',
-                'welcome-title' => 'مرحبًا بك في Krayin',
+                'title'         => 'تثبيت Java CRM الخاص بك',
+                'welcome-title' => 'مرحبًا بك في Java CRM',
             ],
 
             'server-requirements' => [
@@ -274,15 +274,15 @@ return [
             ],
 
             'back'                     => 'رجوع',
-            'krayin'                   => 'Krayin',
-            'krayin-info'              => 'مشروع مجتمعي من قبل',
-            'krayin-logo'              => 'شعار Krayin',
+            'Java CRM'                   => 'Java CRM',
+            'Java CRM-info'              => 'مشروع مجتمعي من قبل',
+            'Java CRM-logo'              => 'شعار Java CRM',
             'continue'                 => 'متابعة',
-            'installation-description' => 'عادة ما تتضمن عملية تثبيت Krayin عدة خطوات. إليك نظرة عامة عامة على عملية التثبيت krayin',
+            'installation-description' => 'عادة ما تتضمن عملية تثبيت Java CRM عدة خطوات. إليك نظرة عامة عامة على عملية التثبيت Java CRM',
             'installation-info'        => 'نحن سعداء برؤيتك هنا!',
             'installation-title'       => 'مرحبًا بك في التثبيت',
             'installation-wizard'      => 'لغة معالج التثبيت',
-            'title'                    => 'مثبت Krayin',
+            'title'                    => 'مثبت Java CRM',
             'webkul'                   => 'Webkul',
         ],
     ],

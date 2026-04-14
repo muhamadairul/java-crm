@@ -10,11 +10,11 @@ use Webkul\Core\Repositories\CountryStateRepository;
 class Core
 {
     /**
-     * The Krayin version.
+     * The Java CRM version.
      *
      * @var string
      */
-    const KRAYIN_VERSION = '2.1.5';
+    const JAVACRM_VERSION = '1.0.0';
 
     /**
      * Create a new instance.
@@ -28,13 +28,13 @@ class Core
     ) {}
 
     /**
-     * Get the version number of the Krayin.
+     * Get the version number of the Java CRM.
      *
      * @return string
      */
     public function version()
     {
-        return static::KRAYIN_VERSION;
+        return static::JAVACRM_VERSION;
     }
 
     /**

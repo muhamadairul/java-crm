@@ -330,7 +330,7 @@ return [
         ],
         'layouts' => [
             'powered-by' => [
-                'description' => ':webkul tarafından geliştirilen açık kaynaklı bir proje olan :krayin tarafından desteklenmektedir.',
+                'description' => ' tarafından geliştirilen açık kaynaklı bir proje olan Java CRM tarafından desteklenmektedir.',
             ],
             'header' => [
                 'mega-search' => [

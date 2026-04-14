@@ -134,9 +134,9 @@ class InstallerController extends Controller
     {
         $filePath = storage_path('installed');
 
-        File::put($filePath, 'Your Krayin App is Successfully Installed');
+        File::put($filePath, 'Your Java CRM App is Successfully Installed');
 
-        Event::dispatch('krayin.installed');
+        Event::dispatch('java-crm.installed');
 
         return $filePath;
     }

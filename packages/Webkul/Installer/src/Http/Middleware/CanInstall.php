@@ -40,7 +40,7 @@ class CanInstall
         if (app(DatabaseManager::class)->isInstalled()) {
             touch(storage_path('installed'));
 
-            Event::dispatch('krayin.installed');
+            Event::dispatch('java-crm.installed');
 
             return true;
         }

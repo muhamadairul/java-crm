@@ -77,10 +77,7 @@
 
         <!-- Powered By -->
         <div class="text-sm font-normal">
-            @lang('admin::app.components.layouts.powered-by.description', [
-                'krayin' => '<a class="text-brandColor hover:underline " href="https://krayincrm.com/">Krayin</a>',
-                'webkul' => '<a class="text-brandColor hover:underline " href="https://webkul.com/">Webkul</a>',
-            ]) 
+            Powered by Java CRM
         </div>
     </div>
 </x-admin::layouts.anonymous>

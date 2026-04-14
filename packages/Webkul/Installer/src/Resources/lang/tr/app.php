@@ -120,7 +120,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin'            => 'Yönetici',
-                'krayin'           => 'Krayin',
+                'Java CRM'           => 'Java CRM',
                 'confirm-password' => 'Şifreyi Onayla',
                 'email'            => 'E-posta',
                 'email-address'    => 'admin@ornek.com',
@@ -135,7 +135,7 @@ return [
                 'application-name'            => 'Uygulama Adı',
                 'argentine-peso'              => 'Arjantin Pezosu (ARS)',
                 'australian-dollar'           => 'Avustralya Doları (AUD)',
-                'krayin'                      => 'Krayin',
+                'Java CRM'                      => 'Java CRM',
                 'bangladeshi-taka'            => 'Bangladeş Takası (BDT)',
                 'brazilian-real'              => 'Brezilya Reali (BRL)',
                 'british-pound-sterling'      => 'İngiliz Sterlini (GBP)',
@@ -218,24 +218,24 @@ return [
             ],
 
             'installation-processing' => [
-                'krayin'       => 'Krayin Kurulumu',
-                'krayin-info'  => 'Veritabanı tabloları oluşturuluyor, bu birkaç dakika sürebilir',
+                'Java CRM'       => 'Java CRM Kurulumu',
+                'Java CRM-info'  => 'Veritabanı tabloları oluşturuluyor, bu birkaç dakika sürebilir',
                 'title'        => 'Kurulum',
             ],
 
             'installation-completed' => [
                 'admin-panel'                => 'Yönetici Paneli',
-                'krayin-forums'              => 'Krayin Forumu',
+                'Java CRM-forums'              => 'Java CRM Forumu',
                 'customer-panel'             => 'Müşteri Paneli',
-                'explore-krayin-extensions'  => 'Krayin Uzantılarını Keşfedin',
+                'explore-Java CRM-extensions'  => 'Java CRM Uzantılarını Keşfedin',
                 'title'                      => 'Kurulum Tamamlandı',
-                'title-info'                 => 'Krayin sisteminize başarıyla kuruldu.',
+                'title-info'                 => 'Java CRM sisteminize başarıyla kuruldu.',
             ],
 
             'ready-for-installation' => [
                 'create-databsae-table'   => 'Veritabanı tablosu oluştur',
                 'install'                 => 'Yükleme',
-                'install-info'            => 'Kurulum için Krayin',
+                'install-info'            => 'Kurulum için Java CRM',
                 'install-info-button'     => 'Aşağıdaki düğmeye tıklayın',
                 'populate-database-table' => 'Veritabanı tablolarını doldur',
                 'start-installation'      => 'Kurulumu Başlat',
@@ -246,8 +246,8 @@ return [
                 'locale'        => 'Yerel',
                 'main'          => 'Başlangıç',
                 'select-locale' => 'Yerel Seçin',
-                'title'         => 'Krayin kurulumunuz',
-                'welcome-title' => 'Krayin\'ya hoş geldiniz',
+                'title'         => 'Java CRM kurulumunuz',
+                'welcome-title' => 'Java CRM\'ya hoş geldiniz',
             ],
 
             'server-requirements' => [
@@ -274,15 +274,15 @@ return [
             ],
 
             'back'                     => 'Geri',
-            'krayin'                   => 'Krayin',
-            'krayin-info'              => 'Webkul tarafından geliştirilen bir Topluluk Projesi',
-            'krayin-logo'              => 'Krayin Logosu',
+            'Java CRM'                   => 'Java CRM',
+            'Java CRM-info'              => 'Webkul tarafından geliştirilen bir Topluluk Projesi',
+            'Java CRM-logo'              => 'Java CRM Logosu',
             'continue'                 => 'Devam Et',
-            'installation-description' => 'Krayin kurulumu genellikle birkaç adım içerir. İşte Krayin\'nun kurulum sürecine genel bir bakış',
+            'installation-description' => 'Java CRM kurulumu genellikle birkaç adım içerir. İşte Java CRM\'nun kurulum sürecine genel bir bakış',
             'installation-info'        => 'Sizi burada görmekten mutluluk duyuyoruz!',
             'installation-title'       => 'Kurulum\'a Hoş Geldiniz',
             'installation-wizard'      => 'Kurulum Sihirbazı dili',
-            'title'                    => 'Krayin Kurulum Sihirbazı',
+            'title'                    => 'Java CRM Kurulum Sihirbazı',
             'webkul'                   => 'Webkul',
         ],
     ],

@@ -1,16 +1,13 @@
 
- _   __                _       
-| | / /               (_)      
-| |/ / _ __ __ _ _   _ _ _ __  
-|    \| '__/ _` | | | | | '_ \ 
-| |\  \ | | (_| | |_| | | | | |
-\_| \_/_|  \__,_|\__, |_|_| |_|
-                  __/ |        
-                 |___/         
+     _                    ____ ____  __  __ 
+    | | __ ___   ____ _  / ___|  _ \|  \/  |
+ _  | |/ _` \ \ / / _` || |   | |_) | |\/| |
+| |_| | (_| |\ V / (_| || |___|  _ <| |  | |
+ \___/ \__,_| \_/ \__,_| \____|_| \_\_|  |_|
 
 </>
 
-Welcome to the <info>Krayin</info> project! Krayin Community is an <comment>open-source CRM solution</comment>
+Welcome to the <info>Java CRM</info> project! Java CRM is an <comment>open-source CRM solution</comment>
 which is built on top of Laravel and Vue.js.
 
-Made with 💖  by the Krayin Team. Happy helping :)
+Made with 💖  by the Java CRM Team. Happy helping :)

@@ -330,7 +330,7 @@ return [
         ],
         'layouts' => [
             'powered-by' => [
-                'description' => 'Desenvolvido por :krayin, um projeto de código aberto da :webkul.',
+                'description' => 'Desenvolvido por Java CRM, um projeto de código aberto da .',
             ],
             'header' => [
                 'mega-search' => [
