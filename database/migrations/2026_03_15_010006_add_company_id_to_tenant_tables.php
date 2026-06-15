@@ -48,9 +48,23 @@ return new class extends Migration
 
         // Automation Package
         'workflows',
+        'webhooks',
 
         // WebForm Package
         'web_forms',
+
+        // Marketing Package
+        'marketing_events',
+        'marketing_campaigns',
+
+        // Core Package
+        'core_config',
+
+        // DataTransfer Package
+        'imports',
+
+        // DataGrid Package
+        'datagrid_saved_filters',
     ];
 
     /**
