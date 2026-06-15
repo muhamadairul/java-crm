@@ -96,6 +96,17 @@ abstract class DataGrid
     abstract public function prepareQueryBuilder();
 
     /**
+     * Get the current authenticated user's company_id.
+     *
+     * Used by DataGrids that use raw DB::table() queries where
+     * Eloquent global scopes (CompanyScope) don't apply.
+     */
+    protected function getCurrentCompanyId(): ?int
+    {
+        return auth()->guard('user')->user()?->company_id;
+    }
+
+    /**
      * Prepare columns.
      */
     abstract public function prepareColumns();

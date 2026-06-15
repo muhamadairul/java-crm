@@ -17,7 +17,8 @@ class WorkflowDataGrid extends DataGrid
             ->addSelect(
                 'workflows.id',
                 'workflows.name'
-            );
+            )
+            ->where('workflows.company_id', $this->getCurrentCompanyId());
 
         $this->addFilter('id', 'workflows.id');
 

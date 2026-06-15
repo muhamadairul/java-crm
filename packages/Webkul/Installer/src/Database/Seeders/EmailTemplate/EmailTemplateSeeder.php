@@ -29,6 +29,7 @@ class EmailTemplateSeeder extends Seeder
                 'subject'    => trans('installer::app.seeders.email.activity-created', [], $defaultLocale).': {%activities.title%}',
                 'created_at' => $now,
                 'updated_at' => $now,
+                'company_id' => $parameters['company_id'] ?? null,
                 'content'    => '<p style="font-size: 16px; color: #5e5e5e;">'.trans('installer::app.seeders.email.new-activity', [], $defaultLocale).':</p>
                                 <p><strong style="font-size: 16px;">Details</strong></p>
                                 <table style="height: 97px; width: 952px;">
@@ -57,6 +58,7 @@ class EmailTemplateSeeder extends Seeder
                 'subject'    => trans('installer::app.seeders.email.activity-modified', [], $defaultLocale).': {%activities.title%}',
                 'created_at' => $now,
                 'updated_at' => $now,
+                'company_id' => $parameters['company_id'] ?? null,
                 'content'    => '<p style="font-size: 16px; color: #5e5e5e;">'.trans('installer::app.seeders.email.new-activity-modified', [], $defaultLocale).':</p>
                                 <p><strong style="font-size: 16px;">Details</strong></p>
                                 <table style="height: 97px; width: 952px;">

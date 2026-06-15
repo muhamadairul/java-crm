@@ -3,10 +3,13 @@
 namespace Webkul\Lead\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\Lead\Contracts\Type as TypeContract;
 
 class Type extends Model implements TypeContract
 {
+    use BelongsToCompany;
+
     protected $table = 'lead_types';
 
     /**

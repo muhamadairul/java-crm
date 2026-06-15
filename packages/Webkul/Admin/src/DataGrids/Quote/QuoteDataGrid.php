@@ -33,7 +33,8 @@ class QuoteDataGrid extends DataGrid
                 'quotes.expired_at as expired_quotes'
             )
             ->leftJoin('users', 'quotes.user_id', '=', 'users.id')
-            ->leftJoin('persons', 'quotes.person_id', '=', 'persons.id');
+            ->leftJoin('persons', 'quotes.person_id', '=', 'persons.id')
+            ->where('quotes.company_id', $this->getCurrentCompanyId());
 
         if ($userIds = bouncer()->getAuthorizedUserIds()) {
             $queryBuilder->whereIn('quotes.user_id', $userIds);

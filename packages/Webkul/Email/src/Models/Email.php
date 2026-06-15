@@ -4,12 +4,14 @@ namespace Webkul\Email\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Webkul\Contact\Models\PersonProxy;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\Email\Contracts\Email as EmailContract;
 use Webkul\Lead\Models\LeadProxy;
 use Webkul\Tag\Models\TagProxy;
 
 class Email extends Model implements EmailContract
 {
+    use BelongsToCompany;
     /**
      * The table associated with the model.
      *

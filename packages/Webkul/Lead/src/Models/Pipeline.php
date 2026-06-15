@@ -3,10 +3,13 @@
 namespace Webkul\Lead\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\Lead\Contracts\Pipeline as PipelineContract;
 
 class Pipeline extends Model implements PipelineContract
 {
+    use BelongsToCompany;
+
     protected $table = 'lead_pipelines';
 
     /**

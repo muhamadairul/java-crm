@@ -18,7 +18,8 @@ class GroupDataGrid extends DataGrid
                 'groups.id',
                 'groups.name',
                 'groups.description'
-            );
+            )
+            ->where('groups.company_id', $this->getCurrentCompanyId());
 
         $this->addFilter('id', 'groups.id');
 

@@ -27,6 +27,7 @@ class Product extends AbstractReporting
     public function getTopSellingProductsByRevenue($limit = null): Collection
     {
         $tablePrefix = DB::getTablePrefix();
+        $companyId = auth()->guard('user')->user()?->company_id;
 
         $items = $this->productRepository
             ->resetModel()
@@ -35,6 +36,7 @@ class Product extends AbstractReporting
             ->leftJoin('products', 'lead_products.product_id', '=', 'products.id')
             ->select('*')
             ->addSelect(DB::raw('SUM('.$tablePrefix.'lead_products.amount) as revenue'))
+            ->where('leads.company_id', $companyId)
             ->whereBetween('leads.closed_at', [$this->startDate, $this->endDate])
             ->having(DB::raw('SUM('.$tablePrefix.'lead_products.amount)'), '>', 0)
             ->groupBy('product_id')
@@ -64,6 +66,7 @@ class Product extends AbstractReporting
     public function getTopSellingProductsByQuantity($limit = null): Collection
     {
         $tablePrefix = DB::getTablePrefix();
+        $companyId = auth()->guard('user')->user()?->company_id;
 
         $items = $this->productRepository
             ->resetModel()
@@ -72,6 +75,7 @@ class Product extends AbstractReporting
             ->leftJoin('products', 'lead_products.product_id', '=', 'products.id')
             ->select('*')
             ->addSelect(DB::raw('SUM('.$tablePrefix.'lead_products.quantity) as total_qty_ordered'))
+            ->where('leads.company_id', $companyId)
             ->whereBetween('leads.closed_at', [$this->startDate, $this->endDate])
             ->having(DB::raw('SUM('.$tablePrefix.'lead_products.quantity)'), '>', 0)
             ->groupBy('product_id')

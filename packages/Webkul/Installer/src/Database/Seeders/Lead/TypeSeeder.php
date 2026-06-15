@@ -26,11 +26,13 @@ class TypeSeeder extends Seeder
             [
                 'id'         => 1,
                 'name'       => trans('installer::app.seeders.lead.type.new-business', [], $defaultLocale),
+                'company_id' => $parameters['company_id'] ?? null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
                 'id'         => 2,
                 'name'       => trans('installer::app.seeders.lead.type.existing-business', [], $defaultLocale),
+                'company_id' => $parameters['company_id'] ?? null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],

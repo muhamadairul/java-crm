@@ -18,7 +18,8 @@ class CampaignDatagrid extends DataGrid
                 'marketing_campaigns.name',
                 'marketing_campaigns.subject',
                 'marketing_campaigns.status',
-            );
+            )
+            ->where('marketing_campaigns.company_id', $this->getCurrentCompanyId());
 
         $this->addFilter('id', 'marketing_campaigns.id');
 

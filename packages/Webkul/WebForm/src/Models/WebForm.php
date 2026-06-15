@@ -3,10 +3,13 @@
 namespace Webkul\WebForm\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\WebForm\Contracts\WebForm as WebFormContract;
 
 class WebForm extends Model implements WebFormContract
 {
+    use BelongsToCompany;
+
     protected $fillable = [
         'form_id',
         'title',

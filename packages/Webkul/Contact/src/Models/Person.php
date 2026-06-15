@@ -12,13 +12,14 @@ use Webkul\Activity\Traits\LogsActivity;
 use Webkul\Attribute\Traits\CustomAttribute;
 use Webkul\Contact\Contracts\Person as PersonContract;
 use Webkul\Contact\Database\Factories\PersonFactory;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\Lead\Models\LeadProxy;
 use Webkul\Tag\Models\TagProxy;
 use Webkul\User\Models\UserProxy;
 
 class Person extends Model implements PersonContract
 {
-    use CustomAttribute, HasFactory, LogsActivity;
+    use BelongsToCompany, CustomAttribute, HasFactory, LogsActivity;
 
     /**
      * Table name.

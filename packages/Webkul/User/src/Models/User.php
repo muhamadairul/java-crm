@@ -6,11 +6,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
+use Webkul\Core\Models\Company;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\User\Contracts\User as UserContract;
 
 class User extends Authenticatable implements UserContract
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, BelongsToCompany;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +26,7 @@ class User extends Authenticatable implements UserContract
         'password',
         'api_token',
         'role_id',
+        'company_id',
         'status',
         'view_permission',
     ];
@@ -85,6 +88,14 @@ class User extends Authenticatable implements UserContract
     public function groups()
     {
         return $this->belongsToMany(GroupProxy::modelClass(), 'user_groups');
+    }
+
+    /**
+     * Get the company that owns the user.
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     /**

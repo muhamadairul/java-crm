@@ -38,11 +38,27 @@ class Lead extends AbstractReporting
         protected LeadRepository $leadRepository,
         protected StageRepository $stageRepository
     ) {
-        $this->allStageIds = $this->stageRepository->pluck('id')->toArray();
+        $companyId = auth()->guard('user')->user()?->company_id;
 
-        $this->wonStageIds = $this->stageRepository->where('code', 'won')->pluck('id')->toArray();
+        $this->allStageIds = $this->stageRepository->resetModel()
+            ->join('lead_pipelines', 'lead_pipeline_stages.lead_pipeline_id', '=', 'lead_pipelines.id')
+            ->where('lead_pipelines.company_id', $companyId)
+            ->pluck('lead_pipeline_stages.id')
+            ->toArray();
 
-        $this->lostStageIds = $this->stageRepository->where('code', 'lost')->pluck('id')->toArray();
+        $this->wonStageIds = $this->stageRepository->resetModel()
+            ->join('lead_pipelines', 'lead_pipeline_stages.lead_pipeline_id', '=', 'lead_pipelines.id')
+            ->where('lead_pipelines.company_id', $companyId)
+            ->where('lead_pipeline_stages.code', 'won')
+            ->pluck('lead_pipeline_stages.id')
+            ->toArray();
+
+        $this->lostStageIds = $this->stageRepository->resetModel()
+            ->join('lead_pipelines', 'lead_pipeline_stages.lead_pipeline_id', '=', 'lead_pipelines.id')
+            ->where('lead_pipelines.company_id', $companyId)
+            ->where('lead_pipeline_stages.code', 'lost')
+            ->pluck('lead_pipeline_stages.id')
+            ->toArray();
 
         parent::__construct();
     }

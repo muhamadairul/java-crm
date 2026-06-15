@@ -19,14 +19,20 @@ class Bouncer
             return redirect()->route('admin.session.create');
         }
 
-        /**
-         * If user status is changed by admin. Then session should be
-         * logged out.
-         */
         if (! (bool) auth()->guard($guard)->user()->status) {
             auth()->guard($guard)->logout();
 
             session()->flash('error', __('admin::app.errors.401'));
+
+            return redirect()->route('admin.session.create');
+        }
+
+        $user = auth()->guard($guard)->user();
+
+        if ($user->company && ! $user->company->is_active) {
+            auth()->guard($guard)->logout();
+
+            session()->flash('error', 'Perusahaan Anda sedang tidak aktif. Hubungi administrator.');
 
             return redirect()->route('admin.session.create');
         }

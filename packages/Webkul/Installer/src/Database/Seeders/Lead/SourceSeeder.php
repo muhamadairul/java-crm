@@ -26,26 +26,31 @@ class SourceSeeder extends Seeder
             [
                 'id'         => 1,
                 'name'       => trans('installer::app.seeders.lead.source.email', [], $defaultLocale),
+                'company_id' => $parameters['company_id'] ?? null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
                 'id'         => 2,
                 'name'       => trans('installer::app.seeders.lead.source.web', [], $defaultLocale),
+                'company_id' => $parameters['company_id'] ?? null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
                 'id'         => 3,
                 'name'       => trans('installer::app.seeders.lead.source.web-form', [], $defaultLocale),
+                'company_id' => $parameters['company_id'] ?? null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
                 'id'         => 4,
                 'name'       => trans('installer::app.seeders.lead.source.phone', [], $defaultLocale),
+                'company_id' => $parameters['company_id'] ?? null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
                 'id'         => 5,
                 'name'       => trans('installer::app.seeders.lead.source.direct', [], $defaultLocale),
+                'company_id' => $parameters['company_id'] ?? null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],

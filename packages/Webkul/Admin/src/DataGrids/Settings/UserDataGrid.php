@@ -24,7 +24,8 @@ class UserDataGrid extends DataGrid
                 'status',
                 'created_at'
             )
-            ->leftJoin('user_groups', 'id', '=', 'user_groups.user_id');
+            ->leftJoin('user_groups', 'id', '=', 'user_groups.user_id')
+            ->where('users.company_id', $this->getCurrentCompanyId());
 
         if ($userIds = bouncer()->getAuthorizedUserIds()) {
             $queryBuilder->whereIn('id', $userIds);

@@ -14,6 +14,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(JavaCrmDatabaseSeeder::class);
+        $companySeeder = new CompanySeeder();
+        $result = $companySeeder->run();
+
+        $this->call(JavaCrmDatabaseSeeder::class, false, ['parameters' => $result]);
     }
 }

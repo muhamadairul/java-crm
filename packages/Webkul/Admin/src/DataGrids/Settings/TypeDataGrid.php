@@ -17,7 +17,8 @@ class TypeDataGrid extends DataGrid
             ->addSelect(
                 'lead_types.id',
                 'lead_types.name'
-            );
+            )
+            ->where('lead_types.company_id', $this->getCurrentCompanyId());
 
         $this->addFilter('id', 'lead_types.id');
 

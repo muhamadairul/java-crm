@@ -26,7 +26,8 @@ class WarehouseDataGrid extends DataGrid
                 'warehouses.created_at',
             )
             ->addSelect(DB::raw('count(DISTINCT '.DB::getTablePrefix().'product_inventories.product_id) as products'))
-            ->groupBy('warehouses.id');
+            ->groupBy('warehouses.id')
+            ->where('warehouses.company_id', $this->getCurrentCompanyId());
 
         $this->addFilter('id', 'warehouses.id');
         $this->addFilter('created_at', 'warehouses.created_at');

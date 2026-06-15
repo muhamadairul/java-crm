@@ -3,11 +3,13 @@
 namespace Webkul\Marketing\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\EmailTemplate\Models\EmailTemplateProxy;
 use Webkul\Marketing\Contracts\Campaign as CampaignContract;
 
 class Campaign extends Model implements CampaignContract
 {
+    use BelongsToCompany;
     /**
      * Define the table for the model.
      *

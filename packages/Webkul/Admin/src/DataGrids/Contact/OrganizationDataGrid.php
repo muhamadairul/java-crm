@@ -21,21 +21,20 @@ class OrganizationDataGrid extends DataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        return DB::table('organizations')
+        $queryBuilder = DB::table('organizations')
             ->addSelect(
                 'organizations.id',
                 'organizations.name',
                 'organizations.address',
                 'organizations.created_at'
-            );
-
-        if ($userIds = bouncer()->getAuthorizedUserIds()) {
-            $queryBuilder->whereIn('organizations.user_id', $userIds);
-        }
+            )
+            ->where('organizations.company_id', $this->getCurrentCompanyId());
 
         $this->addFilter('id', 'organizations.id');
 
         $this->addFilter('organization', 'organizations.name');
+
+        return $queryBuilder;
     }
 
     /**

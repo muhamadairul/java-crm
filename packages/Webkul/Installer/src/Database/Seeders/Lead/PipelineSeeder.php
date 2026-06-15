@@ -31,6 +31,7 @@ class PipelineSeeder extends Seeder
                 'is_default' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
+                'company_id' => $parameters['company_id'] ?? null,
             ],
         ]);
 

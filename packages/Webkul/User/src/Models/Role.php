@@ -3,10 +3,12 @@
 namespace Webkul\User\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\User\Contracts\Role as RoleContract;
 
 class Role extends Model implements RoleContract
 {
+    use BelongsToCompany;
     /**
      * The attributes that are mass assignable.
      *
@@ -17,6 +19,7 @@ class Role extends Model implements RoleContract
         'description',
         'permission_type',
         'permissions',
+        'company_id',
     ];
 
     protected $casts = [

@@ -3,11 +3,14 @@
 namespace Webkul\Tag\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\Tag\Contracts\Tag as TagContract;
 use Webkul\User\Models\UserProxy;
 
 class Tag extends Model implements TagContract
 {
+    use BelongsToCompany;
+
     protected $table = 'tags';
 
     /**

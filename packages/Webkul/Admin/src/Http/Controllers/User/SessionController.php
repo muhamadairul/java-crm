@@ -46,8 +46,18 @@ class SessionController extends Controller
             return redirect()->back();
         }
 
-        if (auth()->guard('user')->user()->status == 0) {
+        $user = auth()->guard('user')->user();
+
+        if ($user->status == 0) {
             session()->flash('warning', trans('admin::app.users.activate-warning'));
+
+            auth()->guard('user')->logout();
+
+            return redirect()->route('admin.session.create');
+        }
+
+        if ($user->company && ! $user->company->is_active) {
+            session()->flash('error', 'Perusahaan Anda sedang tidak aktif. Hubungi administrator.');
 
             auth()->guard('user')->logout();
 

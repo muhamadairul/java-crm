@@ -3,10 +3,13 @@
 namespace Webkul\Lead\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\Lead\Contracts\Source as SourceContract;
 
 class Source extends Model implements SourceContract
 {
+    use BelongsToCompany;
+
     protected $table = 'lead_sources';
 
     /**

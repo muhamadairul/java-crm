@@ -32,6 +32,7 @@ class WorkflowSeeder extends Seeder
                 'condition_type' => 'and',
                 'conditions'     => '[{"value": ["call", "meeting", "lunch"], "operator": "{}", "attribute": "type", "attribute_type": "multiselect"}]',
                 'actions'        => '[{"id": "send_email_to_participants", "value": "1"}]',
+                'company_id'     => $parameters['company_id'] ?? null,
                 'created_at'     => $now,
                 'updated_at'     => $now,
             ], [
@@ -43,6 +44,7 @@ class WorkflowSeeder extends Seeder
                 'condition_type' => 'and',
                 'conditions'     => '[{"value": ["call", "meeting", "lunch"], "operator": "{}", "attribute": "type", "attribute_type": "multiselect"}]',
                 'actions'        => '[{"id": "send_email_to_participants", "value": "2"}]',
+                'company_id'     => $parameters['company_id'] ?? null,
                 'created_at'     => $now,
                 'updated_at'     => $now,
             ],

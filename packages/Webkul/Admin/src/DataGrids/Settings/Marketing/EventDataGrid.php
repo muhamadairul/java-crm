@@ -18,7 +18,8 @@ class EventDataGrid extends DataGrid
                 'marketing_events.name',
                 'marketing_events.description',
                 'marketing_events.date',
-            );
+            )
+            ->where('marketing_events.company_id', $this->getCurrentCompanyId());
 
         $this->addFilter('id', 'marketing_events.id');
 

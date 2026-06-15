@@ -3,10 +3,12 @@
 namespace Webkul\User\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\User\Contracts\Group as GroupContract;
 
 class Group extends Model implements GroupContract
 {
+    use BelongsToCompany;
     /**
      * The attributes that are mass assignable.
      *

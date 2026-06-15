@@ -40,7 +40,8 @@ class EmailDataGrid extends DataGrid
             ->leftJoin('tags', 'tags.id', '=', 'email_tags.tag_id')
             ->groupBy('emails.id')
             ->where('folders', 'like', '%"'.request('route').'"%')
-            ->whereNull('parent_id');
+            ->whereNull('parent_id')
+            ->where('emails.company_id', $this->getCurrentCompanyId());
 
         $this->addFilter('id', 'emails.id');
         $this->addFilter('name', 'emails.name');

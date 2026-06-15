@@ -3,10 +3,12 @@
 namespace Webkul\Marketing\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\Marketing\Contracts\Event as EventContract;
 
 class Event extends Model implements EventContract
 {
+    use BelongsToCompany;
     /**
      * The table associated with the model.
      *

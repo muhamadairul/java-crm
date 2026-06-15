@@ -25,7 +25,7 @@
                     />
                 @else
                     <img
-                        class="h-10"
+                        class="h-100"
                         src="{{ request()->cookie('dark_mode') ? vite()->asset('images/dark-logo.svg') : vite()->asset('images/logo.svg') }}"
                         id="logo-image"
                         alt="{{ config('app.name') }}"
@@ -71,7 +71,7 @@
                                     @endif
                                 </a>
 
-                                @if ($menuItem->haveChildren() && !in_array($menuKey, ['settings', 'configuration']))
+                                {{-- @if ($menuItem->haveChildren() && !in_array($menuKey, ['settings', 'configuration']))
                                     <div
                                         class="submenu ml-1 mt-1 overflow-hidden rounded-b-lg border-l-2 transition-all duration-300 dark:border-gray-700"
                                         :class="{ 'max-h-[500px] py-2 border-l-brandColor bg-gray-50 dark:bg-gray-900': activeMenu === '{{ $menuKey }}' || {{ $hasActiveChild ? 'true' : 'false' }}, 'max-h-0 py-0 border-transparent bg-transparent': activeMenu !== '{{ $menuKey }}' && !{{ $hasActiveChild ? 'true' : 'false' }} }"
@@ -85,7 +85,7 @@
                                             </a>
                                         @endforeach
                                     </div>
-                                @endif
+                                @endif --}}
                             </div>
                         @endforeach
                     </nav>

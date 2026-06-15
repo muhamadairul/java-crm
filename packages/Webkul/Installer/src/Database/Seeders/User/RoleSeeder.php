@@ -26,6 +26,7 @@ class RoleSeeder extends Seeder
             'name'            => trans('installer::app.seeders.user.role.administrator', [], $defaultLocale),
             'description'     => trans('installer::app.seeders.user.role.administrator-role', [], $defaultLocale),
             'permission_type' => 'all',
+            'company_id'      => $parameters['company_id'] ?? null,
         ]);
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Webkul\Activity\Models\ActivityProxy;
 use Webkul\Activity\Traits\LogsActivity;
 use Webkul\Attribute\Traits\CustomAttribute;
+use Webkul\Core\Traits\BelongsToCompany;
 use Webkul\Product\Contracts\Product as ProductContract;
 use Webkul\Tag\Models\TagProxy;
 use Webkul\Warehouse\Models\LocationProxy;
@@ -15,7 +16,7 @@ use Webkul\Warehouse\Models\WarehouseProxy;
 
 class Product extends Model implements ProductContract
 {
-    use CustomAttribute, LogsActivity;
+    use BelongsToCompany, CustomAttribute, LogsActivity;
 
     /**
      * The attributes that are mass assignable.

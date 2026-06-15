@@ -19,7 +19,8 @@ class PipelineDataGrid extends DataGrid
                 'lead_pipelines.name',
                 'lead_pipelines.rotten_days',
                 'lead_pipelines.is_default',
-            );
+            )
+            ->where('lead_pipelines.company_id', $this->getCurrentCompanyId());
 
         $this->addFilter('id', 'lead_pipelines.id');
 
