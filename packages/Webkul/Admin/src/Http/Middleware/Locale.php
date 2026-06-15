@@ -30,10 +30,11 @@ class Locale
      */
     public function handle($request, Closure $next)
     {
-        app()->setLocale(
-            core()->getConfigData('general.general.locale_settings.locale')
-                ?: app()->getLocale()
-        );
+        $locale = session()->get('locale')
+            ?: core()->getConfigData('general.general.locale_settings.locale')
+            ?: app()->getLocale();
+
+        app()->setLocale($locale);
 
         return $next($request);
     }

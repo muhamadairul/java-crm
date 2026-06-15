@@ -112,6 +112,7 @@ return [
         'en'    => 'English',
         'es'    => 'Español',
         'fa'    => 'Persian',
+        'id'    => 'Indonesian',
         'pt_BR' => 'Portuguese',
         'tr'    => 'Türkçe',
         'vi'    => 'Vietnamese',

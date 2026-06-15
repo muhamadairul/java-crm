@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\Admin\Http\Controllers\LocaleController;
 use Webkul\Admin\Http\Controllers\User\ForgotPasswordController;
 use Webkul\Admin\Http\Controllers\User\ResetPasswordController;
 use Webkul\Admin\Http\Controllers\User\SessionController;
@@ -11,6 +12,11 @@ Route::withoutMiddleware(['user'])->group(function () {
      * Redirect route.
      */
     Route::get('/', [Controller::class, 'redirectToLogin']);
+
+    /**
+     * Switch locale route.
+     */
+    Route::get('switch-locale/{locale}', [LocaleController::class, 'switch'])->name('admin.switch_locale');
 
     /**
      * Session routes.
