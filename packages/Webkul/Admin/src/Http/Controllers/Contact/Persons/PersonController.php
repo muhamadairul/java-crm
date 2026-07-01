@@ -15,9 +15,12 @@ use Webkul\Admin\Http\Requests\AttributeForm;
 use Webkul\Admin\Http\Requests\MassDestroyRequest;
 use Webkul\Admin\Http\Resources\PersonResource;
 use Webkul\Contact\Repositories\PersonRepository;
+use Webkul\Core\Traits\PDFHandler;
 
 class PersonController extends Controller
 {
+    use PDFHandler;
+
     /**
      * Create a new class instance.
      *
@@ -38,6 +41,37 @@ class PersonController extends Controller
         }
 
         return view('admin::contacts.persons.index');
+    }
+
+    /**
+     * Export persons contacts to Excel or PDF.
+     */
+    public function export(): \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\Response
+    {
+        $format = request('format', 'xlsx');
+        if (! in_array($format, ['xls', 'xlsx', 'csv', 'pdf'])) {
+            $format = 'xlsx';
+        }
+
+        $query = $this->personRepository->with(['organization', 'user']);
+        if ($userIds = bouncer()->getAuthorizedUserIds()) {
+            $query = $query->scopeQuery(function ($q) use ($userIds) {
+                return $q->whereIn('persons.user_id', $userIds);
+            });
+        }
+        $persons = $query->all();
+
+        if ($format === 'pdf') {
+            return $this->downloadPDF(
+                view('admin::contacts.persons.pdf', compact('persons'))->render(),
+                'contacts_' . now()->format('Y-m-d')
+            );
+        }
+
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \Webkul\Admin\Exports\ContactsExport($persons),
+            'contacts.' . $format
+        );
     }
 
     /**

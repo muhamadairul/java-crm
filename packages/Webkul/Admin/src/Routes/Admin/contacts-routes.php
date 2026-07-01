@@ -13,6 +13,8 @@ Route::prefix('contacts')->group(function () {
     Route::controller(PersonController::class)->prefix('persons')->group(function () {
         Route::get('', 'index')->name('admin.contacts.persons.index');
 
+        Route::get('export', 'export')->name('admin.contacts.persons.export');
+
         Route::get('create', 'create')->name('admin.contacts.persons.create');
 
         Route::post('create', 'store')->name('admin.contacts.persons.store');

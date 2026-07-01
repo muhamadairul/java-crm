@@ -48,6 +48,37 @@ class QuoteController extends Controller
     }
 
     /**
+     * Export quotes to Excel or PDF.
+     */
+    public function export(): \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\Response
+    {
+        $format = request('format', 'xlsx');
+        if (! in_array($format, ['xls', 'xlsx', 'csv', 'pdf'])) {
+            $format = 'xlsx';
+        }
+
+        $query = $this->quoteRepository->with(['user', 'person']);
+        if ($userIds = bouncer()->getAuthorizedUserIds()) {
+            $query = $query->scopeQuery(function ($q) use ($userIds) {
+                return $q->whereIn('quotes.user_id', $userIds);
+            });
+        }
+        $quotes = $query->all();
+
+        if ($format === 'pdf') {
+            return $this->downloadPDF(
+                view('admin::quotes.pdf-list', compact('quotes'))->render(),
+                'quotes_' . now()->format('Y-m-d')
+            );
+        }
+
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \Webkul\Admin\Exports\QuotesExport($quotes),
+            'quotes.' . $format
+        );
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create(): View

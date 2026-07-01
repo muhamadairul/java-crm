@@ -28,10 +28,32 @@
                 @include('admin::leads.index.upload')
             @endif
 
-            @if ((request()->view_type ?? "kanban") == "table")
-                <!-- Export Modal -->
-                <x-admin::datagrid.export :src="route('admin.leads.index')" />
-            @endif
+            <!-- Export Dropdown -->
+            <x-admin::dropdown position="bottom-right">
+                <x-slot:toggle>
+                    <button class="secondary-button flex items-center gap-1">
+                        <span class="icon-download text-2xl"></span>
+                        Export
+                    </button>
+                </x-slot>
+
+                <x-slot:content class="mt-2 border-t-0 !p-0 min-w-[120px]">
+                    <div class="grid gap-1 py-1.5 text-left">
+                        <a
+                            class="flex items-center gap-2 cursor-pointer px-5 py-2 text-base text-gray-800 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-950"
+                            href="{{ route('admin.leads.export', ['format' => 'xlsx']) }}"
+                        >
+                            Excel (.xlsx)
+                        </a>
+                        <a
+                            class="flex items-center gap-2 cursor-pointer px-5 py-2 text-base text-gray-800 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-950"
+                            href="{{ route('admin.leads.export', ['format' => 'pdf']) }}"
+                        >
+                            PDF (.pdf)
+                        </a>
+                    </div>
+                </x-slot>
+            </x-admin::dropdown>
 
             <!-- Create button for Leads -->
             <div class="flex items-center gap-x-2.5">
