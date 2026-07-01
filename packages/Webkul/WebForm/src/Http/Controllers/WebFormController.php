@@ -48,6 +48,13 @@ class WebFormController extends Controller
      */
     public function formStore(int $id): JsonResponse
     {
+        $webForm = $this->webFormRepository->findOrFail($id);
+
+        $user = \Webkul\User\Models\User::where('company_id', $webForm->company_id)->first();
+        if ($user) {
+            auth()->guard('user')->setUser($user);
+        }
+
         $person = $this->personRepository
             ->getModel()
             ->where('emails', 'like', '%'.request('persons.emails.0.value').'%')
@@ -58,8 +65,6 @@ class WebFormController extends Controller
         }
 
         app(WebForm::class);
-
-        $webForm = $this->webFormRepository->findOrFail($id);
 
         if ($webForm->create_lead) {
             request()->request->add(['entity_type' => 'leads']);

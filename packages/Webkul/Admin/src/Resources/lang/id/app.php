@@ -2220,57 +2220,57 @@ return [
 
     'dashboard' => [
         'index' => [
-            'title' => 'Dashboard',
+            'title' => 'Dasbor',
 
             'revenue' => [
-                'lost-revenue' => 'Lost Revenue',
-                'won-revenue'  => 'Won Revenue',
+                'lost-revenue' => 'Pendapatan Gagal',
+                'won-revenue'  => 'Pendapatan Berhasil',
             ],
 
             'over-all' => [
-                'average-lead-value'    => 'Average Lead Value',
-                'total-leads'           => 'Total Leads',
-                'average-leads-per-day' => 'Average Leads Per Day',
-                'total-quotations'      => 'Total Quotations',
-                'total-persons'         => 'Total Persons',
-                'total-organizations'   => 'Total Organizations',
+                'average-lead-value'    => 'Rata-rata Nilai Prospek',
+                'total-leads'           => 'Total Prospek',
+                'average-leads-per-day' => 'Rata-rata Prospek Per Hari',
+                'total-quotations'      => 'Total Penawaran',
+                'total-persons'         => 'Total Kontak Orang',
+                'total-organizations'   => 'Total Organisasi',
             ],
 
             'total-leads' => [
-                'title' => 'Leads',
-                'total' => 'Total Leads',
-                'won'   => 'Won Leads',
-                'lost'  => 'Lost Leads',
+                'title' => 'Prospek',
+                'total' => 'Total Prospek',
+                'won'   => 'Prospek Berhasil',
+                'lost'  => 'Prospek Gagal',
             ],
 
             'revenue-by-sources' => [
-                'title'       => 'Revenue By Sources',
-                'empty-title' => 'No Data Available',
-                'empty-info'  => 'No data available for selected interval',
+                'title'       => 'Pendapatan Berdasarkan Sumber',
+                'empty-title' => 'Data Tidak Tersedia',
+                'empty-info'  => 'Tidak ada data tersedia untuk interval yang dipilih',
             ],
 
             'revenue-by-types' => [
-                'title'       => 'Revenue By Types',
-                'empty-title' => 'No Data Available',
-                'empty-info'  => 'No data available for selected interval',
+                'title'       => 'Pendapatan Berdasarkan Tipe',
+                'empty-title' => 'Data Tidak Tersedia',
+                'empty-info'  => 'Tidak ada data tersedia untuk interval yang dipilih',
             ],
 
             'top-selling-products' => [
-                'title'       => 'Top Products',
-                'empty-title' => 'No Products Found',
-                'empty-info'  => 'No products available for selected interval',
+                'title'       => 'Produk Terlaris',
+                'empty-title' => 'Produk Tidak Ditemukan',
+                'empty-info'  => 'Tidak ada produk tersedia untuk interval yang dipilih',
             ],
 
             'top-persons' => [
-                'title'       => 'Top Persons',
-                'empty-title' => 'No Persons Found',
-                'empty-info'  => 'No persons available for selected interval',
+                'title'       => 'Kontak Terpopuler',
+                'empty-title' => 'Kontak Tidak Ditemukan',
+                'empty-info'  => 'Tidak ada kontak tersedia untuk interval yang dipilih',
             ],
 
             'open-leads-by-states' => [
-                'title'       => 'Open Leads By Stages',
-                'empty-title' => 'No Data Available',
-                'empty-info'  => 'No data available for selected interval',
+                'title'       => 'Prospek Aktif Berdasarkan Tahap',
+                'empty-title' => 'Data Tidak Tersedia',
+                'empty-info'  => 'Tidak ada data tersedia untuk interval yang dipilih',
             ],
         ],
     ],
