@@ -25,9 +25,8 @@
                     />
                 @else
                     <img
-                        class="h-100"
+                        class="logo-image h-8 max-h-8 w-auto"
                         src="{{ request()->cookie('dark_mode') ? vite()->asset('images/dark-logo.svg') : vite()->asset('images/logo.svg') }}"
-                        id="logo-image"
                         alt="{{ config('app.name') }}"
                     />
                 @endif
@@ -36,7 +35,10 @@
             <x-slot:content class="p-4">
                 <div class="journal-scroll h-[calc(100vh-100px)] overflow-auto">
                     <nav class="grid w-full gap-2">
-                        @foreach (menu()->getItems('admin') as $menuItem)
+                        @php
+                            $menuArea = auth()->guard('user')->user()->company_id === null ? 'super_admin' : 'admin';
+                        @endphp
+                        @foreach (menu()->getItems($menuArea) as $menuItem)
                             @php
                                 $hasActiveChild = $menuItem->haveChildren() && collect($menuItem->getChildren())->contains(fn($child) => $child->isActive());
 
