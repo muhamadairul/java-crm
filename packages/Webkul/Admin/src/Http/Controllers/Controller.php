@@ -18,6 +18,7 @@ class Controller extends BaseController
      */
     public function redirectToLogin()
     {
-        return redirect()->route('admin.session.create');
+        $plans = \Webkul\Core\Models\Plan::where('is_active', true)->orderBy('price')->get();
+        return view('admin::front.landing', compact('plans'));
     }
 }
