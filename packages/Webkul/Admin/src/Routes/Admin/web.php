@@ -49,3 +49,12 @@ require 'configuration-routes.php';
  * Rest routes.
  */
 require 'rest-routes.php';
+
+/**
+ * Notifications routes.
+ */
+Route::controller(\Webkul\Admin\Http\Controllers\NotificationController::class)->prefix('notifications')->group(function () {
+    Route::get('', 'index')->name('admin.notifications.index');
+    Route::post('read-all', 'readAll')->name('admin.notifications.read_all');
+});
+

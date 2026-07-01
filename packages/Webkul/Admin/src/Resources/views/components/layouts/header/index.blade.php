@@ -7,22 +7,20 @@
         <a href="{{ route('admin.dashboard.index') }}">
             @if ($logo = core()->getConfigData('general.general.admin_logo.logo_image'))
                 <img
-                    class="h-10"
+                    class="logo-image h-8 max-h-8 w-auto sm:h-9 sm:max-h-9"
                     src="{{ Storage::url($logo) }}"
                     alt="{{ config('app.name') }}"
                 />
             @else
                 <img
-                    class="h-10 max-sm:hidden"
+                    class="logo-image desktop-logo h-8 max-h-8 w-auto max-sm:hidden sm:h-9 sm:max-h-9"
                     src="{{ request()->cookie('dark_mode') ? vite()->asset('images/dark-logo.svg') : vite()->asset('images/logo.svg') }}"
-                    id="logo-image"
                     alt="{{ config('app.name') }}"
                 />
 
                 <img
-                    class="h-10 sm:hidden"
+                    class="logo-image mobile-logo h-8 max-h-8 w-auto sm:hidden"
                     src="{{ request()->cookie('dark_mode') ? vite()->asset('images/mobile-dark-logo.svg') : vite()->asset('images/mobile-light-logo.svg') }}"
-                    id="logo-image"
                     alt="{{ config('app.name') }}"
                 />
             @endif
@@ -51,6 +49,9 @@
                 ></span>
             </div>
         </v-dark>
+
+        <!-- In-App Notifications -->
+        <v-notifications></v-notifications>
 
         <!-- Language Switcher -->
         <x-admin::dropdown position="bottom-{{ in_array(app()->getLocale(), ['fa', 'ar']) ? 'left' : 'right' }}">
@@ -144,7 +145,7 @@
     </div>
 </header>
 
-@pushOnce('scripts')
+@push('scripts')
     <script
         type="text/x-template"
         id="v-dark-template"
@@ -158,6 +159,60 @@
         </div>
     </script>
 
+    <!-- In-App Notifications Template -->
+    <script
+        type="text/x-template"
+        id="v-notifications-template"
+    >
+        <v-dropdown position="bottom-right" :close-on-click="false" class="relative">
+            <template v-slot:toggle>
+                <button class="relative flex h-9 w-9 items-center justify-center rounded-md transition-all hover:bg-gray-100 dark:hover:bg-gray-950" aria-label="Notifications">
+                    <span class="icon-notification text-2xl text-gray-800 dark:text-gray-200"></span>
+                    <span v-if="count > 0" class="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                        @{{ count }}
+                    </span>
+                </button>
+            </template>
+
+            <template #content="{ isActive, positionStyles }">
+                <div
+                    class="absolute z-[10002] w-80 sm:w-96 rounded bg-white py-5 shadow-[0px_10px_20px_0px_#0000001F] dark:bg-gray-900 border border-gray-300 dark:border-gray-800 text-left"
+                    :style="positionStyles"
+                    v-show="isActive"
+                >
+                    <div class="flex items-center justify-between border-b border-gray-200 px-4 pb-3 dark:border-gray-800">
+                        <span class="text-base font-bold text-gray-800 dark:text-white">Notifikasi</span>
+                        <button v-if="count > 0" @click="markAllAsRead" class="text-xs font-semibold text-brandColor hover:underline">
+                            Tandai semua dibaca
+                        </button>
+                    </div>
+
+                    <div class="max-h-80 overflow-y-auto journal-scroll mt-2">
+                        <div v-if="notifications.length === 0" class="flex flex-col items-center justify-center px-4 py-8 text-center">
+                            <span class="icon-notification text-4xl text-gray-300 dark:text-gray-700 mb-2"></span>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Tidak ada notifikasi baru</p>
+                        </div>
+                        
+                        <div v-else>
+                            <a v-for="notification in notifications" :key="notification.id" :href="notification.action_url" class="block border-b border-gray-100 px-4 py-3 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-950 transition-colors">
+                                <div class="flex gap-3">
+                                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full" :class="getTypeClass(notification.type)">
+                                        <span :class="getTypeIcon(notification.type)" class="text-lg"></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-gray-800 dark:text-white truncate">@{{ notification.title }}</p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-2">@{{ notification.message }}</p>
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">@{{ notification.created_at }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </v-dropdown>
+    </script>
+
     <script type="module">
         app.component('v-dark', {
             template: '#v-dark-template',
@@ -169,6 +224,10 @@
                     logo: "{{ vite()->asset('images/logo.svg') }}",
 
                     dark_logo: "{{ vite()->asset('images/dark-logo.svg') }}",
+
+                    mobile_logo: "{{ vite()->asset('images/mobile-light-logo.svg') }}",
+
+                    mobile_dark_logo: "{{ vite()->asset('images/mobile-dark-logo.svg') }}",
                 };
             },
 
@@ -184,15 +243,15 @@
 
                     document.documentElement.classList.toggle('dark', this.isDarkMode === 1);
 
-                    if (this.isDarkMode) {
-                        this.$emitter.emit('change-theme', 'dark');
+                    this.$emitter.emit('change-theme', this.isDarkMode ? 'dark' : 'light');
 
-                        document.getElementById('logo-image').src = this.dark_logo;
-                    } else {
-                        this.$emitter.emit('change-theme', 'light');
-
-                        document.getElementById('logo-image').src = this.logo;
-                    }
+                    document.querySelectorAll('.logo-image').forEach(el => {
+                        if (el.classList.contains('mobile-logo')) {
+                            el.src = this.isDarkMode ? this.mobile_dark_logo : this.mobile_logo;
+                        } else {
+                            el.src = this.isDarkMode ? this.dark_logo : this.logo;
+                        }
+                    });
                 },
 
                 isDarkModeCookie() {
@@ -210,5 +269,77 @@
                 },
             },
         });
+
+        app.component('v-notifications', {
+            template: '#v-notifications-template',
+
+            data() {
+                return {
+                    count: 0,
+                    notifications: [],
+                    urlIndex: '{{ route('admin.notifications.index') }}',
+                    urlReadAll: '{{ route('admin.notifications.read_all') }}',
+                };
+            },
+
+            mounted() {
+                this.fetchNotifications();
+                
+                // Fetch every 30 seconds
+                setInterval(() => {
+                    this.fetchNotifications();
+                }, 30000);
+            },
+
+            methods: {
+                fetchNotifications() {
+                    this.$axios.get(this.urlIndex)
+                        .then(response => {
+                            this.count = response.data.count;
+                            this.notifications = response.data.notifications;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching notifications:', error);
+                        });
+                },
+
+                markAllAsRead() {
+                    this.$axios.post(this.urlReadAll)
+                        .then(() => {
+                            this.count = 0;
+                            this.notifications = [];
+                        })
+                        .catch(error => {
+                            console.error('Error marking notifications as read:', error);
+                        });
+                },
+
+                getTypeClass(type) {
+                    switch (type) {
+                        case 'lead':
+                            return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+                        case 'invoice':
+                            return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
+                        case 'activation':
+                            return 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400';
+                        default:
+                            return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
+                    }
+                },
+
+                getTypeIcon(type) {
+                    switch (type) {
+                        case 'lead':
+                            return 'icon-leads';
+                        case 'invoice':
+                            return 'icon-quote';
+                        case 'activation':
+                            return 'icon-success';
+                        default:
+                            return 'icon-info';
+                    }
+                }
+            }
+        });
     </script>
-@endPushOnce
+@endpush
