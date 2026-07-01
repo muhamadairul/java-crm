@@ -129,4 +129,5 @@
         </div>
 
     </div>
+</div>
 </x-admin::layouts>

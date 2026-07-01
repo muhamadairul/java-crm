@@ -94,4 +94,5 @@
             </div>
         @endif
     </div>
+</div>
 </x-admin::layouts>
