@@ -69,6 +69,8 @@ return [
 
     'admin_path' => env('APP_ADMIN_PATH', 'admin'),
 
+    'tenant_path' => env('APP_TENANT_PATH', 'tenant'),
+
     'asset_url' => env('ASSET_URL', null),
 
     /*

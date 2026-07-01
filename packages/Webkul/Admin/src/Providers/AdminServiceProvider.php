@@ -12,6 +12,7 @@ use Illuminate\Support\ServiceProvider;
 use Webkul\Admin\Exceptions\Handler;
 use Webkul\Admin\Http\Middleware\Bouncer as BouncerMiddleware;
 use Webkul\Admin\Http\Middleware\Locale;
+use Webkul\Admin\Http\Middleware\TenantLimitMiddleware;
 
 class AdminServiceProvider extends ServiceProvider
 {
@@ -24,11 +25,17 @@ class AdminServiceProvider extends ServiceProvider
 
         $router->aliasMiddleware('admin_locale', Locale::class);
 
+        $router->aliasMiddleware('tenant_limit', TenantLimitMiddleware::class);
+
         include __DIR__.'/../Http/helpers.php';
+
+        Route::middleware(['web', 'admin_locale', 'user', 'tenant_limit'])
+            ->prefix(config('app.tenant_path'))
+            ->group(__DIR__.'/../Routes/Admin/web.php');
 
         Route::middleware(['web', 'admin_locale', 'user'])
             ->prefix(config('app.admin_path'))
-            ->group(__DIR__.'/../Routes/Admin/web.php');
+            ->group(__DIR__.'/../Routes/super-admin-routes.php');
 
         Route::middleware(['web', 'admin_locale'])
             ->group(__DIR__.'/../Routes/Front/web.php');
@@ -89,6 +96,8 @@ class AdminServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(dirname(__DIR__).'/Config/acl.php', 'acl');
 
         $this->mergeConfigFrom(dirname(__DIR__).'/Config/menu.php', 'menu.admin');
+
+        $this->mergeConfigFrom(dirname(__DIR__).'/Config/super-admin-menu.php', 'menu.super_admin');
 
         $this->mergeConfigFrom(dirname(__DIR__).'/Config/core_config.php', 'core_config');
 

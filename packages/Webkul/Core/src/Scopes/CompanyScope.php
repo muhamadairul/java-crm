@@ -9,14 +9,31 @@ use Illuminate\Database\Eloquent\Scope;
 class CompanyScope implements Scope
 {
     /**
+     * Flag to prevent infinite recursion when resolving the authenticated user.
+     *
+     * @var bool
+     */
+    protected static $resolvingUser = false;
+
+    /**
      * Apply the scope to a given Eloquent query builder.
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $user = auth()->guard('user')->user();
+        if (static::$resolvingUser) {
+            return;
+        }
 
-        if ($user && $user->company_id) {
-            $builder->where($model->getTable() . '.company_id', $user->company_id);
+        static::$resolvingUser = true;
+
+        try {
+            $user = auth()->guard('user')->user();
+
+            if ($user && $user->company_id) {
+                $builder->where($model->getTable() . '.company_id', $user->company_id);
+            }
+        } finally {
+            static::$resolvingUser = false;
         }
     }
 }
