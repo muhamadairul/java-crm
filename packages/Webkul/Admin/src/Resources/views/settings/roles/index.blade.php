@@ -25,7 +25,7 @@
                 <div class="flex items-center gap-x-2.5">
                     {!! view_render_event('admin.settings.roles.index.create_button.before') !!}
 
-                    @if (bouncer()->hasPermission('settings.user.roles.create'))
+                    @if (auth()->guard('user')->user()->company_id === null && bouncer()->hasPermission('settings.user.roles.create'))
                         <a
                             href="{{ route('admin.settings.roles.create') }}"
                             class="primary-button"

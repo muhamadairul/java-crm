@@ -41,7 +41,15 @@ class UserController extends Controller
             return datagrid(UserDataGrid::class)->process();
         }
 
-        $roles = $this->roleRepository->all();
+        $user = auth()->guard('user')->user();
+
+        if ($user->company_id) {
+            $roles = $this->roleRepository->findWhere([
+                'company_id' => $user->company_id,
+            ]);
+        } else {
+            $roles = $this->roleRepository->all()->where('id', '!=', 1);
+        }
 
         $groups = $this->groupRepository->all();
 

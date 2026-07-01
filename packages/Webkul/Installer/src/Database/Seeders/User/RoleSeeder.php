@@ -22,11 +22,30 @@ class RoleSeeder extends Seeder
         $defaultLocale = $parameters['locale'] ?? config('app.locale');
 
         DB::table('roles')->insert([
-            'id'              => 1,
-            'name'            => trans('installer::app.seeders.user.role.administrator', [], $defaultLocale),
-            'description'     => trans('installer::app.seeders.user.role.administrator-role', [], $defaultLocale),
-            'permission_type' => 'all',
-            'company_id'      => $parameters['company_id'] ?? null,
+            [
+                'id'              => 1,
+                'name'            => 'Super Admin',
+                'description'     => 'Super Administrator Role',
+                'permission_type' => 'all',
+                'created_at'      => now(),
+                'updated_at'      => now(),
+            ],
+            [
+                'id'              => 2,
+                'name'            => 'Company Admin',
+                'description'     => 'Company Administrator Role',
+                'permission_type' => 'all',
+                'created_at'      => now(),
+                'updated_at'      => now(),
+            ],
+            [
+                'id'              => 3,
+                'name'            => 'Sales User',
+                'description'     => 'Sales User Role',
+                'permission_type' => 'custom',
+                'created_at'      => now(),
+                'updated_at'      => now(),
+            ],
         ]);
     }
 }

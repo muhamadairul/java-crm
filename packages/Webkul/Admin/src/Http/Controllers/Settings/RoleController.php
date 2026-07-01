@@ -36,6 +36,11 @@ class RoleController extends Controller
      */
     public function create(): View
     {
+        $user = auth()->guard('user')->user();
+        if ($user->company_id !== null) {
+            abort(403, 'Tenant admin tidak diperbolehkan membuat role baru.');
+        }
+
         return view('admin::settings.roles.create');
     }
 
@@ -44,6 +49,11 @@ class RoleController extends Controller
      */
     public function store(): RedirectResponse
     {
+        $user = auth()->guard('user')->user();
+        if ($user->company_id !== null) {
+            abort(403, 'Tenant admin tidak diperbolehkan membuat role baru.');
+        }
+
         $this->validate(request(), [
             'name'            => 'required',
             'permission_type' => 'required|in:all,custom',
@@ -65,6 +75,12 @@ class RoleController extends Controller
             'permissions',
         ]);
 
+        // Automatically scope to current user's company
+        $user = auth()->guard('user')->user();
+        if ($user->company_id) {
+            $data['company_id'] = $user->company_id;
+        }
+
         $role = $this->roleRepository->create($data);
 
         Event::dispatch('settings.role.create.after', $role);
@@ -81,6 +97,12 @@ class RoleController extends Controller
     {
         $role = $this->roleRepository->findOrFail($id);
 
+        // Ensure tenant users can only edit roles from their own company
+        $user = auth()->guard('user')->user();
+        if ($user->company_id && $role->company_id !== $user->company_id) {
+            abort(403, 'Anda tidak memiliki akses ke role ini.');
+        }
+
         return view('admin::settings.roles.edit', compact('role'));
     }
 
@@ -89,22 +111,43 @@ class RoleController extends Controller
      */
     public function update(int $id): RedirectResponse
     {
-        $this->validate(request(), [
-            'name'            => 'required',
-            'permission_type' => 'required|in:all,custom',
-            'description'     => 'required',
-            'permissions'     => 'required_if:permission_type,custom',
-        ]);
+        $role = $this->roleRepository->findOrFail($id);
+
+        // Ensure tenant users can only update roles from their own company
+        $user = auth()->guard('user')->user();
+        if ($user->company_id && $role->company_id !== $user->company_id) {
+            abort(403, 'Anda tidak memiliki akses ke role ini.');
+        }
+
+        // For default roles (Company Admin, Sales User), only allow editing permissions
+        if ($role->isDefault()) {
+            $this->validate(request(), [
+                'permission_type' => 'required|in:all,custom',
+                'permissions'     => 'required_if:permission_type,custom',
+            ]);
+
+            $data = [
+                'permission_type' => request('permission_type'),
+                'permissions'     => request()->has('permissions') ? request('permissions') : [],
+            ];
+        } else {
+            $this->validate(request(), [
+                'name'            => 'required',
+                'permission_type' => 'required|in:all,custom',
+                'description'     => 'required',
+                'permissions'     => 'required_if:permission_type,custom',
+            ]);
+
+            $data = array_merge(request()->only([
+                'name',
+                'description',
+                'permission_type',
+            ]), [
+                'permissions' => request()->has('permissions') ? request('permissions') : [],
+            ]);
+        }
 
         Event::dispatch('settings.role.update.before', $id);
-
-        $data = array_merge(request()->only([
-            'name',
-            'description',
-            'permission_type',
-        ]), [
-            'permissions' => request()->has('permissions') ? request('permissions') : [],
-        ]);
 
         $role = $this->roleRepository->update($data, $id);
 
@@ -112,7 +155,7 @@ class RoleController extends Controller
 
         session()->flash('success', trans('admin::app.settings.roles.index.update-success'));
 
-        return redirect()->back();
+        return redirect()->route('admin.settings.roles.index');
     }
 
     /**
@@ -126,12 +169,18 @@ class RoleController extends Controller
 
         $role = $this->roleRepository->findOrFail($id);
 
+        // Ensure tenant users cannot delete roles
+        $user = auth()->guard('user')->user();
+        if ($user->company_id !== null) {
+            return response()->json(['responseCode' => 403, 'message' => 'Tenant admin tidak diperbolehkan menghapus role.'], 403);
+        }
+
         if ($role->users && $role->users->count() >= 1) {
             $response['message'] = trans('admin::app.settings.roles.index.being-used');
 
             session()->flash('error', $response['message']);
-        } elseif ($this->roleRepository->count() == 1) {
-            $response['message'] = trans('admin::app.settings.roles.index.last-delete-error');
+        } elseif ($this->roleRepository->where('company_id', $user->company_id)->count() <= 2) {
+            $response['message'] = 'Minimal harus ada 2 role dalam perusahaan.';
 
             session()->flash('error', $response['message']);
         } else {

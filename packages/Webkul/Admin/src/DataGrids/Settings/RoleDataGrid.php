@@ -13,6 +13,8 @@ class RoleDataGrid extends DataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
+        $user = auth()->guard('user')->user();
+
         $queryBuilder = DB::table('roles')
             ->addSelect(
                 'roles.id',
@@ -20,7 +22,15 @@ class RoleDataGrid extends DataGrid
                 'roles.description',
                 'roles.permission_type'
             )
-            ->where('roles.company_id', $this->getCurrentCompanyId());
+            ->where('roles.id', '!=', 1); // Exclude Super Admin role
+
+        // Scope by company_id for tenant users
+        if ($user->company_id) {
+            $queryBuilder->where('roles.company_id', $user->company_id);
+        } else {
+            // Super Admin sees only global roles (company_id IS NULL)
+            $queryBuilder->whereNull('roles.company_id');
+        }
 
         $this->addFilter('id', 'roles.id');
         $this->addFilter('name', 'roles.name');
@@ -82,8 +92,11 @@ class RoleDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
+        $user = auth()->guard('user')->user();
+
         if (bouncer()->hasPermission('settings.user.roles.edit')) {
             $this->addAction([
+                'index'  => 'edit',
                 'icon'   => 'icon-edit',
                 'title'  => trans('admin::app.settings.roles.index.datagrid.edit'),
                 'method' => 'GET',
@@ -91,8 +104,10 @@ class RoleDataGrid extends DataGrid
             ]);
         }
 
-        if (bouncer()->hasPermission('settings.user.roles.delete')) {
+        // Only Super Admins (company_id is null) can delete roles
+        if ($user->company_id === null && bouncer()->hasPermission('settings.user.roles.delete')) {
             $this->addAction([
+                'index'  => 'delete',
                 'icon'   => 'icon-delete',
                 'title'  => trans('admin::app.settings.roles.index.datagrid.delete'),
                 'method' => 'DELETE',
@@ -100,4 +115,4 @@ class RoleDataGrid extends DataGrid
             ]);
         }
     }
-}
+

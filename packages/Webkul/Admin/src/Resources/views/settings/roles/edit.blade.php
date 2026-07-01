@@ -97,7 +97,7 @@
 
                             <!-- Name -->
                             <x-admin::form.control-group>
-                                <x-admin::form.control-group.label class="required">
+                                <x-admin::form.control-group.label class="{{ $role->isDefault() ? '' : 'required' }}">
                                     @lang('admin::app.settings.roles.edit.name')
                                 </x-admin::form.control-group.label>
 
@@ -105,10 +105,11 @@
                                     type="text"
                                     id="name"
                                     name="name"
-                                    rules="required"
+                                    :rules="$role->isDefault() ? '' : 'required'"
                                     value="{{ old('name') ?: $role->name }}"
                                     :label="trans('admin::app.settings.roles.edit.name')"
                                     :placeholder="trans('admin::app.settings.roles.edit.name')"
+                                    :disabled="$role->isDefault()"
                                 />
 
                                 <x-admin::form.control-group.error control-name="name" />
@@ -120,7 +121,7 @@
 
                             <!-- Description -->
                             <x-admin::form.control-group class="!mb-0">
-                                <x-admin::form.control-group.label class="required">
+                                <x-admin::form.control-group.label class="{{ $role->isDefault() ? '' : 'required' }}">
                                     @lang('admin::app.settings.roles.edit.description')
                                 </x-admin::form.control-group.label>
 
@@ -128,10 +129,11 @@
                                     type="textarea"
                                     id="description"
                                     name="description"
-                                    rules="required"
+                                    :rules="$role->isDefault() ? '' : 'required'"
                                     value="{{ old('description') ?: $role->description }}"
                                     :label="trans('admin::app.settings.roles.edit.description')"
                                     :placeholder="trans('admin::app.settings.roles.edit.description')"
+                                    :disabled="$role->isDefault()"
                                 />
 
                                 <x-admin::form.control-group.error control-name="description" />

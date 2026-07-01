@@ -12,7 +12,6 @@ return new class extends Migration
     protected array $tables = [
         // User Package
         'users',
-        'roles',
         'groups',
 
         // Lead Package
