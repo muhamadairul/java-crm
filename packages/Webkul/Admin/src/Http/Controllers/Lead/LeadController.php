@@ -122,6 +122,10 @@ class LeadController extends Controller
             $pipeline = $this->pipelineRepository->getDefaultPipeline();
         }
 
+        if (! $pipeline) {
+            return response()->json([]);
+        }
+
         if ($stageId = request()->query('pipeline_stage_id')) {
             $stages = $pipeline->stages->where('id', request()->query('pipeline_stage_id'));
         } else {

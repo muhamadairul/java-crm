@@ -33,7 +33,7 @@ class ImageCacheController
             $content = Cache::remember('java-crm-logo', 10080, function () {
                 return $this->getImageFromUrl(self::APP_LOGO);
             });
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $content = '';
         }
 
@@ -44,10 +44,14 @@ class ImageCacheController
      * Init from given URL
      *
      * @param  string  $url
-     * @return \Intervention\Image\Image
+     * @return string
      */
     public function getImageFromUrl($url)
     {
+        if (empty($url) || ! is_string($url) || trim($url) === '') {
+            throw new \Exception('Unable to init from given url (empty url).');
+        }
+
         $domain = config('app.url');
 
         $options = [
@@ -74,15 +78,28 @@ class ImageCacheController
     /**
      * Builds HTTP response from given image data
      *
-     * @param  string  $content
+     * @param  string|null  $content
      * @return Illuminate\Http\Response
      */
     protected function buildResponse($content)
     {
+        if (empty($content)) {
+            return new IlluminateResponse('', 404);
+        }
+
         /**
          * Define mime type
          */
-        $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $content);
+        $mime = 'image/png';
+        if (function_exists('finfo_open')) {
+            $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo) {
+                $detectedMime = @finfo_buffer($finfo, $content);
+                if ($detectedMime) {
+                    $mime = $detectedMime;
+                }
+            }
+        }
 
         /**
          * Respond with 304 not modified if browser has the image cached
@@ -91,17 +108,17 @@ class ImageCacheController
 
         $notModified = isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $eTag;
 
-        $content = $notModified ? null : $content;
-
+        $contentLength = strlen($content);
+        $responseContent = $notModified ? null : $content;
         $statusCode = $notModified ? 304 : 200;
 
         /**
          * Return http response
          */
-        return new IlluminateResponse($content, $statusCode, [
+        return new IlluminateResponse($responseContent, $statusCode, [
             'Content-Type'   => $mime,
             'Cache-Control'  => 'max-age=10080, public',
-            'Content-Length' => strlen($content),
+            'Content-Length' => $contentLength,
             'Etag'           => $eTag,
         ]);
     }

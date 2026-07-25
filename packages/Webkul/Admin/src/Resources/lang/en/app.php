@@ -1976,6 +1976,19 @@ return [
                 ],
             ],
 
+            'kanban' => [
+                'empty-list'             => 'Your Leads List Is Empty',
+                'empty-list-description' => 'There are no leads in this stage. Click button below to create a new lead.',
+                'create-lead-btn'        => 'Create Lead',
+                'stages'                 => [
+                    'need-more-info' => 'Update Lead Status Info',
+                    'won-value'      => 'Won Value (Revenue)',
+                    'lost-reason'    => 'Lost Reason',
+                    'closed-at'      => 'Closed Date',
+                    'save-btn'       => 'Save Status',
+                ],
+            ],
+
             'view-switcher' => [
                 'all-pipelines'       => 'All Pipelines',
                 'create-new-pipeline' => 'Create New Pipeline',

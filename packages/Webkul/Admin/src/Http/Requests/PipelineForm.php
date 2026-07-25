@@ -34,16 +34,17 @@ class PipelineForm extends FormRequest
      */
     public function rules()
     {
-        if (request('id')) {
-            return [
-                'name'          => 'required|unique:lead_pipelines,name,'.request('id'),
-                'stages.*.name' => 'unique_key',
-                'stages.*.code' => 'unique_key',
-            ];
-        }
+        $companyId = auth()->guard('user')->user()?->company_id;
+
+        $nameRule = [
+            'required',
+            \Illuminate\Validation\Rule::unique('lead_pipelines', 'name')
+                ->where(fn ($q) => $companyId ? $q->where('company_id', $companyId) : $q)
+                ->ignore(request('id')),
+        ];
 
         return [
-            'name'          => 'required|unique:lead_pipelines,name',
+            'name'          => $nameRule,
             'rotten_days'   => 'required',
             'stages.*.name' => 'unique_key',
             'stages.*.code' => 'unique_key',

@@ -10,7 +10,7 @@
                 class="flex cursor-pointer appearance-none items-center justify-between gap-x-2 rounded-md border bg-white px-2.5 py-[7px] text-center leading-6 text-gray-600 transition-all marker:shadow hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400"
             >
                 <span class="whitespace-nowrap">
-                    {{ $pipeline->name }}
+                    {{ $pipeline?->name ?? trans('admin::app.leads.index.view-switcher.all-pipelines') }}
                 </span>
                 
                 <span class="icon-down-arrow text-2xl"></span>
@@ -40,7 +40,7 @@
                         'pipeline_id' => $tempPipeline->id,
                         'view_type'   => request('view_type')
                     ]) }}"
-                    class="block px-3 py-2.5 pl-4 text-gray-600 transition-all hover:bg-gray-100 dark:hover:bg-gray-950 dark:text-gray-300 {{ $pipeline->id == $tempPipeline->id ? 'bg-gray-100 dark:bg-gray-950' : '' }}"
+                    class="block px-3 py-2.5 pl-4 text-gray-600 transition-all hover:bg-gray-100 dark:hover:bg-gray-950 dark:text-gray-300 {{ ($pipeline && $pipeline->id == $tempPipeline->id) ? 'bg-gray-100 dark:bg-gray-950' : '' }}"
                 >
                     {{ $tempPipeline->name }}
                 </a>

@@ -333,7 +333,7 @@
                         updating: false,
                     },
 
-                    stages: @json($pipeline->stages->toArray()),
+                    stages: @json($pipeline?->stages ? $pipeline->stages->toArray() : []),
 
                     stageLeads: {},
 
@@ -368,10 +368,49 @@
             },
 
             mounted () {
+                this.populateStageLeads({});
                 this.boot();
             },
 
             methods: {
+                /**
+                 * Populate stage leads ensuring all stages remain visible even when empty.
+                 */
+                populateStageLeads(responseData) {
+                    let newStageLeads = {};
+                    if (this.stages && this.stages.length) {
+                        this.stages.forEach(stage => {
+                            const sortOrder = stage.sort_order;
+                            if (responseData && responseData[sortOrder]) {
+                                newStageLeads[sortOrder] = responseData[sortOrder];
+                            } else {
+                                newStageLeads[sortOrder] = {
+                                    id: stage.id,
+                                    code: stage.code,
+                                    name: stage.name,
+                                    sort_order: stage.sort_order,
+                                    lead_pipeline_id: stage.lead_pipeline_id,
+                                    lead_value: 0,
+                                    leads: {
+                                        data: [],
+                                        meta: {
+                                            current_page: 1,
+                                            from: null,
+                                            last_page: 1,
+                                            per_page: 10,
+                                            to: null,
+                                            total: 0
+                                        }
+                                    }
+                                };
+                            }
+                        });
+                    } else if (responseData && Object.keys(responseData).length) {
+                        newStageLeads = responseData;
+                    }
+                    this.stageLeads = newStageLeads;
+                },
+
                 /**
                  * Initialization: This function checks for any previously saved filters in local storage and applies them as needed.
                  *
@@ -388,9 +427,7 @@
 
                             this.get()
                                 .then(response => {
-                                    for (let [sortOrder, data] of Object.entries(response.data)) {
-                                        this.stageLeads[sortOrder] = data;
-                                    }
+                                    this.populateStageLeads(response.data);
                                 });
 
                             return;
@@ -399,9 +436,7 @@
 
                     this.get()
                         .then(response => {
-                            for (let [sortOrder, data] of Object.entries(response.data)) {
-                                this.stageLeads[sortOrder] = data;
-                            }
+                            this.populateStageLeads(response.data);
                         });
                 },
 
@@ -476,9 +511,7 @@
 
                     this.get()
                         .then(response => {
-                            for (let [sortOrder, data] of Object.entries(response.data)) {
-                                this.stageLeads[sortOrder] = data;
-                            }
+                            this.populateStageLeads(response.data);
                         });
                 },
 
@@ -496,9 +529,7 @@
 
                     this.get()
                         .then(response => {
-                            for (let [sortOrder, data] of Object.entries(response.data)) {
-                                this.stageLeads[sortOrder] = data;
-                            }
+                            this.populateStageLeads(response.data);
                         });
                 },
 
@@ -598,9 +629,7 @@
 
                             this.get()
                                 .then(response => {
-                                    for (let [sortOrder, data] of Object.entries(response.data)) {
-                                        this.stageLeads[sortOrder] = data;
-                                    }
+                                    this.populateStageLeads(response.data);
                                 });
 
                             this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
@@ -639,9 +668,7 @@
 
                     this.get()
                         .then(response => {
-                            for (let [sortOrder, data] of Object.entries(response.data)) {
-                                this.stageLeads[sortOrder] = data;
-                            }
+                            this.populateStageLeads(response.data);
                         });
                 },
 

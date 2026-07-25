@@ -103,10 +103,69 @@ class PipelineRepository extends Repository
      */
     public function getDefaultPipeline()
     {
-        $pipeline = $this->findOneByField('is_default', 1);
+        $pipeline = $this->model->where('is_default', 1)->first();
 
         if (! $pipeline) {
             $pipeline = $this->first();
+        }
+
+        if (! $pipeline) {
+            $pipeline = $this->model->withoutGlobalScopes()->where('is_default', 1)->first()
+                ?? $this->model->withoutGlobalScopes()->first();
+        }
+
+        if (! $pipeline) {
+            $user = auth()->guard('user')->user();
+            $companyId = $user?->company_id;
+
+            $pipelineName = 'Default Pipeline';
+            if ($this->model->withoutGlobalScopes()->where('name', $pipelineName)->exists()) {
+                $pipelineName = 'Pipeline Utama (' . Str::random(4) . ')';
+            }
+
+            $pipeline = $this->create([
+                'name'       => $pipelineName,
+                'is_default' => 1,
+                'company_id' => $companyId,
+                'stages'     => [
+                    [
+                        'name'        => trans('installer::app.seeders.lead.pipeline.pipeline-stages.new', [], config('app.locale')) ?: 'Lead Baru',
+                        'code'        => 'new',
+                        'probability' => 100,
+                        'sort_order'  => 1,
+                    ],
+                    [
+                        'name'        => trans('installer::app.seeders.lead.pipeline.pipeline-stages.follow-up', [], config('app.locale')) ?: 'Follow Up / Kualifikasi',
+                        'code'        => 'follow-up',
+                        'probability' => 100,
+                        'sort_order'  => 2,
+                    ],
+                    [
+                        'name'        => trans('installer::app.seeders.lead.pipeline.pipeline-stages.prospect', [], config('app.locale')) ?: 'Penawaran Terkirim',
+                        'code'        => 'prospect',
+                        'probability' => 100,
+                        'sort_order'  => 3,
+                    ],
+                    [
+                        'name'        => trans('installer::app.seeders.lead.pipeline.pipeline-stages.negotiation', [], config('app.locale')) ?: 'Negosiasi',
+                        'code'        => 'negotiation',
+                        'probability' => 100,
+                        'sort_order'  => 4,
+                    ],
+                    [
+                        'name'        => trans('installer::app.seeders.lead.pipeline.pipeline-stages.won', [], config('app.locale')) ?: 'Berhasil (Won)',
+                        'code'        => 'won',
+                        'probability' => 100,
+                        'sort_order'  => 5,
+                    ],
+                    [
+                        'name'        => trans('installer::app.seeders.lead.pipeline.pipeline-stages.lost', [], config('app.locale')) ?: 'Gagal (Lost)',
+                        'code'        => 'lost',
+                        'probability' => 0,
+                        'sort_order'  => 6,
+                    ],
+                ],
+            ]);
         }
 
         return $pipeline;
