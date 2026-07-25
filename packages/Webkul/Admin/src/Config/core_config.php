@@ -212,7 +212,7 @@ return [
                 'options'       => [
                     [
                         'title' => 'admin::app.configuration.index.magic-ai.settings.models.gpt-4o',
-                        'value' => 'openai/chatgpt-4o-latest',
+                        'value' => 'openai/gpt-4o',
                     ], [
                         'title' => 'admin::app.configuration.index.magic-ai.settings.models.gpt-4o-mini',
                         'value' => 'openai/gpt-4o-mini',

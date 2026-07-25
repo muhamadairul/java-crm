@@ -1874,6 +1874,11 @@ return [
     ],
 
     'common' => [
+        'resource-not-found'    => 'Sumber Daya Tidak Ditemukan',
+        'forbidden-error'       => 'Akses Ditolak',
+        'unauthenticated'       => 'Sesi Berakhir / Belum Terautentikasi',
+        'internal-server-error' => 'Terjadi Kesalahan Server Internal',
+
         'custom-attributes' => [
             'add-more'             => 'Tambah Lainnya',
             'address'              => 'Alamat',

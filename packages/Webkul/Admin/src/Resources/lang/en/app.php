@@ -1875,6 +1875,11 @@ return [
     ],
 
     'common' => [
+        'resource-not-found'    => 'Resource Not Found',
+        'forbidden-error'       => 'Forbidden Error',
+        'unauthenticated'       => 'Unauthenticated',
+        'internal-server-error' => 'Internal Server Error',
+
         'custom-attributes' => [
             'add-more'             => 'Add More',
             'address'              => 'Address',

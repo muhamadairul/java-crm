@@ -3,6 +3,7 @@
 namespace Webkul\Lead\Services;
 
 use Exception;
+use Illuminate\Support\Facades\Http;
 use Smalot\PdfParser\Parser;
 
 class MagicAIService
@@ -104,11 +105,11 @@ class MagicAIService
      */
     private static function processPromptWithAI($prompt)
     {
-        $model = core()->getConfigData('general.magic_ai.settings.other_model') ?: core()->getConfigData('general.magic_ai.settings.model');
+        $model = trim(core()->getConfigData('general.magic_ai.settings.other_model') ?: core()->getConfigData('general.magic_ai.settings.model') ?? '');
 
-        $apiKey = core()->getConfigData('general.magic_ai.settings.api_key');
+        $apiKey = trim(core()->getConfigData('general.magic_ai.settings.api_key') ?? '');
 
-        if (! $apiKey || ! $model) {
+        if (empty($apiKey) || empty($model)) {
             return ['error' => trans('admin::app.leads.file.missing-api-key')];
         }
 
@@ -145,7 +146,7 @@ class MagicAIService
     private static function ask($prompt, $model, $apiKey)
     {
         try {
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Content-Type'  => 'application/json',
                 'Authorization' => 'Bearer '.$apiKey,
             ])->post(self::OPEN_ROUTER_URL, [
@@ -167,18 +168,23 @@ class MagicAIService
             ]);
 
             if ($response->failed()) {
-                throw new Exception($response->body());
+                $errorData = $response->json();
+                $errorMessage = $errorData['error']['message'] ?? $response->body();
+                throw new Exception($errorMessage);
             }
 
             $data = $response->json();
 
             if (isset($data['error'])) {
-                throw new Exception($data['error']['message']);
+                $errorMessage = is_array($data['error']) ? ($data['error']['message'] ?? json_encode($data['error'])) : $data['error'];
+                throw new Exception($errorMessage);
             }
 
             return $data;
         } catch (Exception $e) {
-            return ['error' => trans('admin::app.leads.file.insufficient-info')];
+            \Illuminate\Support\Facades\Log::error('MagicAI API Exception: ' . $e->getMessage());
+
+            return ['error' => trans('admin::app.leads.file.insufficient-info') . ': ' . $e->getMessage()];
         }
     }
 

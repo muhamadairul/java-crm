@@ -36,7 +36,11 @@ class TenantLimitMiddleware
             $currentUsersCount = DB::table('users')->where('company_id', $user->company_id)->count();
 
             if ($plan->max_users > 0 && $currentUsersCount >= $plan->max_users) {
-                session()->flash('error', "Batas maksimum pengguna ({$plan->max_users} pengguna) untuk paket Anda telah tercapai. Harap tingkatkan paket Anda.");
+                $errorMsg = "Batas maksimum pengguna ({$plan->max_users} pengguna) untuk paket Anda telah tercapai. Harap tingkatkan paket Anda.";
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['message' => $errorMsg], 400);
+                }
+                session()->flash('error', $errorMsg);
                 return redirect()->back();
             }
         }
@@ -47,7 +51,11 @@ class TenantLimitMiddleware
             $currentLeadsCount = DB::table('leads')->where('company_id', $user->company_id)->count();
 
             if ($plan->max_leads > 0 && $currentLeadsCount >= $plan->max_leads) {
-                session()->flash('error', "Batas maksimum prospek ({$plan->max_leads} prospek) untuk paket Anda telah tercapai. Harap tingkatkan paket Anda.");
+                $errorMsg = "Batas maksimum prospek ({$plan->max_leads} prospek) untuk paket Anda telah tercapai. Harap tingkatkan paket Anda.";
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['message' => $errorMsg], 400);
+                }
+                session()->flash('error', $errorMsg);
                 return redirect()->back();
             }
         }
@@ -55,9 +63,12 @@ class TenantLimitMiddleware
         // 3. Check Storage Limit when uploading files
         if ($request->allFiles()) {
             $incomingSize = 0;
-            foreach ($request->allFiles() as $file) {
-                $incomingSize += $file->getSize(); // Size in bytes
-            }
+            $uploadedFiles = $request->allFiles();
+            array_walk_recursive($uploadedFiles, function ($file) use (&$incomingSize) {
+                if ($file instanceof \Illuminate\Http\UploadedFile) {
+                    $incomingSize += $file->getSize(); // Size in bytes
+                }
+            });
             $incomingSizeMb = $incomingSize / (1024 * 1024);
 
             // Calculate current usage
@@ -75,7 +86,11 @@ class TenantLimitMiddleware
             $currentUsageMb = $totalSize / (1024 * 1024);
 
             if ($plan->max_storage_mb > 0 && ($currentUsageMb + $incomingSizeMb) > $plan->max_storage_mb) {
-                session()->flash('error', "Ukuran file melebihi kapasitas penyimpanan tersisa untuk paket Anda (Maksimum {$plan->max_storage_mb} MB).");
+                $errorMsg = "Ukuran file melebihi kapasitas penyimpanan tersisa untuk paket Anda (Maksimum {$plan->max_storage_mb} MB).";
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['message' => $errorMsg], 400);
+                }
+                session()->flash('error', $errorMsg);
                 return redirect()->back();
             }
         }
