@@ -61,7 +61,7 @@
                     class="flex gap-1"
                     ghost-class="draggable-ghost"
                     v-bind="{animation: 200}"
-                    :list="videos"
+                    :list="videos || []"
                     item-key="id"
                 >
                     <template #item="{ element, index }">
@@ -89,7 +89,7 @@
             <video
                 class="h-[120px] w-[210px] object-cover"
                 ref="videoPreview"
-                v-if="video.url.length > 0"
+                v-if="video && video.url && video.url.length > 0"
             >
                 <source :src="video.url" type="video/mp4">
             </video>

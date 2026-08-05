@@ -65,7 +65,7 @@
                     class="flex flex-wrap gap-1"
                     ghost-class="draggable-ghost"
                     v-bind="{animation: 200}"
-                    :list="images"
+                    :list="images || []"
                     item-key="id"
                 >
                     <template #item="{ element, index }">
@@ -82,7 +82,7 @@
                 </draggable>
 
                 <!-- Placeholders -->
-                <template v-if="showPlaceholders && ! images.length">
+                <template v-if="showPlaceholders && ! (images && images.length)">
                     <!-- Front Placeholder -->
                     <div
                         class="relative h-[120px] max-h-[120px] w-full min-w-[120px] max-w-[120px] rounded border border-dashed border-gray-300 dark:border-gray-800 dark:mix-blend-exclusion dark:invert"
