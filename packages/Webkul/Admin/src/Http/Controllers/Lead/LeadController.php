@@ -83,7 +83,7 @@ class LeadController extends Controller
      /**
       * Export leads to Excel or PDF.
       */
-     public function export(): \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\Response
+     public function export(): \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\Response
      {
          $format = request('format', 'xlsx');
          if (! in_array($format, ['xls', 'xlsx', 'csv', 'pdf'])) {
