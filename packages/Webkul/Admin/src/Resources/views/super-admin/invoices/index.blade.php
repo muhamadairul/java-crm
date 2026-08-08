@@ -18,18 +18,6 @@
             </div>
         </div>
 
-        {{-- Flash Messages --}}
-        @if(session('success'))
-            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
-                {{ session('error') }}
-            </div>
-        @endif
-
         {{-- Filters Section --}}
         <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
             <form action="{{ route('super_admin.invoices.index') }}" method="GET" class="flex flex-wrap items-center gap-4">

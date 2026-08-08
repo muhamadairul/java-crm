@@ -34,18 +34,6 @@
             </div>
         </div>
 
-        {{-- Flash Messages --}}
-        @if(session('success'))
-            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
-                {{ session('error') }}
-            </div>
-        @endif
-
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {{-- Main Invoice Info --}}
             <div class="space-y-6 lg:col-span-2">

@@ -21,13 +21,6 @@
             </div>
         </div>
 
-        {{-- Flash Messages --}}
-        @if(session('success'))
-            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                {{ session('success') }}
-            </div>
-        @endif
-
         <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <div class="flex items-center justify-between border-b border-gray-100 p-6 dark:border-gray-800">
                 <h3 class="text-base font-bold text-gray-800 dark:text-white">@lang('admin::app.super_admin.plans.plan_list')</h3>
