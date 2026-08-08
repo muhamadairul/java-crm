@@ -210,17 +210,17 @@
                             
                             <div class="space-y-2 text-xs">
                                 <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                                    <span>Subtotal Paket {{ $plan->name }}</span>
+                                    <span>{{ $isEn ? 'Subtotal Package' : 'Subtotal Paket' }} {{ $plan->name }}</span>
                                     <span class="font-bold text-slate-800 dark:text-white">{{ $currencySymbol }}{{ number_format($plan->converted_price, $selectedCurrency === 'USD' || $selectedCurrency === 'EUR' ? 2 : 0) }}</span>
                                 </div>
                                 <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                                    <span>Pajak & Biaya Admin</span>
-                                    <span class="font-bold text-emerald-600">GRATIS</span>
+                                    <span>{{ $isEn ? 'Tax & Admin Fee' : 'Pajak & Biaya Admin' }}</span>
+                                    <span class="font-bold text-emerald-600">{{ $isEn ? 'FREE' : 'GRATIS' }}</span>
                                 </div>
                             </div>
 
                             <div class="pt-3 border-t border-slate-200/80 flex justify-between items-center dark:border-slate-800">
-                                <span class="text-xs font-extrabold text-slate-900 dark:text-white">Total Tagihan</span>
+                                <span class="text-xs font-extrabold text-slate-900 dark:text-white">{{ $isEn ? 'Total Tagihan' : 'Total Tagihan' }}</span>
                                 <span class="text-xl font-extrabold text-sky-600 dark:text-sky-400">{{ $currencySymbol }}{{ number_format($plan->converted_price, $selectedCurrency === 'USD' || $selectedCurrency === 'EUR' ? 2 : 0) }}</span>
                             </div>
 
