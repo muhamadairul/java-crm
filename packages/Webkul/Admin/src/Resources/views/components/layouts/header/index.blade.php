@@ -65,12 +65,16 @@
 
             <x-slot:content class="mt-2 border-t-0 !p-0 min-w-[150px]">
                 <div class="grid gap-1 py-1.5 text-left">
+                    @php
+                        $currentUser = auth()->guard('user')->user();
+                        $switchRouteName = ($currentUser && $currentUser->company_id === null) ? 'super_admin.switch_locale' : 'admin.switch_locale';
+                    @endphp
                     @foreach (config('app.available_locales') as $key => $language)
                         <a
                             class="flex items-center gap-2 cursor-pointer px-5 py-2 text-base text-gray-800 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-950 {{ app()->getLocale() === $key ? 'bg-gray-100 font-semibold dark:bg-gray-950' : '' }}"
-                            href="{{ route('admin.switch_locale', $key) }}"
+                            href="{{ route($switchRouteName, $key) }}"
                         >
-                            {{ $language }}
+                            {{ __('admin::app.locales.' . $key) ?: $language }}
                         </a>
                     @endforeach
                 </div>
