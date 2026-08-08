@@ -1,29 +1,42 @@
 <x-admin::layouts>
     <x-slot:title>
-        Kelola Tagihan & Invoice (Billing)
+        @lang('admin::app.super_admin.invoices.title')
     </x-slot>
 
     <div class="flex flex-col gap-4">
-        <!-- Title Header -->
-        <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-4 text-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
-            <div class="flex flex-col gap-2">
-                <div class="text-xl font-bold dark:text-white">
-                    Kelola Tagihan & Invoice (Billing)
-                </div>
+        {{-- Title Header --}}
+        <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-6 py-5 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex flex-col gap-1">
+                <h1 class="text-xl font-bold text-gray-900 dark:text-white">@lang('admin::app.super_admin.invoices.title')</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">@lang('admin::app.super_admin.invoices.description')</p>
             </div>
-            <div class="flex items-center gap-4">
-                <span class="text-xs bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 px-3 py-1 rounded-full font-semibold border border-blue-100 dark:border-blue-900">Super Admin Mode</span>
-                <span class="text-sm text-gray-500 dark:text-gray-400 font-semibold">{{ $invoices->count() }} Invoice</span>
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300">
+                    <span class="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                    {{ $invoices->count() }} Invoice
+                </span>
             </div>
         </div>
 
-        <!-- Filters Section -->
-        <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
+        {{-- Flash Messages --}}
+        @if(session('success'))
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        {{-- Filters Section --}}
+        <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
             <form action="{{ route('super_admin.invoices.index') }}" method="GET" class="flex flex-wrap items-center gap-4">
                 <div class="flex flex-col gap-1 min-w-[200px]">
-                    <label for="company_id" class="text-xs font-bold text-gray-500 uppercase">Perusahaan</label>
-                    <select name="company_id" id="company_id" class="rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-950 dark:text-white px-3 py-2 text-sm focus:border-blue-500 bg-white">
-                        <option value="">Semua Perusahaan</option>
+                    <label for="company_id" class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">@lang('admin::app.super_admin.invoices.filter_company')</label>
+                    <select name="company_id" id="company_id" class="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                        <option value="">@lang('admin::app.super_admin.invoices.all_companies')</option>
                         @foreach($companies as $company)
                             <option value="{{ $company->id }}" {{ request('company_id') == $company->id ? 'selected' : '' }}>
                                 {{ $company->name }}
@@ -33,88 +46,104 @@
                 </div>
 
                 <div class="flex flex-col gap-1 min-w-[150px]">
-                    <label for="status" class="text-xs font-bold text-gray-500 uppercase">Status</label>
-                    <select name="status" id="status" class="rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-950 dark:text-white px-3 py-2 text-sm focus:border-blue-500 bg-white">
-                        <option value="">Semua Status</option>
-                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>Lunas (Paid)</option>
-                        <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>Gagal</option>
-                        <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>Expired</option>
+                    <label for="status" class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">@lang('admin::app.super_admin.invoices.filter_status')</label>
+                    <select name="status" id="status" class="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                        <option value="">@lang('admin::app.super_admin.invoices.all_statuses')</option>
+                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>@lang('admin::app.super_admin.invoices.pending')</option>
+                        <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>@lang('admin::app.super_admin.invoices.paid')</option>
+                        <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>@lang('admin::app.super_admin.invoices.failed')</option>
+                        <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>@lang('admin::app.super_admin.invoices.expired')</option>
                     </select>
                 </div>
 
-                <div class="flex items-end h-full pt-5">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl text-xs transition-all shadow-md shadow-blue-100 dark:shadow-none">
-                        Filter
+                <div class="flex items-end h-full pt-5 gap-2">
+                    <button type="submit" class="rounded-xl bg-blue-600 px-6 py-2 text-xs font-bold text-white shadow-md shadow-blue-100 transition-all hover:bg-blue-700 dark:shadow-none">
+                        @lang('admin::app.super_admin.invoices.filter')
                     </button>
                     @if(request()->has('company_id') || request()->has('status'))
-                        <a href="{{ route('super_admin.invoices.index') }}" class="ml-2 bg-white hover:bg-gray-50 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800 border border-gray-200 text-gray-700 py-2 px-6 rounded-xl text-xs transition-colors shadow-sm">
-                            Reset
+                        <a href="{{ route('super_admin.invoices.index') }}" class="rounded-xl border border-gray-200 bg-white px-6 py-2 text-xs font-bold text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+                            @lang('admin::app.super_admin.invoices.reset')
                         </a>
                     @endif
                 </div>
             </form>
         </div>
 
-        <!-- Invoices List Table -->
-        <div class="bg-white rounded-lg border border-gray-200 dark:border-gray-800 dark:bg-gray-900 overflow-hidden">
+        {{-- Invoices List Table --}}
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
             @if($invoices->isEmpty())
-                <div class="p-8 text-center text-gray-400 font-medium">
-                    Tidak ada invoice/tagihan yang ditemukan.
+                <div class="p-12 text-center">
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+                        <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+                    </div>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">@lang('admin::app.super_admin.invoices.empty')</p>
                 </div>
             @else
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full border-collapse text-left">
                         <thead>
-                            <tr class="border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                                <th class="py-4 px-6">No. Invoice</th>
-                                <th class="py-4 px-6">Perusahaan / Tenant</th>
-                                <th class="py-4 px-6">Paket Langganan</th>
-                                <th class="py-4 px-6">Jumlah Tagihan</th>
-                                <th class="py-4 px-6">Status</th>
-                                <th class="py-4 px-6">Tanggal Dibuat</th>
-                                <th class="py-4 px-6 text-right">Aksi</th>
+                            <tr class="border-b border-gray-100 bg-gray-50/50 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:border-gray-800 dark:bg-gray-800/50 dark:text-gray-500">
+                                <th class="px-6 py-4">@lang('admin::app.super_admin.invoices.invoice_no')</th>
+                                <th class="px-6 py-4">@lang('admin::app.super_admin.invoices.company_tenant')</th>
+                                <th class="px-6 py-4">@lang('admin::app.super_admin.invoices.subscription_plan')</th>
+                                <th class="px-6 py-4">@lang('admin::app.super_admin.invoices.amount')</th>
+                                <th class="px-6 py-4">@lang('admin::app.super_admin.invoices.status')</th>
+                                <th class="px-6 py-4">@lang('admin::app.super_admin.invoices.created_date')</th>
+                                <th class="px-6 py-4 text-right">@lang('admin::app.super_admin.invoices.actions')</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm font-medium">
+                        <tbody class="divide-y divide-gray-100 text-sm font-medium dark:divide-gray-800">
                             @foreach($invoices as $invoice)
-                                <tr class="hover:bg-gray-50/30 transition-colors">
-                                    <td class="py-4 px-6 font-mono text-xs font-bold dark:text-white">
+                                <tr class="transition-colors hover:bg-gray-50/30 dark:hover:bg-gray-800/30">
+                                    <td class="px-6 py-4 font-mono text-xs font-bold text-gray-800 dark:text-white">
                                         {{ $invoice->invoice_number }}
                                     </td>
-                                    <td class="py-4 px-6 dark:text-white">
+                                    <td class="px-6 py-4 text-gray-800 dark:text-white">
                                         {{ $invoice->company->name ?? '-' }}
                                     </td>
-                                    <td class="py-4 px-6 dark:text-white">
+                                    <td class="px-6 py-4">
                                         @if($invoice->subscription && $invoice->subscription->plan)
-                                            <span class="text-blue-600 font-bold bg-blue-50/80 dark:bg-blue-950 dark:text-blue-300 px-2.5 py-1 rounded-full text-xs border border-blue-100 dark:border-blue-900">
+                                            <span class="rounded-full border border-blue-100 bg-blue-50/80 px-2.5 py-1 text-xs font-bold text-blue-600 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300">
                                                 {{ $invoice->subscription->plan->name }}
                                             </span>
                                         @else
-                                            <span class="text-gray-400 font-semibold">-</span>
+                                            <span class="font-semibold text-gray-400">-</span>
                                         @endif
                                     </td>
-                                    <td class="py-4 px-6 font-extrabold text-gray-800 dark:text-white">
-                                        {{ $invoice->currency }} {{ number_format($invoice->amount, 2) }}
+                                    <td class="px-6 py-4 font-extrabold text-gray-800 dark:text-white">
+                                        {{ $invoice->currency }} {{ number_format($invoice->amount, 0, ',', '.') }}
                                     </td>
-                                    <td class="py-4 px-6">
+                                    <td class="px-6 py-4">
                                         @if($invoice->status === 'paid')
-                                            <span class="text-emerald-600 font-bold bg-emerald-50/80 px-2.5 py-1 rounded-full text-xs border border-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-900">Lunas</span>
+                                            <span class="rounded-full border border-emerald-100 bg-emerald-50/80 px-2.5 py-1 text-xs font-bold text-emerald-600 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">@lang('admin::app.super_admin.invoices.paid')</span>
                                         @elseif($invoice->status === 'pending')
-                                            <span class="text-amber-600 font-bold bg-amber-50/80 px-2.5 py-1 rounded-full text-xs border border-amber-100 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-900">Pending</span>
+                                            <span class="rounded-full border border-amber-100 bg-amber-50/80 px-2.5 py-1 text-xs font-bold text-amber-600 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300">@lang('admin::app.super_admin.invoices.pending')</span>
                                         @elseif($invoice->status === 'expired')
-                                            <span class="text-gray-600 font-bold bg-gray-50/80 px-2.5 py-1 rounded-full text-xs border border-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">Expired</span>
+                                            <span class="rounded-full border border-gray-100 bg-gray-50/80 px-2.5 py-1 text-xs font-bold text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">@lang('admin::app.super_admin.invoices.expired')</span>
                                         @else
-                                            <span class="text-red-600 font-bold bg-red-50/80 px-2.5 py-1 rounded-full text-xs border border-red-100 dark:bg-red-950 dark:text-red-300 dark:border-red-900">Gagal</span>
+                                            <span class="rounded-full border border-red-100 bg-red-50/80 px-2.5 py-1 text-xs font-bold text-red-600 dark:border-red-900 dark:bg-red-950 dark:text-red-300">@lang('admin::app.super_admin.invoices.failed')</span>
                                         @endif
                                     </td>
-                                    <td class="py-4 px-6 text-gray-450 dark:text-gray-500 font-semibold text-xs">
+                                    <td class="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400">
                                         {{ $invoice->created_at->format('d M Y, H:i') }}
                                     </td>
-                                    <td class="py-4 px-6 text-right">
-                                        <a href="{{ route('super_admin.invoices.show', ['id' => $invoice->id]) }}" class="text-xs font-bold bg-white border border-gray-200 hover:border-gray-300 text-gray-700 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800 px-3 py-1.5 rounded-xl shadow-sm transition-all inline-block">
-                                            Detail
-                                        </a>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-2">
+                                            {{-- Mark as Paid (only for non-paid invoices) --}}
+                                            @if($invoice->status !== 'paid')
+                                                <form action="{{ route('super_admin.invoices.mark_paid', ['id' => $invoice->id]) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('admin::app.super_admin.invoices.mark_paid_confirm', ['number' => $invoice->invoice_number]) }}')">
+                                                    @csrf
+                                                    <button type="submit" class="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition-all hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 dark:hover:bg-emerald-900">
+                                                        @lang('admin::app.super_admin.invoices.mark_paid')
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                            {{-- Detail --}}
+                                            <a href="{{ route('super_admin.invoices.show', ['id' => $invoice->id]) }}" class="rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-700 shadow-sm transition-all hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-600">
+                                                @lang('admin::app.super_admin.companies.detail')
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
