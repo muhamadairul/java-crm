@@ -109,12 +109,12 @@
                     <a href="{{ route('admin.switch_locale', 'id') }}" 
                        title="Bahasa Indonesia"
                        class="rounded-lg px-2.5 py-1 text-xs font-extrabold transition-all {{ !$isEn ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">
-                        🇮🇩 ID
+                        ID
                     </a>
                     <a href="{{ route('admin.switch_locale', 'en') }}" 
                        title="English"
                        class="rounded-lg px-2.5 py-1 text-xs font-extrabold transition-all {{ $isEn ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">
-                        🇬🇧 EN
+                        EN
                     </a>
                 </div>
 
