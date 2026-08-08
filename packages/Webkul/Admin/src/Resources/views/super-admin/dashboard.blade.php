@@ -17,16 +17,16 @@
                 <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-6 py-5 dark:border-gray-800 dark:bg-gray-900">
                     <div class="flex flex-col gap-1">
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                            Dashboard Monitoring Platform
+                            @lang('admin::app.super_admin.dashboard.title')
                         </h1>
                         <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Pantau performa dan kondisi seluruh platform JavaCRM secara real-time
+                            @lang('admin::app.super_admin.dashboard.description')
                         </p>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300">
                             <span class="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-                            Super Admin
+                            @lang('admin::app.super_admin.title')
                         </span>
                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ now()->translatedFormat('d F Y') }}</span>
                     </div>
@@ -39,7 +39,7 @@
                     <a href="{{ route('super_admin.companies.index') }}" class="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:shadow-lg hover:border-blue-300 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-blue-700">
                         <div class="flex items-start justify-between">
                             <div class="flex flex-col gap-1">
-                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Total Tenant</p>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.total_tenants')</p>
                                 <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $totalCompanies }}</h3>
                                 <div class="mt-1 flex items-center gap-1">
                                     @if($companiesChange >= 0)
@@ -49,7 +49,7 @@
                                         <svg class="h-3.5 w-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                         <span class="text-xs font-semibold text-red-500">{{ $companiesChange }}%</span>
                                     @endif
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">vs bulan lalu</span>
+                                    <span class="text-xs text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.vs_last_month')</span>
                                 </div>
                             </div>
                             <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-colors group-hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-400 dark:group-hover:bg-blue-900">
@@ -62,13 +62,13 @@
                     <a href="{{ route('super_admin.companies.index') }}" class="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:shadow-lg hover:border-emerald-300 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-emerald-700">
                         <div class="flex items-start justify-between">
                             <div class="flex flex-col gap-1">
-                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Tenant Aktif</p>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.active_tenants')</p>
                                 <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $totalActiveCompanies }}</h3>
                                 <div class="mt-1 flex items-center gap-1">
                                     <span class="text-xs font-semibold text-emerald-500">
                                         {{ $totalCompanies > 0 ? round(($totalActiveCompanies / $totalCompanies) * 100) : 0 }}%
                                     </span>
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">dari total</span>
+                                    <span class="text-xs text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.of_total')</span>
                                 </div>
                             </div>
                             <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 transition-colors group-hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-400 dark:group-hover:bg-emerald-900">
@@ -81,7 +81,7 @@
                     <div class="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:shadow-lg hover:border-violet-300 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-violet-700">
                         <div class="flex items-start justify-between">
                             <div class="flex flex-col gap-1">
-                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Total Pengguna</p>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.total_users')</p>
                                 <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $totalUsers }}</h3>
                                 <div class="mt-1 flex items-center gap-1">
                                     @if($usersChange >= 0)
@@ -91,7 +91,7 @@
                                         <svg class="h-3.5 w-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                         <span class="text-xs font-semibold text-red-500">{{ $usersChange }}%</span>
                                     @endif
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">vs bulan lalu</span>
+                                    <span class="text-xs text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.vs_last_month')</span>
                                 </div>
                             </div>
                             <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-violet-50 text-violet-600 transition-colors group-hover:bg-violet-100 dark:bg-violet-950 dark:text-violet-400 dark:group-hover:bg-violet-900">
@@ -104,7 +104,7 @@
                     <div class="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:shadow-lg hover:border-amber-300 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-amber-700">
                         <div class="flex items-start justify-between">
                             <div class="flex flex-col gap-1">
-                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Total Leads</p>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.total_leads')</p>
                                 <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $totalLeads }}</h3>
                                 <div class="mt-1 flex items-center gap-1">
                                     @if($leadsChange >= 0)
@@ -114,7 +114,7 @@
                                         <svg class="h-3.5 w-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                         <span class="text-xs font-semibold text-red-500">{{ $leadsChange }}%</span>
                                     @endif
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">vs bulan lalu</span>
+                                    <span class="text-xs text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.vs_last_month')</span>
                                 </div>
                             </div>
                             <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-amber-50 text-amber-600 transition-colors group-hover:bg-amber-100 dark:bg-amber-950 dark:text-amber-400 dark:group-hover:bg-amber-900">
@@ -127,7 +127,7 @@
                     <a href="{{ route('super_admin.invoices.index') }}" class="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:shadow-lg hover:border-cyan-300 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-cyan-700">
                         <div class="flex items-start justify-between">
                             <div class="flex flex-col gap-1">
-                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Pendapatan Bulan Ini</p>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.monthly_revenue')</p>
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Rp {{ number_format($revenueThisMonth, 0, ',', '.') }}</h3>
                                 <div class="mt-1 flex items-center gap-1">
                                     @if($revenueChange >= 0)
@@ -137,7 +137,7 @@
                                         <svg class="h-3.5 w-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                         <span class="text-xs font-semibold text-red-500">{{ $revenueChange }}%</span>
                                     @endif
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">vs bulan lalu</span>
+                                    <span class="text-xs text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.vs_last_month')</span>
                                 </div>
                             </div>
                             <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-cyan-50 text-cyan-600 transition-colors group-hover:bg-cyan-100 dark:bg-cyan-950 dark:text-cyan-400 dark:group-hover:bg-cyan-900">
@@ -154,8 +154,8 @@
                     <div class="rounded-xl border border-gray-200 bg-white p-6 lg:col-span-2 dark:border-gray-800 dark:bg-gray-900">
                         <div class="mb-5 flex items-center justify-between">
                             <div>
-                                <h3 class="text-base font-bold text-gray-900 dark:text-white">Pertumbuhan Tenant</h3>
-                                <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">Jumlah kumulatif tenant selama 6 bulan terakhir</p>
+                                <h3 class="text-base font-bold text-gray-900 dark:text-white">@lang('admin::app.super_admin.dashboard.tenant_growth')</h3>
+                                <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.tenant_growth_sub')</p>
                             </div>
                             <span class="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-600 dark:bg-blue-950 dark:text-blue-400">6 Bulan</span>
                         </div>
@@ -167,8 +167,8 @@
                     {{-- Distribusi Plan (Doughnut Chart) --}}
                     <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
                         <div class="mb-5">
-                            <h3 class="text-base font-bold text-gray-900 dark:text-white">Distribusi Paket</h3>
-                            <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">Proporsi tenant per paket langganan</p>
+                            <h3 class="text-base font-bold text-gray-900 dark:text-white">@lang('admin::app.super_admin.dashboard.plan_distribution')</h3>
+                            <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.plan_dist_sub')</p>
                         </div>
                         @if($plansDistribution->isEmpty())
                             <div class="flex h-[280px] items-center justify-center">
@@ -201,8 +201,8 @@
                     <div class="rounded-xl border border-gray-200 bg-white p-6 lg:col-span-2 dark:border-gray-800 dark:bg-gray-900">
                         <div class="mb-5 flex items-center justify-between">
                             <div>
-                                <h3 class="text-base font-bold text-gray-900 dark:text-white">Pendapatan per Bulan</h3>
-                                <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">Revenue dari invoice yang sudah dibayar</p>
+                                <h3 class="text-base font-bold text-gray-900 dark:text-white">@lang('admin::app.super_admin.dashboard.revenue_overview')</h3>
+                                <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.dashboard.revenue_sub')</p>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="text-sm font-bold text-gray-900 dark:text-white">Total: Rp {{ number_format($totalRevenue, 0, ',', '.') }}</span>
@@ -216,8 +216,8 @@
                     {{-- Invoice Status Summary --}}
                     <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
                         <div class="mb-5">
-                            <h3 class="text-base font-bold text-gray-900 dark:text-white">Status Invoice</h3>
-                            <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">Ringkasan status seluruh invoice</p>
+                            <h3 class="text-base font-bold text-gray-900 dark:text-white">@lang('admin::app.super_admin.dashboard.invoice_status')</h3>
+                            <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.invoices.description')</p>
                         </div>
                         <div class="flex flex-col gap-4">
                             @php
@@ -229,7 +229,7 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Lunas (Paid)</span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">@lang('admin::app.super_admin.invoices.paid')</span>
                                     </div>
                                     <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $invoiceSummary['paid'] }}</span>
                                 </div>
@@ -243,7 +243,7 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Menunggu (Pending)</span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">@lang('admin::app.super_admin.invoices.pending')</span>
                                     </div>
                                     <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $invoiceSummary['pending'] }}</span>
                                 </div>
@@ -257,7 +257,7 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Gagal (Failed)</span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">@lang('admin::app.super_admin.invoices.failed')</span>
                                     </div>
                                     <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $invoiceSummary['failed'] }}</span>
                                 </div>
@@ -271,7 +271,7 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="h-2.5 w-2.5 rounded-full bg-gray-400"></span>
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Kedaluwarsa (Expired)</span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">@lang('admin::app.super_admin.invoices.expired')</span>
                                     </div>
                                     <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $invoiceSummary['expired'] }}</span>
                                 </div>
@@ -296,11 +296,11 @@
                     <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
                         <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4 dark:border-gray-800">
                             <div>
-                                <h3 class="text-base font-bold text-gray-900 dark:text-white">Tenant Terbaru</h3>
+                                <h3 class="text-base font-bold text-gray-900 dark:text-white">@lang('admin::app.super_admin.dashboard.recent_tenants')</h3>
                                 <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">5 perusahaan terakhir bergabung</p>
                             </div>
                             <a href="{{ route('super_admin.companies.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                Lihat Semua →
+                                @lang('admin::app.super_admin.dashboard.view_all') →
                             </a>
                         </div>
                         @if($recentTenants->isEmpty())
@@ -313,10 +313,10 @@
                                 <table class="w-full">
                                     <thead>
                                         <tr class="border-b border-gray-100 dark:border-gray-800">
-                                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Perusahaan</th>
-                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Paket</th>
-                                            <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Status</th>
-                                            <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Bergabung</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.companies.name')</th>
+                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.companies.subscription_plan')</th>
+                                            <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.companies.account_status')</th>
+                                            <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">@lang('admin::app.super_admin.companies.registered_date')</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
