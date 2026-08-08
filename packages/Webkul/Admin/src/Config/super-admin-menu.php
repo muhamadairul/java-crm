@@ -3,28 +3,28 @@
 return [
     [
         'key'        => 'dashboard',
-        'name'       => 'Dashboard',
+        'name'       => 'admin::app.super_admin.menu.dashboard',
         'route'      => 'super_admin.dashboard.index',
         'sort'       => 1,
         'icon-class' => 'icon-dashboard',
     ],
     [
         'key'        => 'companies',
-        'name'       => 'Perusahaan (Tenants)',
+        'name'       => 'admin::app.super_admin.menu.companies',
         'route'      => 'super_admin.companies.index',
         'sort'       => 2,
         'icon-class' => 'icon-contact',
     ],
     [
         'key'        => 'plans',
-        'name'       => 'Paket Plan',
+        'name'       => 'admin::app.super_admin.menu.plans',
         'route'      => 'super_admin.plans.index',
         'sort'       => 3,
-        'icon-class' => 'icon-settings',
+        'icon-class' => 'icon-product',
     ],
     [
         'key'        => 'invoices',
-        'name'       => 'Billing & Invoice',
+        'name'       => 'admin::app.super_admin.menu.invoices',
         'route'      => 'super_admin.invoices.index',
         'sort'       => 4,
         'icon-class' => 'icon-quote',
