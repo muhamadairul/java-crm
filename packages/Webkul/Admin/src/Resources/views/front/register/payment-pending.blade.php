@@ -1,14 +1,20 @@
 <!DOCTYPE html>
-<html lang="id">
+@php
+    $currentLocale = session('locale', app()->getLocale());
+    $isEn = $currentLocale === 'en';
+@endphp
+<html lang="{{ $currentLocale }}" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Pending - JavaCRM</title>
+    <title>{{ $isEn ? 'Payment Pending - JavaCRM' : 'Menunggu Pembayaran - JavaCRM' }}</title>
     
-    <!-- Fonts -->
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- CSS -->
+    <!-- CSS Assets -->
     {{ vite()->set(['src/Resources/assets/css/app.css', 'src/Resources/assets/js/app.js']) }}
     
     <style>
@@ -17,175 +23,90 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between dark:bg-slate-950 dark:text-slate-200">
 
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-100 py-6">
+    <!-- Header Navigation -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 py-4 dark:bg-slate-900/90 dark:border-slate-800 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="h-9 w-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-100">
-                    <svg class="h-4.5 w-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
+            <a href="{{ route('java-crm.home') }}" class="flex items-center gap-3 group">
+                <img src="{{ vite()->asset('images/logo.svg') }}" class="h-9 w-auto transition-transform group-hover:scale-105" alt="JavaCRM Logo" />
+            </a>
+            <div class="flex items-center gap-4">
+                <!-- Simple 1-Click Language Switcher -->
+                <div class="flex items-center rounded-xl border border-slate-200 bg-slate-100 p-1 dark:border-slate-800 dark:bg-slate-900">
+                    <a href="{{ route('admin.switch_locale', 'id') }}" 
+                       title="Bahasa Indonesia"
+                       class="rounded-lg px-2.5 py-1 text-xs font-extrabold transition-all {{ !$isEn ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">
+                        ID
+                    </a>
+                    <a href="{{ route('admin.switch_locale', 'en') }}" 
+                       title="English"
+                       class="rounded-lg px-2.5 py-1 text-xs font-extrabold transition-all {{ $isEn ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">
+                        EN
+                    </a>
                 </div>
-                <span class="text-xl font-bold tracking-tight text-slate-900">JavaCRM</span>
-            </div>
-            <div>
-                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100 uppercase tracking-wider">Menunggu Pembayaran</span>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 max-w-4xl mx-auto py-12 px-6 w-full flex items-center justify-center">
-        <div class="w-full max-w-2xl bg-white rounded-3xl shadow-xl shadow-slate-100/50 border border-slate-100/80 p-8 lg:p-10 text-center space-y-8">
+    <main class="flex-1 flex items-center justify-center py-12 px-6">
+        <div class="w-full max-w-xl bg-white rounded-3xl shadow-xl border border-slate-200/80 p-8 lg:p-10 dark:bg-slate-900 dark:border-slate-800">
             
-            <!-- Icon Pending -->
-            <div class="mx-auto h-20 w-20 bg-amber-50 text-amber-500 rounded-3xl flex items-center justify-center animate-pulse">
-                <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-
-            <div>
-                <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Menunggu Pembayaran Anda</h1>
-                <p class="text-sm text-slate-400 mt-2 font-semibold">Silakan selesaikan pembayaran untuk mengaktifkan akun JavaCRM Perusahaan Anda.</p>
-            </div>
-
-            <!-- Invoice Summary Card -->
-            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 text-left space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-200/50 pb-4">
-                    <div>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">No. Invoice</span>
-                        <p class="text-sm font-bold text-slate-800">{{ $invoice->invoice_number }}</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Metode Pembayaran</span>
-                        <p class="text-sm font-bold text-slate-800 uppercase">{{ str_replace('_', ' ', $invoice->payment_method) }}</p>
-                    </div>
+            <!-- Status Header Icon -->
+            <div class="text-center mb-8">
+                <div class="h-16 w-16 bg-amber-50 text-amber-500 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-amber-100 dark:bg-amber-950/40 dark:border-amber-900">
+                    <svg class="h-8 w-8 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 </div>
+                <span class="text-xs font-extrabold uppercase tracking-wider bg-amber-50 text-amber-700 px-3.5 py-1 rounded-full border border-amber-200/60 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-900">
+                    {{ $isEn ? 'Invoice Pending' : 'Menunggu Pembayaran' }}
+                </span>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight mt-3 dark:text-white">
+                    {{ $isEn ? 'Complete Your Payment' : 'Selesaikan Pembayaran Anda' }}
+                </h1>
+                <p class="text-xs text-slate-500 mt-1 font-medium dark:text-slate-400">
+                    {{ $isEn ? 'Invoice #' . $invoice->invoice_number : 'Nomor Tagihan #' . $invoice->invoice_number }}
+                </p>
+            </div>
 
-                <div class="flex items-center justify-between">
-                    <div>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Paket Pilihan</span>
-                        <p class="text-sm font-bold text-slate-800">{{ $invoice->subscription->plan->name ?? 'Pro' }} Plan</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Pembayaran</span>
-                        <p class="text-lg font-extrabold text-blue-600">
-                            {{ $invoice->currency === 'IDR' ? 'Rp' : ($invoice->currency === 'USD' ? '$' : ($invoice->currency === 'EUR' ? '€' : 'S$')) }}
-                            {{ number_format($invoice->amount, $invoice->currency === 'USD' || $invoice->currency === 'EUR' ? 2 : 0) }}
-                        </p>
-                    </div>
+            <!-- Details Card -->
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200/80 space-y-3 text-xs mb-8 dark:bg-slate-950 dark:border-slate-800">
+                <div class="flex justify-between">
+                    <span class="text-slate-500 dark:text-slate-400">{{ $isEn ? 'Company Tenant:' : 'Nama Tenant:' }}</span>
+                    <span class="font-bold text-slate-900 dark:text-white">{{ $invoice->company->name ?? 'Company' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500 dark:text-slate-400">{{ $isEn ? 'Subscription Plan:' : 'Paket Langganan:' }}</span>
+                    <span class="font-bold text-slate-900 dark:text-white">{{ $invoice->plan->name ?? 'Plan' }}</span>
+                </div>
+                <div class="flex justify-between border-t border-slate-200/80 pt-3 dark:border-slate-800">
+                    <span class="text-sm font-extrabold text-slate-900 dark:text-white">{{ $isEn ? 'Total Amount:' : 'Total Tagihan:' }}</span>
+                    <span class="text-lg font-extrabold text-sky-600 dark:text-sky-400">Rp {{ number_format($invoice->amount, 0, ',', '.') }}</span>
                 </div>
             </div>
 
-            <!-- Payment Instructions dynamically by payment method -->
-            <div class="border-t border-slate-100 pt-6">
-                
-                @if($invoice->payment_method === 'VIRTUAL_ACCOUNT')
-                    @php $va = $paymentDetails['virtual_account'] ?? []; @endphp
-                    <div class="space-y-4">
-                        <p class="text-sm font-bold text-slate-700">Silakan transfer ke nomor Virtual Account berikut:</p>
-                        <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5 flex flex-col items-center justify-center gap-1.5 relative overflow-hidden">
-                            <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">{{ $va['channel_code'] ?? 'MANDIRI' }} VIRTUAL ACCOUNT</span>
-                            <span class="text-3xl font-black text-slate-900 tracking-wider">{{ $va['virtual_account'] ?? '8800000000000000' }}</span>
-                            <span class="text-xs font-medium text-slate-400">Atas Nama: {{ $va['customer_name'] ?? 'JavaCRM Customer' }}</span>
-                        </div>
-                        <div class="text-left text-xs text-slate-500 font-medium space-y-2 mt-4 max-w-md mx-auto leading-relaxed">
-                            <p class="font-bold text-slate-700">Petunjuk Pembayaran ATM/M-Banking:</p>
-                            <ol class="list-decimal list-inside space-y-1.5 pl-1">
-                                <li>Pilih menu <span class="font-bold">Transfer / Bayar</span> di ATM atau M-Banking Anda.</li>
-                                <li>Pilih opsi <span class="font-bold">Virtual Account</span>.</li>
-                                <li>Masukkan nomor Virtual Account di atas.</li>
-                                <li>Periksa kesesuaian nama dan jumlah pembayaran, lalu konfirmasi transfer.</li>
-                            </ol>
-                        </div>
-                    </div>
-
-                @elseif($invoice->payment_method === 'QR_CODE')
-                    @php $qr = $paymentDetails['qr_code'] ?? []; @endphp
-                    <div class="space-y-4 flex flex-col items-center">
-                        <p class="text-sm font-bold text-slate-700">Silakan pindai kode QRIS berikut menggunakan aplikasi e-wallet Anda:</p>
-                        <div class="bg-white p-4 border border-slate-200 rounded-3xl shadow-sm inline-block">
-                            <img src="{{ $qr['qr_image_url'] ?? 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://github.com' }}" alt="QRIS Code" class="h-60 w-60">
-                        </div>
-                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Mendukung GoPay, OVO, DANA, LinkAja, ShopeePay, BCA, dll.</p>
-                    </div>
-
-                @elseif($invoice->payment_method === 'EWALLET')
-                    @php 
-                        $actions = $paymentDetails['actions'] ?? [];
-                        $checkoutUrl = null;
-                        foreach($actions as $action) {
-                            if($action['action'] === 'CHECKOUT_URL') {
-                                $checkoutUrl = $action['url'];
-                            }
-                        }
-                    @endphp
-                    <div class="space-y-4">
-                        <p class="text-sm font-bold text-slate-700">Selesaikan Pembayaran via E-Wallet Anda:</p>
-                        @if($checkoutUrl)
-                            <a href="{{ $checkoutUrl }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-8 rounded-2xl shadow-lg shadow-indigo-100 transition-all text-sm">
-                                <span>Bayar Sekarang (Buka Aplikasi E-Wallet)</span>
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                </svg>
-                            </a>
-                        @else
-                            <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5">
-                                <p class="text-xs font-semibold text-blue-600 uppercase">Instruksi Pembayaran</p>
-                                <p class="text-sm text-slate-700 mt-2 font-medium">Notifikasi pembayaran telah dikirim ke nomor handphone e-wallet Anda. Silakan buka aplikasi e-wallet Anda untuk menyelesaikan pembayaran.</p>
-                            </div>
-                        @endif
-                    </div>
-
-                @else
-                    <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5">
-                        <p class="text-xs font-semibold text-blue-600 uppercase">Menunggu Validasi</p>
-                        <p class="text-sm text-slate-700 mt-2 font-medium">Pembayaran Anda sedang kami proses dan verifikasi secara otomatis.</p>
-                    </div>
-                @endif
-
-            </div>
-
-            <!-- Actions and Simulator for Test Environment -->
-            <div class="border-t border-slate-100 pt-8 flex flex-col items-center gap-4">
-                <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
-                    <!-- Check Status Button -->
-                    <a href="{{ route('tenant.register.payment_check', ['invoice_id' => $invoice->id]) }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-blue-100">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18" />
-                        </svg>
-                        <span>Cek Status Pembayaran</span>
-                    </a>
-                </div>
-
-                <!-- Simulation tools -->
-                <div class="w-full max-w-md bg-amber-50/50 border border-amber-200/60 rounded-2xl p-5 text-center space-y-3 mt-4">
-                    <span class="text-[10px] font-bold text-amber-700 uppercase tracking-widest bg-amber-100/80 px-2.5 py-1 rounded-full border border-amber-200/50">Simulator Sandbox</span>
-                    <p class="text-xs text-slate-500 font-medium leading-relaxed">Gunakan tombol simulasi di bawah untuk mensimulasikan notifikasi sukses pembayaran dari server Xendit.</p>
-                    <form action="{{ route('api.xendit.simulate_success', ['invoice_id' => $invoice->id]) }}" method="POST" class="pt-1">
-                        @csrf
-                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all shadow-md shadow-amber-100">
-                            Simulasikan Pembayaran Sukses (Webhook)
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="text-center pt-2">
-                <a href="{{ route('java-crm.home') }}" class="text-slate-400 hover:text-slate-650 font-bold text-sm">
-                    Kembali ke Halaman Utama
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+                <a href="{{ route('tenant.register.payment_check', ['invoice_id' => $invoice->id]) }}" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3.5 px-4 rounded-2xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg shadow-sky-600/25">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <span>{{ $isEn ? 'Check Payment Status' : 'Cek Status Pembayaran' }}</span>
                 </a>
+
+                @if($invoice->payment_method === 'EWALLET')
+                    <a href="{{ route('tenant.register.simulate_ewallet', ['invoice_id' => $invoice->id]) }}" class="w-full bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 font-bold py-3 px-4 rounded-2xl text-xs transition-all flex items-center justify-center gap-2 dark:bg-amber-950/40 dark:border-amber-900 dark:text-amber-300">
+                        <span>{{ $isEn ? 'Simulate E-Wallet Payment (Testing)' : 'Simulasi Pembayaran E-Wallet (UAT)' }}</span>
+                    </a>
+                @endif
             </div>
 
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-100 py-6 text-center text-xs text-slate-400 font-medium">
-        <p>&copy; 2026 JavaCRM Inc. All rights reserved.</p>
+    <footer class="bg-white border-t border-slate-200/80 py-6 text-center text-xs text-slate-400 font-medium dark:bg-slate-900 dark:border-slate-800 dark:text-slate-500">
+        <p>&copy; {{ date('Y') }} JavaCRM. {{ $isEn ? 'All rights reserved.' : 'Hak cipta dilindungi undang-undang.' }}</p>
     </footer>
 
 </body>
