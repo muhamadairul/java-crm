@@ -55,23 +55,23 @@ class PipelineController extends Controller
         $totalPipelineValue = $leadsStats->total_value ?? 0;
 
         // Get breakdown per stage
-        $stageStats = \Illuminate\Support\Facades\DB::table('stages')
+        $stageStats = \Illuminate\Support\Facades\DB::table('lead_pipeline_stages')
             ->where('lead_pipeline_id', $pipeline->id)
             ->leftJoin('leads', function ($join) use ($user) {
-                $join->on('stages.id', '=', 'leads.lead_pipeline_stage_id')
+                $join->on('lead_pipeline_stages.id', '=', 'leads.lead_pipeline_stage_id')
                     ->where('leads.company_id', '=', $user->company_id);
             })
             ->select(
-                'stages.id',
-                'stages.name',
-                'stages.code',
-                'stages.probability',
-                'stages.sort_order',
+                'lead_pipeline_stages.id',
+                'lead_pipeline_stages.name',
+                'lead_pipeline_stages.code',
+                'lead_pipeline_stages.probability',
+                'lead_pipeline_stages.sort_order',
                 \Illuminate\Support\Facades\DB::raw('COUNT(leads.id) as leads_count'),
                 \Illuminate\Support\Facades\DB::raw('SUM(leads.lead_value) as total_value')
             )
-            ->groupBy('stages.id', 'stages.name', 'stages.code', 'stages.probability', 'stages.sort_order')
-            ->orderBy('stages.sort_order', 'asc')
+            ->groupBy('lead_pipeline_stages.id', 'lead_pipeline_stages.name', 'lead_pipeline_stages.code', 'lead_pipeline_stages.probability', 'lead_pipeline_stages.sort_order')
+            ->orderBy('lead_pipeline_stages.sort_order', 'asc')
             ->get();
 
         return view('admin::settings.pipelines.show', compact('pipeline', 'leadsCount', 'totalPipelineValue', 'stageStats'));
