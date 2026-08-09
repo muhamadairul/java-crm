@@ -70,10 +70,15 @@ class AccountController extends Controller
         }
 
         if (request()->hasFile('image')) {
-            $data['image'] = current(request()->file('image'))->store('admins/'.$user->id);
+            if ($user->image) {
+                Storage::delete($user->image);
+            }
+
+            $file = current(request()->file('image'));
+            $data['image'] = $this->compressAndStoreImage($file, 'admins/' . $user->id);
         } else {
             if (! isset($data['image'])) {
-                if (! empty($data['image'])) {
+                if (! empty($user->image)) {
                     Storage::delete($user->image);
                 }
 
@@ -92,5 +97,65 @@ class AccountController extends Controller
         session()->flash('success', trans('admin::app.account.edit.update-success'));
 
         return back();
+    }
+
+    /**
+     * Compress and resize uploaded profile image (max 500x500, 80% JPEG quality)
+     */
+    protected function compressAndStoreImage($file, string $folder): string
+    {
+        $maxDim = 500;
+        $quality = 80;
+
+        $path = $file->getRealPath();
+        $mime = $file->getMimeType();
+
+        $srcImage = match ($mime) {
+            'image/jpeg', 'image/jpg' => @imagecreatefromjpeg($path),
+            'image/png'  => @imagecreatefrompng($path),
+            'image/webp' => @imagecreatefromwebp($path),
+            'image/bmp'  => @imagecreatefrombmp($path),
+            default      => null,
+        };
+
+        if (! $srcImage) {
+            return $file->store($folder);
+        }
+
+        $origWidth = imagesx($srcImage);
+        $origHeight = imagesy($srcImage);
+
+        if ($origWidth > $maxDim || $origHeight > $maxDim) {
+            $ratio = min($maxDim / $origWidth, $maxDim / $origHeight);
+            $newWidth = (int) round($origWidth * $ratio);
+            $newHeight = (int) round($origHeight * $ratio);
+        } else {
+            $newWidth = $origWidth;
+            $newHeight = $origHeight;
+        }
+
+        $dstImage = imagecreatetruecolor($newWidth, $newHeight);
+
+        if (in_array($mime, ['image/png', 'image/webp'])) {
+            imagealphablending($dstImage, false);
+            imagesavealpha($dstImage, true);
+        }
+
+        imagecopyresampled($dstImage, $srcImage, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+
+        $filename = \Illuminate\Support\Str::random(40) . '.jpg';
+        $relativeStoragePath = trim($folder, '/') . '/' . $filename;
+        $fullPath = storage_path('app/public/' . $relativeStoragePath);
+
+        if (! file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+
+        imagejpeg($dstImage, $fullPath, $quality);
+
+        imagedestroy($srcImage);
+        imagedestroy($dstImage);
+
+        return $relativeStoragePath;
     }
 }
