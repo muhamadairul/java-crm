@@ -93,8 +93,8 @@
                                 ></label>
                             </div>
                             
-                            <!-- ID -->
-                            <p>@{{ record.id }}</p>
+                            <!-- Row Num -->
+                            <p>@{{ record.row_num }}</p>
         
                             <!-- Name and Color -->
                             <p class="flex items-center gap-2">

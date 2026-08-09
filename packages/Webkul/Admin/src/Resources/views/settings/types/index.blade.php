@@ -71,8 +71,8 @@
                             class="row grid items-center gap-2.5 border-b px-4 py-4 text-gray-600 transition-all hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-950 max-lg:hidden"
                             :style="`grid-template-columns: repeat(${gridsCount}, minmax(0, 1fr))`"
                         >
-                            <!-- Type ID -->
-                            <p>@{{ record.id }}</p>
+                            <!-- Type Row Num -->
+                            <p>@{{ record.row_num }}</p>
         
                             <!-- Type Name -->
                             <p>@{{ record.name }}</p>

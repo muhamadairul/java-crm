@@ -93,8 +93,8 @@
                                     </div>
                                 @endif
                                 
-                                <!-- Marketing Event Id -->
-                                <p>@{{ record.id }}</p>
+                                <!-- Marketing Event Row Num -->
+                                <p>@{{ record.row_num }}</p>
             
                                 <!-- Marketing Event Name -->
                                 <p>@{{ record.name }}</p>

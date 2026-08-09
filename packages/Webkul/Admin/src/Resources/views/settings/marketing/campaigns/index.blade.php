@@ -95,8 +95,8 @@
                                     </div>
                                 @endif
 
-                                <!-- Id -->
-                                <p>@{{ record.id }}</p>
+                                <!-- Row Num -->
+                                <p>@{{ record.row_num }}</p>
 
                                 <!-- Name -->
                                 <p>@{{ record.name }}</p>

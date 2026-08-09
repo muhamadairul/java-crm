@@ -253,7 +253,7 @@
                                 ></label>
 
                                 <div class="flex flex-col gap-1.5 dark:text-gray-300">
-                                    @{{ record.id }}
+                                    @{{ record.row_num }}
                                 </div>
                             </div>
 

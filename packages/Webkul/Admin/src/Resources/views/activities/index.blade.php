@@ -255,7 +255,7 @@
 
                                             <div class="flex flex-col gap-1.5">
                                                 <p class="text-gray-600 dark:text-gray-300">
-                                                    @{{ record.id }}
+                                                    @{{ record.row_num }}
                                                 </p>
 
                                                 <p class="text-gray-600 dark:text-gray-300">

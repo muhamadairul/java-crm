@@ -84,8 +84,8 @@
                                 ></label>
                             </div>
 
-                            <!-- Users Id -->
-                            <p>@{{ record.id }}</p>
+                            <!-- Users Row Num -->
+                            <p>@{{ record.row_num }}</p>
 
                             <!-- Users Name and Profile -->
                             <div class="flex items-center gap-2.5">
