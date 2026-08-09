@@ -661,7 +661,7 @@ return [
                 'datagrid' => [
                     'delete'        => 'Delete',
                     'edit'          => 'Edit',
-                    'id'            => 'ID',
+                    'id'            => 'No.',
                     'name'          => 'Name',
                     'persons-count' => 'Person Count',
                 ],
@@ -692,7 +692,7 @@ return [
                 'allocated' => 'Allocated',
                 'delete'    => 'Delete',
                 'edit'      => 'Edit',
-                'id'        => 'ID',
+                'id'        => 'No.',
                 'in-stock'  => 'In Stock',
                 'name'      => 'Name',
                 'on-hand'   => 'On Hand',
@@ -1133,7 +1133,7 @@ return [
                 'datagrid'   => [
                     'delete'       => 'Delete',
                     'edit'         => 'Edit',
-                    'id'           => 'ID',
+                    'id'           => 'No.',
                     'name'         => 'Name',
                     'subject'      => 'Subject',
                 ],
@@ -1176,7 +1176,7 @@ return [
                     'datagrid'   => [
                         'delete'       => 'Delete',
                         'edit'         => 'Edit',
-                        'id'           => 'ID',
+                        'id'           => 'No.',
                         'name'         => 'Name',
                         'description'  => 'Description',
                         'date'         => 'Date',
@@ -1207,7 +1207,7 @@ return [
                     'mass-delete-success' => 'Campaigns deleted successfully.',
 
                     'datagrid'   => [
-                        'id'       => 'ID',
+                        'id'       => 'No.',
                         'name'     => 'Name',
                         'subject'  => 'Subject',
                         'status'   => 'Status',
@@ -1288,7 +1288,7 @@ return [
                     'delete'        => 'Delete',
                     'edit'          => 'Edit',
                     'email'         => 'Email',
-                    'id'            => 'ID',
+                    'id'            => 'No.',
                     'inactive'      => 'Inactive',
                     'name'          => 'Name',
                     'status'        => 'Status',
@@ -1505,7 +1505,7 @@ return [
                 'delete-failed'  => 'Warehouse can not be deleted.',
 
                 'datagrid' => [
-                    'id'              => 'ID',
+                    'id'              => 'No.',
                     'name'            => 'Name',
                     'contact-name'    => 'Contact Name',
                     'delete'          => 'Delete',
@@ -1758,7 +1758,7 @@ return [
                         'deleted'       => 'Deleted',
                         'edit'          => 'Edit',
                         'error-file'    => 'Error File',
-                        'id'            => 'ID',
+                        'id'            => 'No.',
                         'started-at'    => 'Started At',
                         'state'         => 'State',
                         'summary'       => 'Summary',
@@ -1813,7 +1813,7 @@ return [
                 'created_at'    => 'Created At',
                 'created_by'    => 'Created By',
                 'edit'          => 'Edit',
-                'id'            => 'ID',
+                'id'            => 'No.',
                 'done'          => 'Is Done',
                 'not-done'      => 'Not Done',
                 'lead'          => 'Lead',
@@ -1889,7 +1889,7 @@ return [
             ],
 
             'datagrid' => [
-                'id'            => 'ID',
+                'id'            => 'No.',
                 'from'          => 'From',
                 'to'            => 'To',
                 'subject'       => 'Subject',

@@ -660,7 +660,7 @@ return [
                 'datagrid' => [
                     'delete'        => 'Hapus',
                     'edit'          => 'Ubah',
-                    'id'            => 'ID',
+                    'id'            => 'No.',
                     'name'          => 'Nama',
                     'persons-count' => 'Jumlah Orang',
                 ],
@@ -691,7 +691,7 @@ return [
                 'allocated' => 'Dialokasikan',
                 'delete'    => 'Hapus',
                 'edit'      => 'Ubah',
-                'id'        => 'ID',
+                'id'        => 'No.',
                 'in-stock'  => 'Stok Tersedia',
                 'name'      => 'Nama',
                 'on-hand'   => 'Stok Fisik',
@@ -1130,7 +1130,7 @@ return [
                 'datagrid'   => [
                     'delete'       => 'Hapus',
                     'edit'         => 'Ubah',
-                    'id'           => 'ID',
+                    'id'           => 'No.',
                     'name'         => 'Nama',
                     'subject'      => 'Subjek',
                 ],
@@ -1173,7 +1173,7 @@ return [
                     'datagrid'   => [
                         'delete'       => 'Hapus',
                         'edit'         => 'Ubah',
-                        'id'           => 'ID',
+                        'id'           => 'No.',
                         'name'         => 'Nama',
                         'description'  => 'Deskripsi',
                         'date'         => 'Tanggal',
@@ -1204,7 +1204,7 @@ return [
                     'mass-delete-success' => 'Kampanye berhasil dihapus secara massal.',
 
                     'datagrid'   => [
-                        'id'       => 'ID',
+                        'id'       => 'No.',
                         'name'     => 'Nama',
                         'subject'  => 'Subjek',
                         'status'   => 'Status',
@@ -1285,7 +1285,7 @@ return [
                     'delete'        => 'Hapus',
                     'edit'          => 'Ubah',
                     'email'         => 'Email',
-                    'id'            => 'ID',
+                    'id'            => 'No.',
                     'inactive'      => 'Tidak Aktif',
                     'name'          => 'Nama',
                     'status'        => 'Status',
@@ -1502,7 +1502,7 @@ return [
                 'delete-failed'  => 'Gudang tidak dapat dihapus.',
 
                 'datagrid' => [
-                    'id'              => 'ID',
+                    'id'              => 'No.',
                     'name'            => 'Nama',
                     'contact-name'    => 'Nama Kontak',
                     'delete'          => 'Hapus',
@@ -1755,7 +1755,7 @@ return [
                         'deleted'       => 'Dihapus',
                         'edit'          => 'Ubah',
                         'error-file'    => 'Berkas Error',
-                        'id'            => 'ID',
+                        'id'            => 'No.',
                         'started-at'    => 'Dimulai Pada',
                         'state'         => 'Status',
                         'summary'       => 'Ringkasan',
@@ -1810,7 +1810,7 @@ return [
                 'created_at'    => 'Dibuat Pada',
                 'created_by'    => 'Dibuat Oleh',
                 'edit'          => 'Ubah',
-                'id'            => 'ID',
+                'id'            => 'No.',
                 'done'          => 'Selesai',
                 'not-done'      => 'Belum Selesai',
                 'lead'          => 'Prospek',
@@ -1886,7 +1886,7 @@ return [
             ],
 
             'datagrid' => [
-                'id'            => 'ID',
+                'id'            => 'No.',
                 'from'          => 'Dari',
                 'to'            => 'Kepada',
                 'subject'       => 'Subjek',
@@ -2002,7 +2002,7 @@ return [
             'create-btn' => 'Buat Prospek',
 
             'datagrid' => [
-                'id'                  => 'ID',
+                'id'                  => 'No.',
                 'sales-person'        => 'Sales Person',
                 'subject'             => 'Subjek',
                 'source'              => 'Sumber',

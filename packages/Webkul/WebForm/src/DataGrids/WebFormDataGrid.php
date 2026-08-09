@@ -21,6 +21,10 @@ class WebFormDataGrid extends DataGrid
 
         $this->addFilter('id', 'web_forms.id');
 
+        if ($companyId = $this->getCurrentCompanyId()) {
+            $queryBuilder->where('web_forms.company_id', $companyId);
+        }
+
         return $queryBuilder;
     }
 
@@ -30,10 +34,10 @@ class WebFormDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'    => 'id',
+            'index'    => 'row_num',
             'label'    => trans('admin::app.settings.webforms.index.datagrid.id'),
-            'type'     => 'string',
-            'sortable' => true,
+            'type'     => 'integer',
+            'sortable' => false,
         ]);
 
         $this->addColumn([
