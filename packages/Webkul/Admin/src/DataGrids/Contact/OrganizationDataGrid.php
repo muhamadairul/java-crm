@@ -43,11 +43,11 @@ class OrganizationDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.contacts.organizations.index.datagrid.id'),
             'type'       => 'integer',
-            'filterable' => true,
-            'sortable'   => true,
+            'filterable' => false,
+            'sortable'   => false,
         ]);
 
         $this->addColumn([

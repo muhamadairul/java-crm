@@ -44,10 +44,10 @@ class UserDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'    => 'id',
+            'index'    => 'row_num',
             'label'    => trans('admin::app.settings.users.index.datagrid.id'),
-            'type'     => 'string',
-            'sortable' => true,
+            'type'     => 'integer',
+            'sortable' => false,
         ]);
 
         $this->addColumn([

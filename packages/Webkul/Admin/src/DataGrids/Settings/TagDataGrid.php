@@ -42,12 +42,11 @@ class TagDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.settings.tags.index.datagrid.id'),
-            'type'       => 'string',
-            'searchable' => true,
-            'sortable'   => true,
-            'filterable' => true,
+            'type'       => 'integer',
+            'sortable'   => false,
+            'filterable' => false,
         ]);
 
         $this->addColumn([

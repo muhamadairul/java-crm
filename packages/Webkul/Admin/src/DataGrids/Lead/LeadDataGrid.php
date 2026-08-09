@@ -111,11 +111,11 @@ class LeadDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.leads.index.datagrid.id'),
             'type'       => 'integer',
-            'sortable'   => true,
-            'filterable' => true,
+            'sortable'   => false,
+            'filterable' => false,
         ]);
 
         $this->addColumn([

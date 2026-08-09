@@ -152,10 +152,6 @@ abstract class DataGrid
     {
         $this->dispatchEvent('columns.add.before', [$this, $column]);
 
-        if (isset($column['index']) && $column['index'] === 'id' && ! isset($column['closure'])) {
-            $column['closure'] = fn ($row) => $row->row_num ?? $row->id;
-        }
-
         $this->columns[] = Column::resolveType($column);
 
         $this->dispatchEvent('columns.add.after', [$this, $this->columns[count($this->columns) - 1]]);

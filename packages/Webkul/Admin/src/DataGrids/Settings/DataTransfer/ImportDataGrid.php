@@ -35,11 +35,11 @@ class ImportDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.settings.data-transfer.imports.index.datagrid.id'),
             'type'       => 'integer',
-            'filterable' => true,
-            'sortable'   => true,
+            'filterable' => false,
+            'sortable'   => false,
         ]);
 
         $this->addColumn([

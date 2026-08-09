@@ -50,12 +50,11 @@ class PersonDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.contacts.persons.index.datagrid.id'),
             'type'       => 'integer',
-            'filterable' => true,
-            'sortable'   => true,
-            'searchable' => true,
+            'filterable' => false,
+            'sortable'   => false,
         ]);
 
         $this->addColumn([

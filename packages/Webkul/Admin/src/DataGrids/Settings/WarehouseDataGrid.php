@@ -41,11 +41,11 @@ class WarehouseDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.settings.warehouses.index.datagrid.id'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'filterable' => true,
+            'type'       => 'integer',
+            'sortable'   => false,
+            'filterable' => false,
         ]);
 
         $this->addColumn([

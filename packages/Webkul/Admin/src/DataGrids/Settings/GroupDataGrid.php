@@ -43,12 +43,11 @@ class GroupDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.settings.groups.index.datagrid.id'),
-            'type'       => 'string',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
+            'type'       => 'integer',
+            'filterable' => false,
+            'sortable'   => false,
         ]);
 
         $this->addColumn([

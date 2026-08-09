@@ -58,12 +58,11 @@ class ActivityDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.activities.index.datagrid.id'),
             'type'       => 'integer',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
+            'filterable' => false,
+            'sortable'   => false,
         ]);
 
         $this->addColumn([

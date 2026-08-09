@@ -34,12 +34,11 @@ class CampaignDatagrid extends DataGrid
     public function prepareColumns()
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.settings.marketing.campaigns.index.datagrid.id'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'searchable' => true,
-            'filterable' => true,
+            'type'       => 'integer',
+            'sortable'   => false,
+            'filterable' => false,
         ]);
 
         $this->addColumn([

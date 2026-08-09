@@ -38,11 +38,11 @@ class AttributeDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
+            'index'      => 'row_num',
             'label'      => trans('admin::app.settings.attributes.index.datagrid.id'),
-            'type'       => 'string',
-            'filterable' => true,
-            'sortable'   => true,
+            'type'       => 'integer',
+            'filterable' => false,
+            'sortable'   => false,
         ]);
 
         $this->addColumn([
