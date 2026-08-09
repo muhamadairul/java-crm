@@ -2276,6 +2276,23 @@ return [
                         'password'      => 'Kata Sandi IMAP',
                     ],
                 ],
+
+                'smtp' => [
+                    'title' => 'Pengaturan SMTP',
+                    'info'  => 'Konfigurasi SMTP untuk pengiriman surel keluar.',
+
+                    'account' => [
+                        'title'        => 'Akun SMTP',
+                        'title-info'   => 'Konfigurasikan pengaturan SMTP perusahaan Anda di sini. Jika kosong, sistem akan menggunakan konfigurasi default dari .env.',
+                        'host'         => 'Host SMTP',
+                        'port'         => 'Port',
+                        'encryption'   => 'Tipe Enkripsi (tls/ssl)',
+                        'username'     => 'Username (Email)',
+                        'password'     => 'Kata Sandi (App Password)',
+                        'sender-name'  => 'Nama Pengirim',
+                        'sender-email' => 'Email Pengirim',
+                    ],
+                ],
             ],
 
             'magic-ai' => [

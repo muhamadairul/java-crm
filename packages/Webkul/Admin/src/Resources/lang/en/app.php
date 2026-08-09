@@ -2284,6 +2284,23 @@ return [
                         'password'      => 'IMAP Password',
                     ],
                 ],
+
+                'smtp' => [
+                    'title' => 'SMTP Settings',
+                    'info'  => 'SMTP configuration for sending outgoing emails.',
+
+                    'account' => [
+                        'title'        => 'SMTP Account',
+                        'title-info'   => 'Configure your company\'s SMTP settings here. If left empty, the system will use the default configuration from .env.',
+                        'host'         => 'SMTP Host',
+                        'port'         => 'Port',
+                        'encryption'   => 'Encryption Type (tls/ssl)',
+                        'username'     => 'Username (Email)',
+                        'password'     => 'Password (App Password)',
+                        'sender-name'  => 'Sender Name',
+                        'sender-email' => 'Sender Email',
+                    ],
+                ],
             ],
 
             'magic-ai' => [

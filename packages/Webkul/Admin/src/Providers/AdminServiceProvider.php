@@ -13,6 +13,7 @@ use Webkul\Admin\Exceptions\Handler;
 use Webkul\Admin\Http\Middleware\Bouncer as BouncerMiddleware;
 use Webkul\Admin\Http\Middleware\Locale;
 use Webkul\Admin\Http\Middleware\TenantLimitMiddleware;
+use Webkul\Admin\Http\Middleware\CompanySmtpMiddleware;
 
 class AdminServiceProvider extends ServiceProvider
 {
@@ -27,9 +28,11 @@ class AdminServiceProvider extends ServiceProvider
 
         $router->aliasMiddleware('tenant_limit', TenantLimitMiddleware::class);
 
+        $router->aliasMiddleware('company_smtp', CompanySmtpMiddleware::class);
+
         include __DIR__.'/../Http/helpers.php';
 
-        Route::middleware(['web', 'admin_locale', 'user', 'tenant_limit'])
+        Route::middleware(['web', 'admin_locale', 'user', 'tenant_limit', 'company_smtp'])
             ->prefix(config('app.tenant_path'))
             ->group(__DIR__.'/../Routes/Admin/web.php');
 
