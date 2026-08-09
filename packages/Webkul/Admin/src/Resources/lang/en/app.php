@@ -922,7 +922,7 @@ return [
                 'datagrid' => [
                     'delete' => 'Delete',
                     'edit'   => 'Edit',
-                    'id'     => 'ID',
+                    'id'     => 'No.',
                     'name'   => 'Name',
                 ],
 
@@ -1049,7 +1049,7 @@ return [
                 'delete-failed'  => 'Webform can not be deleted.',
 
                 'datagrid'       => [
-                    'id'     => 'ID',
+                    'id'     => 'No.',
                     'title'  => 'Title',
                     'edit'   => 'Edit',
                     'delete' => 'Delete',

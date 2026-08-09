@@ -496,7 +496,7 @@ abstract class DataGrid
     /**
      * Format records.
      */
-    protected function formatRecords($records): mixed
+    protected function formatRecords(array $records): array
     {
         $startNumber = isset($this->paginator)
             ? ($this->paginator->currentPage() - 1) * $this->paginator->perPage()
@@ -504,9 +504,16 @@ abstract class DataGrid
 
         $currentIndex = 0;
 
-        foreach ($records as $record) {
+        foreach ($records as &$record) {
             $currentIndex++;
-            $record->row_num = $startNumber + $currentIndex;
+            $rowNum = $startNumber + $currentIndex;
+
+            if (is_array($record)) {
+                $record['row_num'] = $rowNum;
+                $record = (object) $record;
+            } else {
+                $record->row_num = $rowNum;
+            }
 
             $record = $this->sanitizeRow($record);
 
@@ -530,6 +537,7 @@ abstract class DataGrid
                 ];
             }
         }
+        unset($record);
 
         return $records;
     }

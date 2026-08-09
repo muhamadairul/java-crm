@@ -919,7 +919,7 @@ return [
                 'datagrid' => [
                     'delete' => 'Hapus',
                     'edit'   => 'Ubah',
-                    'id'     => 'ID',
+                    'id'     => 'No.',
                     'name'   => 'Nama',
                 ],
 
@@ -1046,7 +1046,7 @@ return [
                 'delete-failed'  => 'Formulir web tidak dapat dihapus.',
 
                 'datagrid'       => [
-                    'id'     => 'ID',
+                    'id'     => 'No.',
                     'title'  => 'Judul',
                     'edit'   => 'Ubah',
                     'delete' => 'Hapus',
