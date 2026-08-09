@@ -210,7 +210,6 @@
                                                 ::name="'stages[' + element.id + '][probability]'"
                                                 v-model="element['probability']"
                                                 rules="required|numeric|min_value:0|max_value:100"
-                                                ::readonly="element?.code != 'new'"
                                                 :label="trans('admin::app.settings.pipelines.create.probability')"
                                             />
                                             <x-admin::form.control-group.error ::name="'stages[' + element.id + '][probability]'" />
