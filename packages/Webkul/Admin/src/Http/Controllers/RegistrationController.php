@@ -275,6 +275,9 @@ class RegistrationController extends Controller
                 'company_id'      => $company->id,
             ]);
 
+            // Seed default initial data (pipeline, stages, sources, types, groups, tags)
+            \Webkul\Admin\Helpers\CompanyDefaultSeeder::seed($company->id);
+
             // Create Subscription Record
             $subscription = Subscription::create([
                 'company_id' => $company->id,

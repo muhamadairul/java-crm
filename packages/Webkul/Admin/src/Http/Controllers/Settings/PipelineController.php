@@ -33,6 +33,51 @@ class PipelineController extends Controller
     }
 
     /**
+     * Display detail of the specified pipeline.
+     */
+    public function show(int $id): View
+    {
+        $pipeline = $this->pipelineRepository->with(['stages'])->findOrFail($id);
+
+        $user = auth()->guard('user')->user();
+        if ($user->company_id && $pipeline->company_id && $pipeline->company_id != $user->company_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        // Get total leads count and total lead value in this pipeline for tenant company
+        $leadsStats = \Illuminate\Support\Facades\DB::table('leads')
+            ->where('lead_pipeline_id', $pipeline->id)
+            ->where('company_id', $user->company_id)
+            ->selectRaw('COUNT(id) as total_leads, SUM(lead_value) as total_value')
+            ->first();
+
+        $leadsCount = $leadsStats->total_leads ?? 0;
+        $totalPipelineValue = $leadsStats->total_value ?? 0;
+
+        // Get breakdown per stage
+        $stageStats = \Illuminate\Support\Facades\DB::table('stages')
+            ->where('lead_pipeline_id', $pipeline->id)
+            ->leftJoin('leads', function ($join) use ($user) {
+                $join->on('stages.id', '=', 'leads.lead_pipeline_stage_id')
+                    ->where('leads.company_id', '=', $user->company_id);
+            })
+            ->select(
+                'stages.id',
+                'stages.name',
+                'stages.code',
+                'stages.probability',
+                'stages.sort_order',
+                \Illuminate\Support\Facades\DB::raw('COUNT(leads.id) as leads_count'),
+                \Illuminate\Support\Facades\DB::raw('SUM(leads.lead_value) as total_value')
+            )
+            ->groupBy('stages.id', 'stages.name', 'stages.code', 'stages.probability', 'stages.sort_order')
+            ->orderBy('stages.sort_order', 'asc')
+            ->get();
+
+        return view('admin::settings.pipelines.show', compact('pipeline', 'leadsCount', 'totalPipelineValue', 'stageStats'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create(): View

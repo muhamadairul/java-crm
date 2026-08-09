@@ -80,6 +80,9 @@ class CompanyController extends Controller
                 'updated_at' => now(),
             ]);
 
+            // Seed default initial data (pipeline, stages, sources, types, groups, tags)
+            \Webkul\Admin\Helpers\CompanyDefaultSeeder::seed($company->id);
+
             // Create an active subscription
             $plan = Plan::find($request->plan_id);
             DB::table('subscriptions')->insert([

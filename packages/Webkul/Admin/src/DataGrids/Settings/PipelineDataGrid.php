@@ -73,6 +73,16 @@ class PipelineDataGrid extends DataGrid
     {
         if (bouncer()->hasPermission('settings.lead.pipelines.edit')) {
             $this->addAction([
+                'index'  => 'view',
+                'icon'   => 'icon-eye',
+                'title'  => trans('admin::app.settings.pipelines.index.datagrid.view') ?? 'Detail',
+                'method' => 'GET',
+                'url'    => fn ($row) => route('admin.settings.pipelines.show', $row->id),
+            ]);
+        }
+
+        if (bouncer()->hasPermission('settings.lead.pipelines.edit')) {
+            $this->addAction([
                 'index'  => 'edit',
                 'icon'   => 'icon-edit',
                 'title'  => trans('admin::app.settings.pipelines.index.datagrid.edit'),
