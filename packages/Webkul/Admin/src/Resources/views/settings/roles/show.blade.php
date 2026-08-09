@@ -43,10 +43,10 @@
             </div>
         </div>
 
-        <!-- Split 2-Column Section: Left (Permissions Module Tree) & Right (User List) -->
+        <!-- Split 2-Column Section: Left (N-Level Permissions Tree) & Right (User List) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
             
-            <!-- Left Column: System Permissions & Access Rights (5 cols) -->
+            <!-- Left Column: System Permissions Tree (5 cols) -->
             <div class="lg:col-span-5 rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900 space-y-4">
                 <div class="border-b border-gray-100 pb-3 dark:border-gray-800">
                     <h2 class="text-base font-extrabold text-gray-900 dark:text-white">@lang('admin::app.settings.roles.index.show.permissions-title')</h2>
@@ -63,33 +63,11 @@
                         <span>@lang('admin::app.settings.roles.index.show.all-permissions-notice')</span>
                     </div>
                 @else
-                    @if(empty($groupedPermissions))
+                    @if(empty($permissionTree))
                         <p class="text-xs text-gray-400 font-medium py-4 text-center">Belum ada izin khusus yang ditambahkan.</p>
                     @else
-                        <div class="space-y-3 max-h-[520px] overflow-y-auto pr-1">
-                            @foreach($groupedPermissions as $moduleKey => $module)
-                                <div class="rounded-lg border border-gray-200 bg-gray-50/60 p-3.5 dark:border-gray-800 dark:bg-gray-950/40">
-                                    <!-- Module Header -->
-                                    <div class="flex items-center gap-2 text-xs font-extrabold text-gray-900 dark:text-white">
-                                        <svg class="h-4 w-4 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
-                                        </svg>
-                                        <span>{{ $module['name'] }}</span>
-                                    </div>
-
-                                    <!-- Sub-permissions (if any) -->
-                                    @if(!empty($module['children']))
-                                        <div class="mt-2.5 pl-6 flex flex-wrap gap-1.5 border-l-2 border-sky-200 dark:border-sky-900 ml-2">
-                                            @foreach($module['children'] as $childName)
-                                                <span class="inline-flex items-center gap-1 rounded bg-sky-100/80 px-2 py-0.5 text-[11px] font-bold text-sky-800 dark:bg-sky-950 dark:text-sky-300">
-                                                    <svg class="h-3 w-3 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                    {{ $childName }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                </div>
-                            @endforeach
+                        <div class="space-y-2.5 max-h-[540px] overflow-y-auto pr-1">
+                            @include('admin::settings.roles.permission-tree-node', ['nodes' => $permissionTree])
                         </div>
                     @endif
                 @endif

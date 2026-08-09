@@ -45,49 +45,40 @@ class RoleController extends Controller
 
         $users = \Webkul\User\Models\User::where('role_id', $id)->with('groups')->get();
 
-        $aclItems = config('acl', []);
-        $groupedPermissions = [];
+        $activeKeys = $role->permissions ?? [];
+        $isAll = $role->permission_type == 'all';
 
-        $aclMap = [];
+        $permissionTree = $this->buildActivePermissionTree(acl()->getItems(), $activeKeys, $isAll);
+
+        return view('admin::settings.roles.show', compact('role', 'users', 'permissionTree'));
+    }
+
+    /**
+     * Build nested active permission tree from ACL items recursively.
+     */
+    private function buildActivePermissionTree($aclItems, array $activeKeys, bool $isAll): array
+    {
+        $tree = [];
+
         foreach ($aclItems as $item) {
-            $aclMap[$item['key']] = trans($item['name']);
-        }
+            $isItemActive = $isAll || in_array($item->key, $activeKeys);
+            $activeChildren = [];
 
-        $activeKeys = $role->permission_type == 'all'
-            ? array_column($aclItems, 'key')
-            : ($role->permissions ?? []);
-
-        foreach ($aclItems as $item) {
-            $key = $item['key'];
-            if (! in_array($key, $activeKeys)) {
-                continue;
+            if ($item->children && $item->children->count()) {
+                $activeChildren = $this->buildActivePermissionTree($item->children, $activeKeys, $isAll);
             }
 
-            if (! str_contains($key, '.')) {
-                if (! isset($groupedPermissions[$key])) {
-                    $groupedPermissions[$key] = [
-                        'name'     => trans($item['name']),
-                        'children' => [],
-                    ];
-                } else {
-                    $groupedPermissions[$key]['name'] = trans($item['name']);
-                }
-            } else {
-                $parts = explode('.', $key);
-                $parentKey = $parts[0];
-
-                if (! isset($groupedPermissions[$parentKey])) {
-                    $parentItemName = $aclMap[$parentKey] ?? ucfirst($parentKey);
-                    $groupedPermissions[$parentKey] = [
-                        'name'     => $parentItemName,
-                        'children' => [],
-                    ];
-                }
-                $groupedPermissions[$parentKey]['children'][] = trans($item['name']);
+            if ($isItemActive || ! empty($activeChildren)) {
+                $tree[] = [
+                    'key'       => $item->key,
+                    'name'      => trans($item->name),
+                    'is_active' => $isItemActive,
+                    'children'  => $activeChildren,
+                ];
             }
         }
 
-        return view('admin::settings.roles.show', compact('role', 'users', 'groupedPermissions'));
+        return $tree;
     }
 
     /**
