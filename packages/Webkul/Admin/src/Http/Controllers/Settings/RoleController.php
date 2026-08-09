@@ -45,7 +45,20 @@ class RoleController extends Controller
 
         $users = \Webkul\User\Models\User::where('role_id', $id)->with('groups')->get();
 
-        return view('admin::settings.roles.show', compact('role', 'users'));
+        $allPermissions = config('acl', []);
+        $grantedPermissions = [];
+
+        if ($role->permission_type == 'all') {
+            $grantedPermissions = $allPermissions;
+        } elseif (is_array($role->permissions)) {
+            foreach ($allPermissions as $perm) {
+                if (in_array($perm['key'], $role->permissions)) {
+                    $grantedPermissions[] = $perm;
+                }
+            }
+        }
+
+        return view('admin::settings.roles.show', compact('role', 'users', 'grantedPermissions'));
     }
 
     /**
