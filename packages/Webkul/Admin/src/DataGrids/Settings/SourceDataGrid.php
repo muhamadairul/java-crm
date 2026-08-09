@@ -35,6 +35,7 @@ class SourceDataGrid extends DataGrid
             'label'    => trans('admin::app.settings.sources.index.datagrid.id'),
             'type'     => 'integer',
             'sortable' => false,
+            'closure'  => fn ($row) => $row->row_num,
         ]);
 
         $this->addColumn([

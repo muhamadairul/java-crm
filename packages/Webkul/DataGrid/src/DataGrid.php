@@ -504,16 +504,12 @@ abstract class DataGrid
 
         $currentIndex = 0;
 
-        foreach ($records as &$record) {
+        foreach ($records as $key => $record) {
             $currentIndex++;
             $rowNum = $startNumber + $currentIndex;
 
-            if (is_array($record)) {
-                $record['row_num'] = $rowNum;
-                $record = (object) $record;
-            } else {
-                $record->row_num = $rowNum;
-            }
+            $record = (object) $record;
+            $record->row_num = $rowNum;
 
             $record = $this->sanitizeRow($record);
 
@@ -536,8 +532,9 @@ abstract class DataGrid
                     'url'    => $getUrl($record),
                 ];
             }
+
+            $records[$key] = $record;
         }
-        unset($record);
 
         return $records;
     }
