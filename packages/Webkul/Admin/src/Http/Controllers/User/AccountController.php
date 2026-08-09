@@ -16,6 +16,7 @@ class AccountController extends Controller
      */
     public function edit()
     {
+        /** @var \Webkul\User\Models\User $user */
         $user = auth()->guard('user')->user();
 
         return view('admin::user.account.edit', compact('user'));
@@ -28,6 +29,7 @@ class AccountController extends Controller
      */
     public function update()
     {
+        /** @var \Webkul\User\Models\User $user */
         $user = auth()->guard('user')->user();
 
         $this->validate(request(), [
