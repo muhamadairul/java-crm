@@ -98,7 +98,8 @@ class SystemConfig
             ->filter(fn ($value) => is_array($value) && isset($value['name']))
             ->reject(function ($subConfigItem) use ($user) {
                 if ($user && $user->company_id !== null) {
-                    if (isset($subConfigItem['key']) && $subConfigItem['key'] === 'general.settings') {
+                    $key = $subConfigItem['key'] ?? '';
+                    if ($key === 'general.general' || $key === 'general.settings') {
                         return true;
                     }
                 }

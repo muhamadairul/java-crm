@@ -35,7 +35,7 @@ class ConfigurationController extends Controller
                 $user
                 && $user->company_id !== null
                 && request()->route('slug') === 'general'
-                && request()->route('slug2') === 'settings'
+                && in_array(request()->route('slug2'), ['general', 'settings'])
             ) {
                 abort(403);
             }
@@ -57,7 +57,7 @@ class ConfigurationController extends Controller
             $user
             && $user->company_id !== null
             && request()->route('slug') === 'general'
-            && request()->route('slug2') === 'settings'
+            && in_array(request()->route('slug2'), ['general', 'settings'])
         ) {
             abort(403);
         }
