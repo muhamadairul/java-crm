@@ -90,7 +90,7 @@ class RoleController extends Controller
      */
     public function create(): View
     {
-        if (bouncer()->hasPermission('settings.user.roles.create')) {
+        if (! bouncer()->hasPermission('settings.user.roles.create')) {
             abort(403, 'Anda tidak memiliki akses untuk membuat role baru.');
         }
 
@@ -102,7 +102,7 @@ class RoleController extends Controller
      */
     public function store(): RedirectResponse
     {
-        if (bouncer()->hasPermission('settings.user.roles.create')) {
+        if (! bouncer()->hasPermission('settings.user.roles.create')) {
             abort(403, 'Anda tidak memiliki akses untuk membuat role baru.');
         }
 
@@ -223,7 +223,7 @@ class RoleController extends Controller
 
         // Ensure tenant users cannot delete roles
         $user = auth()->guard('user')->user();
-        if (bouncer()->hasPermission('settings.user.roles.delete')) {
+        if (! bouncer()->hasPermission('settings.user.roles.delete')) {
             return response()->json(['responseCode' => 403, 'message' => 'Anda tidak memiliki akses untuk menghapus role.'], 403);
         }
 
