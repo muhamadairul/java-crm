@@ -29,6 +29,17 @@ class ConfigurationController extends Controller
             request()->route('slug')
             && request()->route('slug2')
         ) {
+            $user = auth()->guard('user')->user();
+
+            if (
+                $user
+                && $user->company_id !== null
+                && request()->route('slug') === 'general'
+                && request()->route('slug2') === 'settings'
+            ) {
+                abort(403);
+            }
+
             return view('admin::configuration.edit');
         }
 
@@ -40,6 +51,17 @@ class ConfigurationController extends Controller
      */
     public function store(ConfigurationForm $request): RedirectResponse
     {
+        $user = auth()->guard('user')->user();
+
+        if (
+            $user
+            && $user->company_id !== null
+            && request()->route('slug') === 'general'
+            && request()->route('slug2') === 'settings'
+        ) {
+            abort(403);
+        }
+
         Event::dispatch('core.configuration.save.before');
 
         $this->configurationRepository->create($request->all());

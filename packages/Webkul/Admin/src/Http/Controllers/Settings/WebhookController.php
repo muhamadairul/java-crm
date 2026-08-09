@@ -13,7 +13,18 @@ use Webkul\Automation\Repositories\WebhookRepository;
 
 class WebhookController extends Controller
 {
-    public function __construct(protected WebhookRepository $webhookRepository) {}
+    public function __construct(protected WebhookRepository $webhookRepository)
+    {
+        $this->middleware(function ($request, $next) {
+            $user = auth()->guard('user')->user();
+
+            if ($user && $user->company_id !== null) {
+                abort(403);
+            }
+
+            return $next($request);
+        });
+    }
 
     /**
      * Display the listing of the resource.

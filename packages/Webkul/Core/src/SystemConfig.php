@@ -91,9 +91,20 @@ class SystemConfig
      */
     private function processSubConfigItems($configItem): Collection
     {
+        $user = auth()->guard('user')->user();
+
         return collect($configItem)
             ->sortBy('sort')
             ->filter(fn ($value) => is_array($value) && isset($value['name']))
+            ->reject(function ($subConfigItem) use ($user) {
+                if ($user && $user->company_id !== null) {
+                    if (isset($subConfigItem['key']) && $subConfigItem['key'] === 'general.settings') {
+                        return true;
+                    }
+                }
+
+                return false;
+            })
             ->map(function ($subConfigItem) {
                 $configItemChildren = $this->processSubConfigItems($subConfigItem);
 

@@ -24,7 +24,17 @@ class AttributeController extends Controller
     public function __construct(
         protected AttributeRepository $attributeRepository,
         protected AttributeValueRepository $attributeValueRepository
-    ) {}
+    ) {
+        $this->middleware(function ($request, $next) {
+            $user = auth()->guard('user')->user();
+
+            if ($user && $user->company_id !== null) {
+                abort(403);
+            }
+
+            return $next($request);
+        });
+    }
 
     /**
      * Display a listing of the resource.

@@ -135,9 +135,25 @@ class Menu
      */
     private function processSubMenuItems($menuItem): Collection
     {
+        $user = auth()->guard('user')->user();
+
         return collect($menuItem)
             ->sortBy('sort')
             ->filter(fn ($value) => is_array($value))
+            ->reject(function ($subMenuItem) use ($user) {
+                if ($user && $user->company_id !== null) {
+                    $hiddenKeys = [
+                        'settings.automation.attributes',
+                        'settings.automation.webhooks',
+                    ];
+
+                    if (isset($subMenuItem['key']) && in_array($subMenuItem['key'], $hiddenKeys)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            })
             ->map(function ($subMenuItem) {
                 $subSubMenuItems = $this->processSubMenuItems($subMenuItem);
 
