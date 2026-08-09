@@ -43,7 +43,11 @@ class RoleController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        $users = \Webkul\User\Models\User::where('role_id', $id)->with('groups')->get();
+        $usersQuery = \Webkul\User\Models\User::where('role_id', $id)->with('groups');
+        if ($user->company_id) {
+            $usersQuery->where('company_id', $user->company_id);
+        }
+        $users = $usersQuery->get();
 
         $activeKeys = $role->permissions ?? [];
         $isAll = $role->permission_type == 'all';

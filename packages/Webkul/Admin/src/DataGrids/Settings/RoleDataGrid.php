@@ -16,7 +16,12 @@ class RoleDataGrid extends DataGrid
         $user = auth()->guard('user')->user();
 
         $queryBuilder = DB::table('roles')
-            ->leftJoin('users', 'roles.id', '=', 'users.role_id')
+            ->leftJoin('users', function ($join) use ($user) {
+                $join->on('roles.id', '=', 'users.role_id');
+                if ($user->company_id) {
+                    $join->where('users.company_id', '=', $user->company_id);
+                }
+            })
             ->addSelect(
                 'roles.id',
                 'roles.name',

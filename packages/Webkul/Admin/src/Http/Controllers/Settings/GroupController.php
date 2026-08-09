@@ -43,7 +43,11 @@ class GroupController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        $users = $group->users()->with('role')->get();
+        $usersQuery = $group->users()->with('role');
+        if ($user->company_id) {
+            $usersQuery->where('users.company_id', $user->company_id);
+        }
+        $users = $usersQuery->get();
 
         return view('admin::settings.groups.show', compact('group', 'users'));
     }

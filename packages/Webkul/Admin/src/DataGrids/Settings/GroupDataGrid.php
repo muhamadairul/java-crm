@@ -13,13 +13,21 @@ class GroupDataGrid extends DataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
+        $user = auth()->guard('user')->user();
+
         $queryBuilder = DB::table('groups')
             ->leftJoin('user_groups', 'groups.id', '=', 'user_groups.group_id')
+            ->leftJoin('users', function ($join) use ($user) {
+                $join->on('user_groups.user_id', '=', 'users.id');
+                if ($user->company_id) {
+                    $join->where('users.company_id', '=', $user->company_id);
+                }
+            })
             ->addSelect(
                 'groups.id',
                 'groups.name',
                 'groups.description',
-                DB::raw('COUNT(user_groups.user_id) as user_count')
+                DB::raw('COUNT(users.id) as user_count')
             )
             ->where('groups.company_id', $this->getCurrentCompanyId())
             ->groupBy('groups.id', 'groups.name', 'groups.description');
