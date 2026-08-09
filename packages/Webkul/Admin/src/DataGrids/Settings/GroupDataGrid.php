@@ -14,12 +14,15 @@ class GroupDataGrid extends DataGrid
     public function prepareQueryBuilder(): Builder
     {
         $queryBuilder = DB::table('groups')
+            ->leftJoin('user_groups', 'groups.id', '=', 'user_groups.group_id')
             ->addSelect(
                 'groups.id',
                 'groups.name',
-                'groups.description'
+                'groups.description',
+                DB::raw('COUNT(user_groups.user_id) as user_count')
             )
-            ->where('groups.company_id', $this->getCurrentCompanyId());
+            ->where('groups.company_id', $this->getCurrentCompanyId())
+            ->groupBy('groups.id', 'groups.name', 'groups.description');
 
         $this->addFilter('id', 'groups.id');
 
@@ -55,6 +58,14 @@ class GroupDataGrid extends DataGrid
             'type'     => 'string',
             'sortable' => false,
         ]);
+
+        $this->addColumn([
+            'index'      => 'user_count',
+            'label'      => trans('admin::app.settings.groups.index.datagrid.user-count'),
+            'type'       => 'integer',
+            'sortable'   => true,
+            'filterable' => false,
+        ]);
     }
 
     /**
@@ -62,6 +73,16 @@ class GroupDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
+        if (bouncer()->hasPermission('settings.user.groups.edit')) {
+            $this->addAction([
+                'index'  => 'show',
+                'icon'   => 'icon-eye',
+                'title'  => trans('admin::app.settings.groups.index.datagrid.view'),
+                'method' => 'GET',
+                'url'    => fn ($row) => route('admin.settings.groups.show', $row->id),
+            ]);
+        }
+
         if (bouncer()->hasPermission('settings.user.groups.edit')) {
             $this->addAction([
                 'index'  => 'edit',

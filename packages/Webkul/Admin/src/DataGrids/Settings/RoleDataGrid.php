@@ -16,13 +16,16 @@ class RoleDataGrid extends DataGrid
         $user = auth()->guard('user')->user();
 
         $queryBuilder = DB::table('roles')
+            ->leftJoin('users', 'roles.id', '=', 'users.role_id')
             ->addSelect(
                 'roles.id',
                 'roles.name',
                 'roles.description',
-                'roles.permission_type'
+                'roles.permission_type',
+                DB::raw('COUNT(users.id) as user_count')
             )
-            ->where('roles.id', '!=', 1); // Exclude Super Admin role
+            ->where('roles.id', '!=', 1) // Exclude Super Admin role
+            ->groupBy('roles.id', 'roles.name', 'roles.description', 'roles.permission_type');
 
         // Scope by company_id for tenant users
         if ($user->company_id) {
@@ -85,6 +88,14 @@ class RoleDataGrid extends DataGrid
             ],
             'sortable'   => true,
         ]);
+
+        $this->addColumn([
+            'index'      => 'user_count',
+            'label'      => trans('admin::app.settings.roles.index.datagrid.user-count'),
+            'type'       => 'integer',
+            'filterable' => false,
+            'sortable'   => true,
+        ]);
     }
 
     /**
@@ -96,23 +107,33 @@ class RoleDataGrid extends DataGrid
 
         if (bouncer()->hasPermission('settings.user.roles.edit')) {
             $this->addAction([
+                'index'  => 'show',
+                'icon'   => 'icon-eye',
+                'title'  => trans('admin::app.settings.roles.index.datagrid.view'),
+                'method' => 'GET',
+                'url'    => fn($row) => route('admin.settings.roles.show', $row->id),
+            ]);
+        }
+
+        if (bouncer()->hasPermission('settings.user.roles.edit')) {
+            $this->addAction([
                 'index'  => 'edit',
                 'icon'   => 'icon-edit',
                 'title'  => trans('admin::app.settings.roles.index.datagrid.edit'),
                 'method' => 'GET',
-                'url'    => fn ($row) => route('admin.settings.roles.edit', $row->id),
+                'url'    => fn($row) => route('admin.settings.roles.edit', $row->id),
             ]);
         }
 
         // Only Super Admins (company_id is null) can delete roles
-        if ($user->company_id === null && bouncer()->hasPermission('settings.user.roles.delete')) {
+        if (bouncer()->hasPermission('settings.user.roles.delete')) {
             $this->addAction([
                 'index'  => 'delete',
                 'icon'   => 'icon-delete',
                 'title'  => trans('admin::app.settings.roles.index.datagrid.delete'),
                 'method' => 'DELETE',
-                'url'    => fn ($row) => route('admin.settings.roles.delete', $row->id),
+                'url'    => fn($row) => route('admin.settings.roles.delete', $row->id),
             ]);
         }
     }
-
+}

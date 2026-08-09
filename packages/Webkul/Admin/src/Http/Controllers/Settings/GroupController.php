@@ -32,6 +32,23 @@ class GroupController extends Controller
     }
 
     /**
+     * Display detail of the specified group.
+     */
+    public function show(int $id): View
+    {
+        $group = $this->groupRepository->findOrFail($id);
+
+        $user = auth()->guard('user')->user();
+        if ($user->company_id && $group->company_id && $group->company_id != $user->company_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $users = $group->users()->with('role')->get();
+
+        return view('admin::settings.groups.show', compact('group', 'users'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(): JsonResponse

@@ -41,6 +41,8 @@ Route::prefix('settings')->group(function () {
     Route::controller(GroupController::class)->prefix('groups')->group(function () {
         Route::get('', 'index')->name('admin.settings.groups.index');
 
+        Route::get('show/{id}', 'show')->name('admin.settings.groups.show');
+
         Route::post('create', 'store')->name('admin.settings.groups.store');
 
         Route::get('edit/{id}', 'edit')->name('admin.settings.groups.edit');
@@ -70,6 +72,8 @@ Route::prefix('settings')->group(function () {
      */
     Route::controller(RoleController::class)->prefix('roles')->group(function () {
         Route::get('', 'index')->name('admin.settings.roles.index');
+
+        Route::get('show/{id}', 'show')->name('admin.settings.roles.show');
 
         Route::get('create', 'create')->name('admin.settings.roles.create');
 

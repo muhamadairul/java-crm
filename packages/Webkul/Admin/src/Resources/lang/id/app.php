@@ -762,10 +762,32 @@ return [
                     'edit'        => 'Ubah',
                     'id'          => 'ID',
                     'name'        => 'Nama',
+                    'user-count'  => 'Jumlah Pengguna',
+                    'view'        => 'Detail',
                 ],
 
                 'edit' => [
                     'title' => 'Ubah Grup',
+                ],
+
+                'show' => [
+                    'title'            => 'Detail Grup',
+                    'back-btn'         => '← Kembali ke Grup',
+                    'edit-btn'         => 'Edit Grup',
+                    'total-members'    => 'Anggota Grup',
+                    'group-id'         => 'ID Grup',
+                    'created-at'       => 'Dibuat Pada',
+                    'users-title'      => 'Daftar Pengguna dalam Grup Ini',
+                    'empty-users'      => 'Belum ada pengguna yang tergabung dalam grup ini.',
+                    'user'             => 'Pengguna',
+                    'email'            => 'Email',
+                    'role'             => 'Peran (Role)',
+                    'data-permission'  => 'Izin Akses Data',
+                    'status'           => 'Status',
+                    'action'           => 'Aksi',
+                    'view-user-list'   => 'Lihat di User List',
+                    'active'           => 'Aktif',
+                    'inactive'         => 'Tidak Aktif',
                 ],
 
                 'create' => [
@@ -779,14 +801,12 @@ return [
 
         'roles' => [
             'index' => [
-                'being-used'                => 'Peran tidak dapat dihapus karena sedang digunakan oleh pengguna admin.',
                 'create-btn'                => 'Buat Peran',
                 'create-success'            => 'Peran berhasil dibuat.',
-                'current-role-delete-error' => 'Tidak dapat menghapus peran yang ditetapkan untuk pengguna saat ini.',
                 'delete-failed'             => 'Peran tidak dapat dihapus.',
+                'delete-failed-system-user' => 'Peran tidak dapat dihapus karena ini adalah peran sistem.',
                 'delete-success'            => 'Peran berhasil dihapus.',
-                'last-delete-error'         => 'Minimal satu peran diperlukan.',
-                'settings'                  => 'Pengaturan',
+                'being-used'                => 'Peran tidak dapat dihapus karena sedang digunakan oleh pengguna.',
                 'title'                     => 'Peran',
                 'update-success'            => 'Peran berhasil diperbarui.',
                 'user-define-error'         => 'Tidak dapat menghapus peran sistem.',
@@ -800,6 +820,31 @@ return [
                     'id'              => 'ID',
                     'name'            => 'Nama',
                     'permission-type' => 'Tipe Izin',
+                    'user-count'      => 'Jumlah Pengguna',
+                    'view'            => 'Detail',
+                ],
+
+                'show' => [
+                    'title'            => 'Detail Peran',
+                    'back-btn'         => '← Kembali ke Peran',
+                    'edit-btn'         => 'Edit Peran',
+                    'all-access'       => 'Semua Hak Akses (All)',
+                    'custom-access'    => 'Akses Kustom (Custom)',
+                    'no-description'   => 'Tidak ada deskripsi',
+                    'total-users'      => 'Total Pengguna',
+                    'permission-type'  => 'Tipe Izin',
+                    'role-id'          => 'ID Peran',
+                    'users-title'      => 'Daftar Pengguna dengan Peran Ini',
+                    'empty-users'      => 'Belum ada pengguna yang ditetapkan ke peran ini.',
+                    'user'             => 'Pengguna',
+                    'email'            => 'Email',
+                    'data-permission'  => 'Izin Akses Data',
+                    'groups'           => 'Grup',
+                    'status'           => 'Status',
+                    'action'           => 'Aksi',
+                    'view-user-list'   => 'Lihat di User List',
+                    'active'           => 'Aktif',
+                    'inactive'         => 'Tidak Aktif',
                 ],
             ],
 
@@ -1244,6 +1289,8 @@ return [
                     'status'        => 'Status',
                     'update-status' => 'Perbarui Status',
                     'users'         => 'Pengguna',
+                    'group-name'    => 'Grup',
+                    'role-id'       => 'Peran',
                 ],
 
                 'create' => [

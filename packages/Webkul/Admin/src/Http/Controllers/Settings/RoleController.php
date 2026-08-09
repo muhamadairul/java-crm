@@ -32,6 +32,23 @@ class RoleController extends Controller
     }
 
     /**
+     * Display detail of the specified role.
+     */
+    public function show(int $id): View
+    {
+        $role = $this->roleRepository->findOrFail($id);
+
+        $user = auth()->guard('user')->user();
+        if ($user->company_id && $role->company_id && $role->company_id != $user->company_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $users = \Webkul\User\Models\User::where('role_id', $id)->with('groups')->get();
+
+        return view('admin::settings.roles.show', compact('role', 'users'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create(): View

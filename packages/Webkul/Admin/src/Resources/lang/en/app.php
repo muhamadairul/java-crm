@@ -763,10 +763,32 @@ return [
                     'edit'        => 'Edit',
                     'id'          => 'ID',
                     'name'        => 'Name',
+                    'user-count'  => 'Total Users',
+                    'view'        => 'View Detail',
                 ],
 
                 'edit' => [
                     'title' => 'Edit Group',
+                ],
+
+                'show' => [
+                    'title'            => 'Group Detail',
+                    'back-btn'         => '← Back to Groups',
+                    'edit-btn'         => 'Edit Group',
+                    'total-members'    => 'Group Members',
+                    'group-id'         => 'Group ID',
+                    'created-at'       => 'Created At',
+                    'users-title'      => 'Users Belonging to this Group',
+                    'empty-users'      => 'No users belonging to this group yet.',
+                    'user'             => 'User',
+                    'email'            => 'Email',
+                    'role'             => 'Role',
+                    'data-permission'  => 'Data Access Permission',
+                    'status'           => 'Status',
+                    'action'           => 'Action',
+                    'view-user-list'   => 'View in User List',
+                    'active'           => 'Active',
+                    'inactive'         => 'Inactive',
                 ],
 
                 'create' => [
@@ -801,6 +823,31 @@ return [
                     'id'              => 'ID',
                     'name'            => 'Name',
                     'permission-type' => 'Permission Type',
+                    'user-count'      => 'Total Users',
+                    'view'            => 'View Detail',
+                ],
+
+                'show' => [
+                    'title'            => 'Role Detail',
+                    'back-btn'         => '← Back to Roles',
+                    'edit-btn'         => 'Edit Role',
+                    'all-access'       => 'All Permissions Granted',
+                    'custom-access'    => 'Custom Permissions',
+                    'no-description'   => 'No description available',
+                    'total-users'      => 'Total Users',
+                    'permission-type'  => 'Permission Type',
+                    'role-id'          => 'Role ID',
+                    'users-title'      => 'Users Assigned to this Role',
+                    'empty-users'      => 'No users assigned to this role yet.',
+                    'user'             => 'User',
+                    'email'            => 'Email',
+                    'data-permission'  => 'Data Access Permission',
+                    'groups'           => 'Groups',
+                    'status'           => 'Status',
+                    'action'           => 'Action',
+                    'view-user-list'   => 'View in User List',
+                    'active'           => 'Active',
+                    'inactive'         => 'Inactive',
                 ],
             ],
 
@@ -1245,6 +1292,8 @@ return [
                     'status'        => 'Status',
                     'update-status' => 'Update Status',
                     'users'         => 'Users',
+                    'group-name'    => 'Group',
+                    'role-id'       => 'Role',
                 ],
 
                 'create' => [
