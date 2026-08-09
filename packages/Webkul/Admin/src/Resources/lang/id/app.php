@@ -760,7 +760,7 @@ return [
                     'delete'      => 'Hapus',
                     'description' => 'Deskripsi',
                     'edit'        => 'Ubah',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'name'        => 'Nama',
                     'user-count'  => 'Jumlah Pengguna',
                     'view'        => 'Detail',
@@ -817,7 +817,7 @@ return [
                     'delete'          => 'Hapus',
                     'description'     => 'Deskripsi',
                     'edit'            => 'Ubah',
-                    'id'              => 'ID',
+                    'id'              => 'No.',
                     'name'            => 'Nama',
                     'permission-type' => 'Tipe Izin',
                     'user-count'      => 'Jumlah Pengguna',
@@ -890,7 +890,7 @@ return [
                     'delete'      => 'Hapus',
                     'description' => 'Deskripsi',
                     'edit'        => 'Ubah',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'name'        => 'Nama',
                 ],
 
@@ -947,7 +947,7 @@ return [
                     'delete'      => 'Hapus',
                     'description' => 'Deskripsi',
                     'edit'        => 'Ubah',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'name'        => 'Nama',
                 ],
             ],
@@ -1243,7 +1243,7 @@ return [
                 'datagrid' => [
                     'delete'      => 'Hapus',
                     'edit'        => 'Ubah',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'name'        => 'Nama',
                     'users'       => 'Pengguna',
                     'created-at'  => 'Dibuat Pada',
@@ -1333,7 +1333,7 @@ return [
                 'datagrid' => [
                     'delete'      => 'Hapus',
                     'edit'        => 'Ubah',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'is-default'  => 'Default',
                     'name'        => 'Nama',
                     'no'          => 'Tidak',
@@ -1394,7 +1394,7 @@ return [
                 'delete-failed'  => 'Webhook tidak dapat dihapus.',
 
                 'datagrid' => [
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'delete'      => 'Hapus',
                     'edit'        => 'Ubah',
                     'name'        => 'Nama',
@@ -1541,7 +1541,7 @@ return [
                 'datagrid' => [
                     'yes'         => 'Ya',
                     'no'          => 'Tidak',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'code'        => 'Kode',
                     'name'        => 'Nama',
                     'entity-type' => 'Tipe Entitas',

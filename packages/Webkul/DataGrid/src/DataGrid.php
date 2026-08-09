@@ -152,6 +152,10 @@ abstract class DataGrid
     {
         $this->dispatchEvent('columns.add.before', [$this, $column]);
 
+        if (isset($column['index']) && $column['index'] === 'id' && ! isset($column['closure'])) {
+            $column['closure'] = fn ($row) => $row->row_num ?? $row->id;
+        }
+
         $this->columns[] = Column::resolveType($column);
 
         $this->dispatchEvent('columns.add.after', [$this, $this->columns[count($this->columns) - 1]]);
@@ -498,7 +502,16 @@ abstract class DataGrid
      */
     protected function formatRecords($records): mixed
     {
+        $startNumber = isset($this->paginator)
+            ? ($this->paginator->currentPage() - 1) * $this->paginator->perPage()
+            : 0;
+
+        $currentIndex = 0;
+
         foreach ($records as $record) {
+            $currentIndex++;
+            $record->row_num = $startNumber + $currentIndex;
+
             $record = $this->sanitizeRow($record);
 
             foreach ($this->columns as $column) {

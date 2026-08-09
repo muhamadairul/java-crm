@@ -761,7 +761,7 @@ return [
                     'delete'      => 'Delete',
                     'description' => 'Description',
                     'edit'        => 'Edit',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'name'        => 'Name',
                     'user-count'  => 'Total Users',
                     'view'        => 'View Detail',
@@ -820,7 +820,7 @@ return [
                     'delete'          => 'Delete',
                     'description'     => 'Description',
                     'edit'            => 'Edit',
-                    'id'              => 'ID',
+                    'id'              => 'No.',
                     'name'            => 'Name',
                     'permission-type' => 'Permission Type',
                     'user-count'      => 'Total Users',
@@ -893,7 +893,7 @@ return [
                     'delete'      => 'Delete',
                     'description' => 'Description',
                     'edit'        => 'Edit',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'name'        => 'Name',
                 ],
 
@@ -950,7 +950,7 @@ return [
                     'delete'      => 'Delete',
                     'description' => 'Description',
                     'edit'        => 'Edit',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'name'        => 'Name',
                 ],
             ],
@@ -1246,7 +1246,7 @@ return [
                 'datagrid' => [
                     'delete'      => 'Delete',
                     'edit'        => 'Edit',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'name'        => 'Name',
                     'users'       => 'Users',
                     'created-at'  => 'Created At',
@@ -1336,7 +1336,7 @@ return [
                 'datagrid' => [
                     'delete'      => 'Delete',
                     'edit'        => 'Edit',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'is-default'  => 'Is Default',
                     'name'        => 'Name',
                     'no'          => 'No',
@@ -1397,7 +1397,7 @@ return [
                 'delete-failed'  => 'Webhook can not be deleted.',
 
                 'datagrid' => [
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'delete'      => 'Delete',
                     'edit'        => 'Edit',
                     'name'        => 'Name',
@@ -1544,7 +1544,7 @@ return [
                 'datagrid' => [
                     'yes'         => 'Yes',
                     'no'          => 'No',
-                    'id'          => 'ID',
+                    'id'          => 'No.',
                     'code'        => 'Code',
                     'name'        => 'Name',
                     'entity-type' => 'Entity Type',
