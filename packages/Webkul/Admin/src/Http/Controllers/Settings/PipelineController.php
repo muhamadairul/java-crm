@@ -4,6 +4,7 @@ namespace Webkul\Admin\Http\Controllers\Settings;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\View;
 use Webkul\Admin\DataGrids\Settings\PipelineDataGrid;
@@ -45,7 +46,7 @@ class PipelineController extends Controller
         }
 
         // Get total leads count and total lead value in this pipeline for tenant company
-        $leadsStats = \Illuminate\Support\Facades\DB::table('leads')
+        $leadsStats = DB::table('leads')
             ->where('lead_pipeline_id', $pipeline->id)
             ->where('company_id', $user->company_id)
             ->selectRaw('COUNT(id) as total_leads, SUM(lead_value) as total_value')
@@ -55,8 +56,8 @@ class PipelineController extends Controller
         $totalPipelineValue = $leadsStats->total_value ?? 0;
 
         // Get breakdown per stage
-        $stageStats = \Illuminate\Support\Facades\DB::table('lead_pipeline_stages')
-            ->where('lead_pipeline_id', $pipeline->id)
+        $stageStats = DB::table('lead_pipeline_stages')
+            ->where('lead_pipeline_stages.lead_pipeline_id', $pipeline->id)
             ->leftJoin('leads', function ($join) use ($user) {
                 $join->on('lead_pipeline_stages.id', '=', 'leads.lead_pipeline_stage_id')
                     ->where('leads.company_id', '=', $user->company_id);
@@ -67,8 +68,8 @@ class PipelineController extends Controller
                 'lead_pipeline_stages.code',
                 'lead_pipeline_stages.probability',
                 'lead_pipeline_stages.sort_order',
-                \Illuminate\Support\Facades\DB::raw('COUNT(leads.id) as leads_count'),
-                \Illuminate\Support\Facades\DB::raw('SUM(leads.lead_value) as total_value')
+                DB::raw('COUNT(leads.id) as leads_count'),
+                DB::raw('SUM(leads.lead_value) as total_value')
             )
             ->groupBy('lead_pipeline_stages.id', 'lead_pipeline_stages.name', 'lead_pipeline_stages.code', 'lead_pipeline_stages.probability', 'lead_pipeline_stages.sort_order')
             ->orderBy('lead_pipeline_stages.sort_order', 'asc')
@@ -157,8 +158,9 @@ class PipelineController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
+        /** @var \Webkul\Lead\Models\Pipeline $pipeline */
         $pipeline = $this->pipelineRepository->findOrFail($id);
 
         if ($pipeline->is_default) {
@@ -166,6 +168,7 @@ class PipelineController extends Controller
                 'message' => trans('admin::app.settings.pipelines.index.default-delete-error'),
             ], 400);
         } else {
+            /** @var \Webkul\Lead\Models\Pipeline $defaultPipeline */
             $defaultPipeline = $this->pipelineRepository->getDefaultPipeline();
 
             $pipeline->leads()->update([
