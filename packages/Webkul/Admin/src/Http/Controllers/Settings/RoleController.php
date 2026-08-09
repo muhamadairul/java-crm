@@ -45,20 +45,49 @@ class RoleController extends Controller
 
         $users = \Webkul\User\Models\User::where('role_id', $id)->with('groups')->get();
 
-        $allPermissions = config('acl', []);
-        $grantedPermissions = [];
+        $aclItems = config('acl', []);
+        $groupedPermissions = [];
 
-        if ($role->permission_type == 'all') {
-            $grantedPermissions = $allPermissions;
-        } elseif (is_array($role->permissions)) {
-            foreach ($allPermissions as $perm) {
-                if (in_array($perm['key'], $role->permissions)) {
-                    $grantedPermissions[] = $perm;
+        $aclMap = [];
+        foreach ($aclItems as $item) {
+            $aclMap[$item['key']] = trans($item['name']);
+        }
+
+        $activeKeys = $role->permission_type == 'all'
+            ? array_column($aclItems, 'key')
+            : ($role->permissions ?? []);
+
+        foreach ($aclItems as $item) {
+            $key = $item['key'];
+            if (! in_array($key, $activeKeys)) {
+                continue;
+            }
+
+            if (! str_contains($key, '.')) {
+                if (! isset($groupedPermissions[$key])) {
+                    $groupedPermissions[$key] = [
+                        'name'     => trans($item['name']),
+                        'children' => [],
+                    ];
+                } else {
+                    $groupedPermissions[$key]['name'] = trans($item['name']);
                 }
+            } else {
+                $parts = explode('.', $key);
+                $parentKey = $parts[0];
+
+                if (! isset($groupedPermissions[$parentKey])) {
+                    $parentItemName = $aclMap[$parentKey] ?? ucfirst($parentKey);
+                    $groupedPermissions[$parentKey] = [
+                        'name'     => $parentItemName,
+                        'children' => [],
+                    ];
+                }
+                $groupedPermissions[$parentKey]['children'][] = trans($item['name']);
             }
         }
 
-        return view('admin::settings.roles.show', compact('role', 'users', 'grantedPermissions'));
+        return view('admin::settings.roles.show', compact('role', 'users', 'groupedPermissions'));
     }
 
     /**
