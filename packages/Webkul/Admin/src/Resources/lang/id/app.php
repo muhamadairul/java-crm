@@ -2202,7 +2202,7 @@ return [
                         'activities'     => 'Aktivitas',
                         'configuration'  => 'Konfigurasi',
                         'contacts'       => 'Kontak',
-                        'dashboard'      => 'Dasbor',
+                        'dashboard'      => 'Dashboard',
                         'draft'          => 'Draf',
                         'inbox'          => 'Kotak Masuk',
                         'info'           => 'Konfigurasi nama item menu di sini.',
@@ -2279,7 +2279,7 @@ return [
 
     'dashboard' => [
         'index' => [
-            'title' => 'Dasbor',
+            'title' => 'Dashboard',
 
             'revenue' => [
                 'lost-revenue' => 'Pendapatan Gagal',
@@ -2336,7 +2336,7 @@ return [
 
     'layouts' => [
         'app-version'          => 'Versi: :version',
-        'dashboard'            => 'Dasbor',
+        'dashboard'            => 'Dashboard',
         'leads'                => 'Prospek',
         'quotes'               => 'Penawaran',
         'quote'                => 'Penawaran',
@@ -2458,7 +2458,7 @@ return [
     ],
 
     'errors' => [
-        'dashboard' => 'Dasbor',
+        'dashboard' => 'Dashboard',
         'go-back'   => 'Kembali',
         'support'   => 'Jika masalah berlanjut, hubungi kami di <a href=":link" class=":class">:email</a> untuk bantuan.',
 

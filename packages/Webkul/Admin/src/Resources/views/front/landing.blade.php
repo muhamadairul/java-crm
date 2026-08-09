@@ -135,7 +135,7 @@
     <section class="hero-glow relative overflow-hidden px-6 pt-16 pb-20 lg:pt-24 lg:pb-32">
         <div class="mx-auto max-w-5xl text-center">
             <!-- Animated Badge -->
-            <div class="mb-6 inline-flex items-center gap-2.5 rounded-full border border-sky-200 bg-sky-50/80 px-4 py-1.5 text-xs font-bold text-sky-700 shadow-sm dark:border-sky-900/50 dark:bg-sky-950/50 dark:text-sky-300 animate-glow">
+            <div class="mb-6 inline-flex items-center gap-2.5 rounded-full border border-sky-200 bg-sky-50/80 px-4 py-1.5 text-xs font-bold text-sky-700 shadow-sm dark:border-sky-900/50 dark:bg-sky-950/50 dark:text-sky-300">
                 <span class="flex h-2.5 w-2.5 rounded-full bg-sky-500 animate-pulse"></span>
                 <span>{{ $isEn ? '#1 Integrated Customer & Sales Management Platform' : 'Aplikasi Manajemen Pelanggan & Penjualan Terintegrasi' }}</span>
             </div>

@@ -17,14 +17,18 @@ class UserDataGrid extends DataGrid
         $queryBuilder = DB::table('users')
             ->distinct()
             ->addSelect(
-                'id',
-                'name',
-                'email',
-                'image',
-                'status',
-                'created_at'
+                'users.id',
+                'users.name',
+                'users.email',
+                'users.image',
+                'users.status',
+                'users.created_at',
+                'roles.name as role_name',
+                'groups.name as group_name',
             )
-            ->leftJoin('user_groups', 'id', '=', 'user_groups.user_id')
+            ->leftJoin('user_groups', 'users.id', '=', 'user_groups.user_id')
+            ->leftJoin('groups', 'user_groups.group_id', '=', 'groups.id')
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
             ->where('users.company_id', $this->getCurrentCompanyId());
 
         if ($userIds = bouncer()->getAuthorizedUserIds()) {
@@ -66,6 +70,24 @@ class UserDataGrid extends DataGrid
             'label'      => trans('admin::app.settings.users.index.datagrid.email'),
             'type'       => 'string',
             'sortable'   => true,
+            'searchable' => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
+            'index'      => 'group_name',
+            'label'      => trans('admin::app.settings.users.index.datagrid.group-name'),
+            'type'       => 'string',
+            'sortable'   => true,
+            'searchable' => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
+            'index'      => 'role_id',
+            'label'      => trans('admin::app.settings.users.index.datagrid.role-id'),
+            'type'       => 'string',
+            'sortable'   => false,
             'searchable' => true,
             'filterable' => true,
         ]);
