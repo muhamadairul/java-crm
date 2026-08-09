@@ -81,9 +81,9 @@ class GroupDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('settings.user.groups.edit')) {
+        if (bouncer()->hasPermission('settings.user.groups.edit') || bouncer()->hasPermission('settings.user.groups.view')) {
             $this->addAction([
-                'index'  => 'show',
+                'index'  => 'view',
                 'icon'   => 'icon-eye',
                 'title'  => trans('admin::app.settings.groups.index.datagrid.view'),
                 'method' => 'GET',
