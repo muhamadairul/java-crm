@@ -106,16 +106,11 @@
                     {{ $isEn ? 'Select the best plan suited for your sales team scale' : 'Pilih paket yang paling sesuai dengan kebutuhan tim bisnis Anda' }}
                 </p>
                 
-                <!-- Currency Selector -->
-                <div class="inline-flex items-center gap-2.5 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-sm dark:bg-slate-950 dark:border-slate-800">
-                    <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider dark:text-slate-400">{{ $isEn ? 'Currency:' : 'Mata Uang:' }}</span>
-                    <select onchange="window.location.href = '?currency=' + this.value" class="rounded-lg border-slate-200 border px-2.5 py-1 text-xs focus:border-sky-500 focus:ring-sky-500 shadow-sm transition-colors bg-white font-bold text-slate-700 dark:bg-slate-900 dark:border-slate-800 dark:text-white">
-                        @foreach($currencies as $code => $info)
-                            <option value="{{ $code }}" {{ $selectedCurrency === $code ? 'selected' : '' }}>
-                                {{ $code }} ({{ $info['symbol'] }})
-                            </option>
-                        @endforeach
-                    </select>
+                <!-- Currency Display (Fixed IDR) -->
+                <div class="inline-flex items-center gap-2 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-sm dark:bg-slate-950 dark:border-slate-800">
+                    <span class="text-xs font-bold text-slate-700 dark:text-white">
+                        {{ $isEn ? 'Currency:' : 'Mata Uang:' }} <span class="text-sky-600 dark:text-sky-400">IDR (Rp)</span>
+                    </span>
                 </div>
             </div>
 
@@ -124,7 +119,7 @@
                 @csrf
                 
                 <input type="hidden" name="plan_code" id="selected-plan-code" value="{{ $selectedPlanCode }}">
-                <input type="hidden" name="currency" value="{{ $selectedCurrency }}">
+                <input type="hidden" name="currency" value="IDR">
 
                 <!-- Pricing Grid Cards inside main card -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch mb-6">
@@ -149,7 +144,7 @@
                                 </span>
                                 <h3 class="text-lg font-extrabold text-slate-800 mt-1 dark:text-white">{{ $plan->name }}</h3>
                                 <div class="mt-2 flex items-baseline">
-                                    <span class="text-xl font-extrabold text-slate-900 dark:text-white">{{ $currencies[$selectedCurrency]['symbol'] }}{{ number_format($plan->converted_price, $selectedCurrency === 'USD' || $selectedCurrency === 'EUR' ? 2 : 0) }}</span>
+                                    <span class="text-xl font-extrabold text-slate-900 dark:text-white">Rp {{ number_format($plan->converted_price, 0, ',', '.') }}</span>
                                     <span class="text-slate-400 text-xs font-semibold ml-1">/{{ $plan->billing_cycle === 'yearly' ? ($isEn ? 'year' : 'tahun') : ($isEn ? 'month' : 'bulan') }}</span>
                                 </div>
                                 <p class="mt-2 text-[11px] text-slate-500 font-medium leading-relaxed dark:text-slate-400">

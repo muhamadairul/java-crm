@@ -43,8 +43,7 @@
             <div class="flex justify-between text-xs font-semibold text-slate-400">
                 <span>Amount Due</span>
                 <span class="text-indigo-600 font-black text-sm">
-                    {{ $invoice->currency === 'IDR' ? 'Rp' : ($invoice->currency === 'USD' ? '$' : ($invoice->currency === 'EUR' ? '€' : 'S$')) }}
-                    {{ number_format($invoice->amount, $invoice->currency === 'USD' || $invoice->currency === 'EUR' ? 2 : 0) }}
+                    Rp {{ number_format($invoice->amount, 0, ',', '.') }}
                 </span>
             </div>
         </div>

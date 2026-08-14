@@ -81,25 +81,17 @@ class RegistrationController extends Controller
             return redirect()->route('tenant.register.step1');
         }
 
-        $currencies = [
-            'USD' => ['symbol' => '$', 'rate' => 1.0],
-            'IDR' => ['symbol' => 'Rp ', 'rate' => 16000.0],
-            'EUR' => ['symbol' => '€', 'rate' => 0.92],
-            'SGD' => ['symbol' => 'S$', 'rate' => 1.35],
-        ];
-
-        $selectedCurrency = $request->query('currency', session()->get('registration_data.currency', 'USD'));
-        if (!array_key_exists($selectedCurrency, $currencies)) {
-            $selectedCurrency = 'IDR';
-        }
-
+        $selectedCurrency = 'IDR';
         session()->put('registration_data.currency', $selectedCurrency);
 
+        $currencies = [
+            'IDR' => ['symbol' => 'Rp ', 'rate' => 16000.0],
+        ];
+
         $plans = Plan::where('is_active', true)->orderBy('sort_order')->get();
-        $currencyInfo = $currencies[$selectedCurrency];
 
         foreach ($plans as $plan) {
-            $plan->converted_price = $plan->price * $currencyInfo['rate'];
+            $plan->converted_price = ($plan->price > 0 && $plan->price < 1000) ? $plan->price * 16000.0 : $plan->price;
         }
 
         $selectedPlanCode = session()->get('registration_data.plan_code', 'pro');
@@ -118,13 +110,10 @@ class RegistrationController extends Controller
 
         $request->validate([
             'plan_code' => 'required|exists:plans,code',
-            'currency'  => 'nullable|string|in:USD,IDR,EUR,SGD',
         ]);
 
         session()->put('registration_data.plan_code', $request->plan_code);
-        if ($request->has('currency')) {
-            session()->put('registration_data.currency', $request->currency);
-        }
+        session()->put('registration_data.currency', 'IDR');
 
         return redirect()->route('tenant.register.step3');
     }
@@ -141,18 +130,10 @@ class RegistrationController extends Controller
         $registrationData = session()->get('registration_data');
         $plan = Plan::where('code', $registrationData['plan_code'])->first();
 
-        $currencies = [
-            'USD' => ['symbol' => '$', 'rate' => 1.0],
-            'IDR' => ['symbol' => 'Rp ', 'rate' => 16000.0],
-            'EUR' => ['symbol' => '€', 'rate' => 0.92],
-            'SGD' => ['symbol' => 'S$', 'rate' => 1.35],
-        ];
+        $selectedCurrency = 'IDR';
+        $currencySymbol = 'Rp ';
 
-        $selectedCurrency = $registrationData['currency'] ?? 'USD';
-        $currencyInfo = $currencies[$selectedCurrency] ?? $currencies['USD'];
-        
-        $plan->converted_price = $plan->price * $currencyInfo['rate'];
-        $currencySymbol = $currencyInfo['symbol'];
+        $plan->converted_price = ($plan->price > 0 && $plan->price < 1000) ? $plan->price * 16000.0 : $plan->price;
 
         return view('admin::front.register.step3', compact('registrationData', 'plan', 'selectedCurrency', 'currencySymbol'));
     }
@@ -288,16 +269,8 @@ class RegistrationController extends Controller
             ]);
 
             if ($isPaid) {
-                // Get selected currency details
-                $currencies = [
-                    'USD' => ['rate' => 1.0, 'symbol' => '$'],
-                    'IDR' => ['rate' => 16000.0, 'symbol' => 'Rp '],
-                    'EUR' => ['rate' => 0.92, 'symbol' => '€'],
-                    'SGD' => ['rate' => 1.35, 'symbol' => 'S$'],
-                ];
-                $selectedCurrency = $registrationData['currency'] ?? 'USD';
-                $currencyInfo = $currencies[$selectedCurrency] ?? $currencies['USD'];
-                $convertedAmount = $plan->price * $currencyInfo['rate'];
+                $selectedCurrency = 'IDR';
+                $convertedAmount = ($plan->price > 0 && $plan->price < 1000) ? $plan->price * 16000.0 : $plan->price;
 
                 $invoiceNumber = 'INV-' . strtoupper(Str::random(10));
                 
@@ -307,7 +280,7 @@ class RegistrationController extends Controller
                     'subscription_id' => $subscription->id,
                     'invoice_number'  => $invoiceNumber,
                     'amount'          => $convertedAmount,
-                    'currency'        => $selectedCurrency,
+                    'currency'        => 'IDR',
                     'status'          => 'pending',
                     'payment_method'  => $paymentType,
                 ]);
@@ -317,7 +290,7 @@ class RegistrationController extends Controller
                 $paymentResponse = $xenditService->createPaymentRequest(
                     $invoiceNumber,
                     $convertedAmount,
-                    $selectedCurrency,
+                    'IDR',
                     $paymentType,
                     $details
                 );
