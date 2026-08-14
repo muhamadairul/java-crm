@@ -12,7 +12,7 @@ class CompanyDefaultSeeder
     /**
      * Seed initial default data for a newly created tenant company.
      */
-    public static function seed(int $companyId): void
+    public static function seed(int $companyId, int $userId): void
     {
         // 1. Seed Default Pipeline & Stages
         $pipeline = Pipeline::create([
@@ -80,6 +80,7 @@ class CompanyDefaultSeeder
                 'company_id' => $companyId,
                 'created_at' => now(),
                 'updated_at' => now(),
+                'user_id' => $userId,
             ]));
         }
     }

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\Admin\Http\Controllers\RegistrationController;
+use Webkul\Admin\Http\Controllers\XenditWebhookController;
 
 /**
  * Home routes.
@@ -11,7 +13,7 @@ Route::get('/', [Controller::class, 'redirectToLogin'])->name('java-crm.home');
 /**
  * SaaS Tenant Registration Routes.
  */
-Route::controller(\Webkul\Admin\Http\Controllers\RegistrationController::class)->prefix('register')->group(function () {
+Route::controller(RegistrationController::class)->prefix('register')->group(function () {
     Route::get('step1', 'showStep1')->name('tenant.register.step1');
     Route::post('step1', 'postStep1')->name('tenant.register.step1.post');
     Route::get('step2', 'showStep2')->name('tenant.register.step2');
@@ -26,5 +28,5 @@ Route::controller(\Webkul\Admin\Http\Controllers\RegistrationController::class)-
 /**
  * Xendit Webhook Route.
  */
-Route::post('xendit/webhook', [\Webkul\Admin\Http\Controllers\XenditWebhookController::class, 'handle'])
+Route::post('xendit/webhook', [XenditWebhookController::class, 'handle'])
     ->name('xendit.webhook');

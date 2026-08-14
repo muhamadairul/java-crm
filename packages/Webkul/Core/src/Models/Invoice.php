@@ -25,6 +25,9 @@ class Invoice extends Model
         'paid_at',
         'due_date',
         'notes',
+        'bank_code',
+        'response_request',
+        'response_payment',
     ];
 
     /**

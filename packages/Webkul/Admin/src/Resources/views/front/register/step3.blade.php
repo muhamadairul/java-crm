@@ -150,7 +150,7 @@
                                 <button type="button" id="tab-EWALLET" onclick="switchPaymentMethod('EWALLET')" class="border border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center gap-1 focus:outline-none bg-white text-slate-800 hover:border-slate-300 transition-all font-bold text-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-200">
                                     <span>E-Wallet</span>
                                 </button>
-                                <button type="button" id="tab-QRIS" onclick="switchPaymentMethod('QRIS')" class="border border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center gap-1 focus:outline-none bg-white text-slate-800 hover:border-slate-300 transition-all font-bold text-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-200">
+                                <button type="button" id="tab-QR_CODE" onclick="switchPaymentMethod('QR_CODE')" class="border border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center gap-1 focus:outline-none bg-white text-slate-800 hover:border-slate-300 transition-all font-bold text-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-200">
                                     <span>QRIS</span>
                                 </button>
                             </div>
@@ -175,7 +175,7 @@
 
                             <div id="method-VIRTUAL_ACCOUNT" class="hidden space-y-3 pt-2">
                                 <label class="block text-xs font-bold text-slate-600 mb-1 dark:text-slate-400">{{ $isEn ? 'Select Bank:' : 'Pilih Bank Virtual Account:' }}</label>
-                                <select name="bank_code" class="block w-full rounded-xl border-slate-200 border px-3.5 py-2.5 text-xs focus:border-sky-500 focus:ring-sky-500 shadow-sm transition-colors dark:bg-slate-900 dark:border-slate-800 dark:text-white">
+                                <select name="va_bank" class="block w-full rounded-xl border-slate-200 border px-3.5 py-2.5 text-xs focus:border-sky-500 focus:ring-sky-500 shadow-sm transition-colors dark:bg-slate-900 dark:border-slate-800 dark:text-white">
                                     <option value="BCA">Bank BCA</option>
                                     <option value="MANDIRI">Bank Mandiri</option>
                                     <option value="BNI">Bank BNI</option>
@@ -194,7 +194,7 @@
                                 </select>
                             </div>
 
-                            <div id="method-QRIS" class="hidden space-y-3 text-center py-5 bg-white rounded-xl border border-slate-200/80 dark:bg-slate-900 dark:border-slate-800">
+                            <div id="method-QR_CODE" class="hidden space-y-3 text-center py-5 bg-white rounded-xl border border-slate-200/80 dark:bg-slate-900 dark:border-slate-800">
                                 <svg class="h-10 w-10 mx-auto text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                                 </svg>
@@ -253,7 +253,7 @@
     <script>
         function switchPaymentMethod(method) {
             document.getElementById('payment-method-type').value = method;
-            ['CARD', 'VIRTUAL_ACCOUNT', 'EWALLET', 'QRIS'].forEach(m => {
+            ['CARD', 'VIRTUAL_ACCOUNT', 'EWALLET', 'QR_CODE'].forEach(m => {
                 const tab = document.getElementById('tab-' + m);
                 const content = document.getElementById('method-' + m);
                 if (tab) {

@@ -107,11 +107,11 @@
                 </p>
                 
                 <!-- Currency Display (Fixed IDR) -->
-                <div class="inline-flex items-center gap-2 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-sm dark:bg-slate-950 dark:border-slate-800">
+                {{-- <div class="inline-flex items-center gap-2 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-sm dark:bg-slate-950 dark:border-slate-800">
                     <span class="text-xs font-bold text-slate-700 dark:text-white">
                         {{ $isEn ? 'Currency:' : 'Mata Uang:' }} <span class="text-sky-600 dark:text-sky-400">IDR (Rp)</span>
                     </span>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Form for Plan Submission -->

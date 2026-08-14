@@ -15,14 +15,14 @@ export default defineConfig(({ mode }) => {
 
         envDir,
 
-        server: {
-            host: process.env.VITE_HOST || "localhost",
-            port: process.env.VITE_PORT || 5173,
-            cors: true,
-            hmr: {
-                host: "192.168.1.5",
-            },
-        },
+        // server: {
+        //     host: process.env.VITE_HOST || "localhost",
+        //     port: process.env.VITE_PORT || 5173,
+        //     cors: true,
+        //     // hmr: {
+        //     //     host: "192.168.1.5",
+        //     // },
+        // },
 
         plugins: [
             vue(),

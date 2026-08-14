@@ -8,11 +8,15 @@ use Illuminate\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Webkul\Admin\Helpers\CompanyDefaultSeeder;
 use Webkul\Core\Models\Company;
 use Webkul\Core\Models\Plan;
 use Webkul\Core\Models\Subscription;
 use Webkul\Core\Models\Invoice;
 use Webkul\Core\Services\XenditService;
+use Webkul\User\Models\Role;
 use Webkul\User\Models\User;
 
 class RegistrationController extends Controller
@@ -147,6 +151,19 @@ class RegistrationController extends Controller
             return redirect()->route('tenant.register.step1');
         }
 
+        $validator = Validator::make($request->all(), [
+            'payment_method_type' => 'required|in:CARD,VIRTUAL_ACCOUNT,EWALLET,QR_CODE',
+        ]);
+
+        // dd($request->all());
+
+        if ($validator->fails()) {
+            Log::error('Validator failed: ' . $validator->errors()->first());
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $registrationData = session()->get('registration_data');
         $plan = Plan::where('code', $registrationData['plan_code'])->first();
 
@@ -155,18 +172,20 @@ class RegistrationController extends Controller
         $details = [];
         
         if ($plan->price > 0) {
-            $request->validate([
-                'payment_method_type' => 'required|in:CARD,VIRTUAL_ACCOUNT,EWALLET,QR_CODE',
-            ]);
-
             $paymentType = $request->payment_method_type;
 
             if ($paymentType === 'CARD') {
-                $request->validate([
+                $validator = Validator::make($request->all(), [
                     'card_number' => 'required|string',
                     'expiry_date' => 'required|string|regex:/^\d{2}\/\d{2}$/',
                     'cvv'         => 'required|string|digits:3',
                 ]);
+                if ($validator->fails()) {
+                    Log::error('Validator failed: ' . $validator->errors()->first());
+                    return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+                }
                 $expiryParts = explode('/', $request->expiry_date);
                 $details = [
                     'card_number'  => str_replace(' ', '', $request->card_number),
@@ -175,18 +194,30 @@ class RegistrationController extends Controller
                     'cvv'          => $request->cvv,
                 ];
             } elseif ($paymentType === 'VIRTUAL_ACCOUNT') {
-                $request->validate([
-                    'va_bank' => 'required|in:MANDIRI,BRI,BNI,PERMATA',
+                $validator = Validator::make($request->all(), [
+                    'va_bank' => 'required|in:MANDIRI,BRI,BNI,PERMATA,BCA',
                 ]);
+                if ($validator->fails()) {
+                    Log::error('Validator failed: ' . $validator->errors()->first());
+                    return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+                }
                 $details = [
                     'channel_code'  => $request->va_bank,
                     'customer_name' => 'Administrator',
                 ];
             } elseif ($paymentType === 'EWALLET') {
-                $request->validate([
+                $validator = Validator::make($request->all(), [
                     'ewallet_channel' => 'required|in:OVO,DANA,SHOPEEPAY',
                     'ewallet_phone'   => 'required_if:ewallet_channel,OVO|nullable|string',
                 ]);
+                if ($validator->fails()) {
+                    Log::error('Validator failed: ' . $validator->errors()->first());
+                    return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+                }
                 $details = [
                     'channel_code'  => $request->ewallet_channel,
                     'mobile_number' => $request->ewallet_phone,
@@ -194,6 +225,7 @@ class RegistrationController extends Controller
                 ];
             } elseif ($paymentType === 'QR_CODE') {
                 $details = [
+                    'channel_code' => 'QRIS',
                     'success_url' => route('java-crm.home'),
                 ];
             }
@@ -219,7 +251,7 @@ class RegistrationController extends Controller
             ]);
 
             // Auto-seed 2 default roles for this company
-            $companyAdminRole = \Webkul\User\Models\Role::create([
+            $companyAdminRole = Role::create([
                 'name'            => 'Company Admin',
                 'description'     => 'Administrator perusahaan dengan akses penuh ke semua fitur CRM.',
                 'permission_type' => 'all',
@@ -227,7 +259,7 @@ class RegistrationController extends Controller
                 'company_id'      => $company->id,
             ]);
 
-            \Webkul\User\Models\Role::create([
+            Role::create([
                 'name'            => 'Sales User',
                 'description'     => 'Pengguna sales dengan akses terbatas sesuai permission yang diberikan.',
                 'permission_type' => 'custom',
@@ -257,7 +289,7 @@ class RegistrationController extends Controller
             ]);
 
             // Seed default initial data (pipeline, stages, sources, types, groups, tags)
-            \Webkul\Admin\Helpers\CompanyDefaultSeeder::seed($company->id);
+            CompanyDefaultSeeder::seed($company->id, $adminUser->id);
 
             // Create Subscription Record
             $subscription = Subscription::create([
@@ -290,14 +322,14 @@ class RegistrationController extends Controller
                 $paymentResponse = $xenditService->createPaymentRequest(
                     $invoiceNumber,
                     $convertedAmount,
-                    'IDR',
-                    $paymentType,
                     $details
                 );
 
                 // Update invoice with Xendit response info
-                $invoice->xendit_invoice_id = $paymentResponse['id'] ?? null;
-                $invoice->notes = json_encode($paymentResponse);
+                $invoice->xendit_invoice_id = $paymentResponse['payment_request_id'] ?? null;
+                $invoice->xendit_invoice_url = $paymentResponse['actions']['value'] ?? null;
+                $invoice->bank_code = $paymentResponse['channel_code'] ?? null;
+                $invoice->response_request = json_encode($paymentResponse);
                 
                 // Card payments might authorisate/succeed immediately in mock or production API
                 if (isset($paymentResponse['status']) && strtoupper($paymentResponse['status']) === 'SUCCEEDED') {

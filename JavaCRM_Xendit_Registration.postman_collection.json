@@ -1,0 +1,451 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "JavaCRM - Registrasi Company & Pembayaran Xendit",
+		"description": "Collection khusus untuk menguji alur registrasi perusahaan baru (Tenant SaaS) dan integrasi pembayaran Xendit (Virtual Account, E-Wallet, QRIS, Card, & Webhook Callback).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. Alur Registrasi (Step 1 - 3)",
+			"item": [
+				{
+					"name": "Step 1: Input Data Perusahaan & Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company_name",
+									"value": "{{company_name}}",
+									"type": "text"
+								},
+								{
+									"key": "company_slug",
+									"value": "{{company_slug}}",
+									"type": "text"
+								},
+								{
+									"key": "company_phone",
+									"value": "{{company_phone}}",
+									"type": "text"
+								},
+								{
+									"key": "company_email",
+									"value": "{{company_email}}",
+									"type": "text"
+								},
+								{
+									"key": "company_address",
+									"value": "Jl. Jendral Sudirman No. 45, Jakarta",
+									"type": "text"
+								},
+								{
+									"key": "admin_email",
+									"value": "{{admin_email}}",
+									"type": "text"
+								},
+								{
+									"key": "admin_password",
+									"value": "{{admin_password}}",
+									"type": "text"
+								},
+								{
+									"key": "admin_password_confirmation",
+									"value": "{{admin_password}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/register/step1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								"step1"
+							]
+						},
+						"description": "Mengisi form Step 1 (Informasi Perusahaan dan Administrator Utama). Menyimpan data sementara ke dalam Session."
+					},
+					"response": []
+				},
+				{
+					"name": "Step 2: Pilih Paket Langganan (IDR)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "plan_code",
+									"value": "{{plan_code}}",
+									"description": "Pilihan: free, pro, enterprise",
+									"type": "text"
+								},
+								{
+									"key": "currency",
+									"value": "IDR",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/register/step2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								"step2"
+							]
+						},
+						"description": "Memilih paket langganan (misal 'pro' atau 'enterprise') dengan mata uang IDR."
+					},
+					"response": []
+				},
+				{
+					"name": "Step 3a: Checkout - Virtual Account (MANDIRI / BCA / BNI / BRI)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "payment_method_type",
+									"value": "VIRTUAL_ACCOUNT",
+									"type": "text"
+								},
+								{
+									"key": "va_bank",
+									"value": "MANDIRI",
+									"description": "Pilihan: MANDIRI, BRI, BNI, PERMATA",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/register/step3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								"step3"
+							]
+						},
+						"description": "Proses checkout registrasi perusahaan menggunakan Bank Virtual Account via Xendit."
+					},
+					"response": []
+				},
+				{
+					"name": "Step 3b: Checkout - E-Wallet (OVO / DANA / SHOPEEPAY)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "payment_method_type",
+									"value": "EWALLET",
+									"type": "text"
+								},
+								{
+									"key": "ewallet_channel",
+									"value": "OVO",
+									"description": "Pilihan: OVO, DANA, SHOPEEPAY",
+									"type": "text"
+								},
+								{
+									"key": "ewallet_phone",
+									"value": "081234567890",
+									"description": "Wajib diisi jika channel OVO",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/register/step3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								"step3"
+							]
+						},
+						"description": "Proses checkout registrasi perusahaan menggunakan E-Wallet via Xendit."
+					},
+					"response": []
+				},
+				{
+					"name": "Step 3c: Checkout - QRIS",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "payment_method_type",
+									"value": "QR_CODE",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/register/step3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								"step3"
+							]
+						},
+						"description": "Proses checkout registrasi perusahaan menggunakan QRIS via Xendit."
+					},
+					"response": []
+				},
+				{
+					"name": "Step 3d: Checkout - Kartu Kredit / Debit",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "payment_method_type",
+									"value": "CARD",
+									"type": "text"
+								},
+								{
+									"key": "card_number",
+									"value": "4000000000000000",
+									"type": "text"
+								},
+								{
+									"key": "expiry_date",
+									"value": "12/28",
+									"type": "text"
+								},
+								{
+									"key": "cvv",
+									"value": "123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/register/step3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								"step3"
+							]
+						},
+						"description": "Proses checkout registrasi perusahaan menggunakan Kartu Kredit/Debit via Xendit."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02. Cek Status Pembayaran",
+			"item": [
+				{
+					"name": "Halaman Pending Pembayaran",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/register/payment-pending/{{invoice_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								"payment-pending",
+								"{{invoice_id}}"
+							]
+						},
+						"description": "Membuka halaman instruksi pending pembayaran berdasarkan ID invoice."
+					},
+					"response": []
+				},
+				{
+					"name": "Cek Status Pembayaran (Auto Check)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/register/payment-check/{{invoice_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								"payment-check",
+								"{{invoice_id}}"
+							]
+						},
+						"description": "Mengecek status terkini invoice dari Xendit/database. Jika sudah lunas, user akan otomatis di-login dan di-redirect ke Dashboard."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "03. Simulasi & Webhook Callback Xendit",
+			"item": [
+				{
+					"name": "Simulasi Pembayaran Berhasil (Developer Helper)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/xendit/simulate-success/{{invoice_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"xendit",
+								"simulate-success",
+								"{{invoice_id}}"
+							]
+						},
+						"description": "Endpoint helper untuk mensimulasikan pembayaran invoice sukses secara instant saat testing/UAT."
+					},
+					"response": []
+				},
+				{
+					"name": "Official Xendit Webhook (payment_request.succeeded)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-callback-token",
+								"value": "{{x_callback_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event\": \"payment_request.succeeded\",\n    \"data\": {\n        \"id\": \"pr-8123h12k3-mock\",\n        \"reference_id\": \"{{invoice_number}}\",\n        \"status\": \"SUCCEEDED\",\n        \"amount\": 464000,\n        \"currency\": \"IDR\",\n        \"payment_method\": {\n            \"type\": \"VIRTUAL_ACCOUNT\",\n            \"virtual_account\": {\n                \"channel_code\": \"MANDIRI\"\n            }\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/xendit/webhook",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"xendit",
+								"webhook"
+							]
+						},
+						"description": "Endpoint Webhook resmi dari Xendit ketika pembayaran invoice berhasil dilunasi."
+					},
+					"response": []
+				},
+				{
+					"name": "Standard Xendit Callback (Legacy/Standard Format)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-callback-token",
+								"value": "{{x_callback_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reference_id\": \"{{invoice_number}}\",\n    \"id\": \"pr-8123h12k3-mock\",\n    \"status\": \"SUCCEEDED\",\n    \"payment_method\": \"VIRTUAL_ACCOUNT\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/xendit/callback",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"xendit",
+								"callback"
+							]
+						},
+						"description": "Standard webhook callback endpoint untuk notifikasi status pembayaran Xendit."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

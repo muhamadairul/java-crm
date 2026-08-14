@@ -33,6 +33,7 @@ class XenditWebhookController extends Controller
             return response()->json(['message' => 'Invalid callback token'], 401);
         }
 
+        // TODO: Mengubah struktur body webhook agar sesuai dengan dokumentasi xendit.
         $event = $request->input('event');
         $data = $request->input('data', []);
 
