@@ -152,10 +152,8 @@ class RegistrationController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'payment_method_type' => 'required|in:CARD,VIRTUAL_ACCOUNT,EWALLET,QR_CODE',
+            'payment_method_type' => 'required|in:VIRTUAL_ACCOUNT,QR_CODE',
         ]);
-
-        // dd($request->all());
 
         if ($validator->fails()) {
             Log::error('Validator failed: ' . $validator->errors()->first());
@@ -174,26 +172,7 @@ class RegistrationController extends Controller
         if ($plan->price > 0) {
             $paymentType = $request->payment_method_type;
 
-            if ($paymentType === 'CARD') {
-                $validator = Validator::make($request->all(), [
-                    'card_number' => 'required|string',
-                    'expiry_date' => 'required|string|regex:/^\d{2}\/\d{2}$/',
-                    'cvv'         => 'required|string|digits:3',
-                ]);
-                if ($validator->fails()) {
-                    Log::error('Validator failed: ' . $validator->errors()->first());
-                    return redirect()->back()
-                        ->withErrors($validator)
-                        ->withInput();
-                }
-                $expiryParts = explode('/', $request->expiry_date);
-                $details = [
-                    'card_number'  => str_replace(' ', '', $request->card_number),
-                    'expiry_month' => $expiryParts[0],
-                    'expiry_year'  => '20' . $expiryParts[1],
-                    'cvv'          => $request->cvv,
-                ];
-            } elseif ($paymentType === 'VIRTUAL_ACCOUNT') {
+            if ($paymentType === 'VIRTUAL_ACCOUNT') {
                 $validator = Validator::make($request->all(), [
                     'va_bank' => 'required|in:MANDIRI,BRI,BNI,PERMATA,BCA',
                 ]);
@@ -206,27 +185,12 @@ class RegistrationController extends Controller
                 $details = [
                     'channel_code'  => $request->va_bank,
                     'customer_name' => 'Administrator',
-                ];
-            } elseif ($paymentType === 'EWALLET') {
-                $validator = Validator::make($request->all(), [
-                    'ewallet_channel' => 'required|in:OVO,DANA,SHOPEEPAY',
-                    'ewallet_phone'   => 'required_if:ewallet_channel,OVO|nullable|string',
-                ]);
-                if ($validator->fails()) {
-                    Log::error('Validator failed: ' . $validator->errors()->first());
-                    return redirect()->back()
-                        ->withErrors($validator)
-                        ->withInput();
-                }
-                $details = [
-                    'channel_code'  => $request->ewallet_channel,
-                    'mobile_number' => $request->ewallet_phone,
                     'success_url'   => route('java-crm.home'),
                 ];
             } elseif ($paymentType === 'QR_CODE') {
                 $details = [
                     'channel_code' => 'QRIS',
-                    'success_url' => route('java-crm.home'),
+                    'success_url'  => route('java-crm.home'),
                 ];
             }
         }
@@ -326,21 +290,42 @@ class RegistrationController extends Controller
                 );
 
                 // Update invoice with Xendit response info
-                $invoice->xendit_invoice_id = $paymentResponse['payment_request_id'] ?? null;
-                $invoice->xendit_invoice_url = $paymentResponse['actions']['value'] ?? null;
-                $invoice->bank_code = $paymentResponse['channel_code'] ?? null;
-                $invoice->response_request = json_encode($paymentResponse);
+                $xenditInvoiceId = $paymentResponse['payment_request_id'] ?? ($paymentResponse['id'] ?? null);
                 
-                // Card payments might authorisate/succeed immediately in mock or production API
+                $xenditInvoiceUrl = null;
+                if (!empty($paymentResponse['actions']) && is_array($paymentResponse['actions'])) {
+                    foreach ($paymentResponse['actions'] as $act) {
+                        if (!empty($act['value'])) {
+                            $xenditInvoiceUrl = $act['value'];
+                            break;
+                        } elseif (!empty($act['url'])) {
+                            $xenditInvoiceUrl = $act['url'];
+                            break;
+                        }
+                    }
+                }
+                
+                $bankCode = $paymentResponse['channel_code'] ?? null;
+
+                Log::info('xenditInvoiceId', [$xenditInvoiceId]);
+                Log::info('xenditInvoiceUrl', [$xenditInvoiceUrl]);
+                Log::info('bankCode', [$bankCode]);
+
+                $invoice->xendit_invoice_id  = $xenditInvoiceId;
+                $invoice->xendit_invoice_url = $xenditInvoiceUrl;
+                $invoice->bank_code          = $bankCode;
+                $invoice->response_request   = json_encode($paymentResponse);
+                
+                // Immediate success check (e.g. simulation or immediate approval)
                 if (isset($paymentResponse['status']) && strtoupper($paymentResponse['status']) === 'SUCCEEDED') {
-                    $invoice->status = 'paid';
+                    $invoice->status  = 'paid';
                     $invoice->paid_at = now();
                     $invoice->save();
 
                     // Activate subscription and company
-                    $subscription->status = 'active';
+                    $subscription->status    = 'active';
                     $subscription->starts_at = now();
-                    $subscription->ends_at = $plan->billing_cycle === 'yearly' ? now()->addYear() : now()->addMonth();
+                    $subscription->ends_at   = $plan->billing_cycle === 'yearly' ? now()->addYear() : now()->addMonth();
                     $subscription->save();
 
                     $company->is_active = true;
@@ -349,7 +334,7 @@ class RegistrationController extends Controller
                     DB::commit();
                     session()->forget('registration_data');
                     auth()->guard('user')->login($adminUser);
-                    session()->flash('success', 'Pembayaran kartu berhasil dan akun Anda diaktifkan!');
+                    session()->flash('success', 'Pembayaran berhasil dan akun Anda telah diaktifkan!');
                     return redirect()->route('admin.dashboard.index');
                 }
 
@@ -400,7 +385,7 @@ class RegistrationController extends Controller
             return redirect()->route('tenant.register.step1');
         }
 
-        $paymentDetails = json_decode($invoice->notes, true) ?: [];
+        $paymentDetails = json_decode($invoice->response_request, true) ?: (json_decode($invoice->notes, true) ?: []);
 
         return view('admin::front.register.payment-pending', compact('invoice', 'paymentDetails'));
     }
@@ -408,16 +393,53 @@ class RegistrationController extends Controller
     /**
      * Check payment status.
      */
-    public function checkPaymentStatus($invoiceId): RedirectResponse
+    public function checkPaymentStatus(Request $request, $invoiceId): JsonResponse|RedirectResponse
     {
         $invoice = Invoice::find($invoiceId);
-        if ($invoice && $invoice->status === 'paid') {
+        
+        if (!$invoice) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['status' => 'not_found', 'message' => 'Tagihan tidak ditemukan'], 404);
+            }
+            return redirect()->route('tenant.register.step1');
+        }
+
+        if ($invoice->status === 'paid') {
             $adminUser = User::where('company_id', $invoice->company_id)->first();
             if ($adminUser) {
                 auth()->guard('user')->login($adminUser);
             }
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status'       => 'paid',
+                    'redirect_url' => route('admin.dashboard.index'),
+                    'message'      => 'Pembayaran Berhasil! Akun Admin Perusahaan Anda telah diaktifkan.',
+                ]);
+            }
+
             session()->flash('success', 'Pembayaran berhasil dikonfirmasi! Selamat datang di JavaCRM.');
             return redirect()->route('admin.dashboard.index');
+        }
+
+        if ($invoice->status === 'failed') {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status'       => 'failed',
+                    'redirect_url' => route('tenant.register.step3'),
+                    'message'      => 'Pembayaran Gagal atau Dibatalkan. Silakan selesaikan ulang pembayaran.',
+                ]);
+            }
+
+            session()->flash('error', 'Pembayaran Gagal. Silakan selesaikan ulang pembayaran.');
+            return redirect()->route('tenant.register.step3');
+        }
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status'  => 'pending',
+                'message' => 'Menunggu Pembayaran',
+            ]);
         }
 
         session()->flash('info', 'Pembayaran Anda masih diproses. Silakan selesaikan pembayaran sesuai petunjuk.');

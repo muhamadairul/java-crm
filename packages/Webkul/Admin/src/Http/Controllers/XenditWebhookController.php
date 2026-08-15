@@ -44,7 +44,6 @@ class XenditWebhookController extends Controller
             return response()->json(['message' => 'Missing reference_id or payment_request_id in data'], 400);
         }
 
-        // Find invoice by reference_id (invoice_number) or payment_request_id (xendit_invoice_id)
         $invoice = null;
         if ($referenceId) {
             $invoice = Invoice::where('invoice_number', $referenceId)->first();

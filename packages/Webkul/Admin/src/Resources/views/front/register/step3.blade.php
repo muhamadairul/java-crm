@@ -106,22 +106,22 @@
                 </div>
             @endif
 
+            <!-- Form for Payment Checkout -->
             <form action="{{ route('tenant.register.step3.post') }}" method="POST" id="checkout-form">
                 @csrf
-                
-                <input type="hidden" name="payment_method_type" id="payment-method-type" value="CARD">
+                <input type="hidden" name="payment_method_type" id="payment-method-type" value="VIRTUAL_ACCOUNT">
 
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
                     
-                    <!-- Left Side: Order summary & payment methods -->
+                    <!-- Left Side: Payment Method Options -->
                     <div class="lg:col-span-3 space-y-5">
                         
-                        <!-- Order Summary Card -->
+                        <!-- Order Details summary card -->
                         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/80 shadow-sm flex items-center justify-between dark:bg-slate-950 dark:border-slate-800">
                             <div class="flex items-center gap-3.5">
-                                <div class="h-10 w-10 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center dark:bg-sky-950 dark:text-sky-400">
+                                <div class="h-10 w-10 bg-sky-600/10 text-sky-600 rounded-xl flex items-center justify-center font-bold dark:bg-sky-500/20 dark:text-sky-400">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                                     </svg>
                                 </div>
                                 <div>
@@ -139,58 +139,27 @@
                         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/80 shadow-sm space-y-4 dark:bg-slate-950 dark:border-slate-800">
                             <h3 class="text-xs font-extrabold text-slate-800 uppercase tracking-wider dark:text-white">{{ $isEn ? 'Select Payment Method' : 'Pilih Metode Pembayaran' }}</h3>
                             
-                            <!-- Selection tabs -->
-                            <div class="grid grid-cols-4 gap-2.5">
-                                <button type="button" id="tab-CARD" onclick="switchPaymentMethod('CARD')" class="border-2 border-sky-600 rounded-xl p-3 flex flex-col items-center justify-center gap-1 focus:outline-none bg-sky-50/20 text-sky-600 transition-all font-bold text-xs dark:bg-sky-950/30">
-                                    <span>Kartu / Card</span>
+                            <!-- Selection tabs: VA & QRIS -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" id="tab-VIRTUAL_ACCOUNT" onclick="switchPaymentMethod('VIRTUAL_ACCOUNT')" class="border-2 border-sky-600 rounded-xl p-3 flex items-center justify-center gap-2 focus:outline-none bg-sky-50/20 text-sky-600 transition-all font-bold text-xs dark:bg-sky-950/30">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h6m-6 4h6m-6 4h6"/></svg>
+                                    <span>Bank Virtual Account</span>
                                 </button>
-                                <button type="button" id="tab-VIRTUAL_ACCOUNT" onclick="switchPaymentMethod('VIRTUAL_ACCOUNT')" class="border border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center gap-1 focus:outline-none bg-white text-slate-800 hover:border-slate-300 transition-all font-bold text-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-200">
-                                    <span>Bank VA</span>
-                                </button>
-                                <button type="button" id="tab-EWALLET" onclick="switchPaymentMethod('EWALLET')" class="border border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center gap-1 focus:outline-none bg-white text-slate-800 hover:border-slate-300 transition-all font-bold text-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-200">
-                                    <span>E-Wallet</span>
-                                </button>
-                                <button type="button" id="tab-QR_CODE" onclick="switchPaymentMethod('QR_CODE')" class="border border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center gap-1 focus:outline-none bg-white text-slate-800 hover:border-slate-300 transition-all font-bold text-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-200">
-                                    <span>QRIS</span>
+                                <button type="button" id="tab-QR_CODE" onclick="switchPaymentMethod('QR_CODE')" class="border border-slate-200 rounded-xl p-3 flex items-center justify-center gap-2 focus:outline-none bg-white text-slate-800 hover:border-slate-300 transition-all font-bold text-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-200">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                    <span>QRIS (QR Code)</span>
                                 </button>
                             </div>
 
                             <!-- Payment Method Form Blocks -->
-                            <div id="method-CARD" class="space-y-3 pt-2">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1 dark:text-slate-400">{{ $isEn ? 'Card Number' : 'Nomor Kartu Credit / Debit' }}</label>
-                                    <input type="text" placeholder="4000 0000 0000 0000" class="block w-full rounded-xl border-slate-200 border px-3.5 py-2.5 text-xs focus:border-sky-500 focus:ring-sky-500 shadow-sm transition-colors dark:bg-slate-900 dark:border-slate-800 dark:text-white">
-                                </div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1 dark:text-slate-400">Expiry (MM/YY)</label>
-                                        <input type="text" placeholder="12/28" class="block w-full rounded-xl border-slate-200 border px-3.5 py-2.5 text-xs focus:border-sky-500 focus:ring-sky-500 shadow-sm transition-colors dark:bg-slate-900 dark:border-slate-800 dark:text-white">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1 dark:text-slate-400">CVV</label>
-                                        <input type="text" placeholder="123" class="block w-full rounded-xl border-slate-200 border px-3.5 py-2.5 text-xs focus:border-sky-500 focus:ring-sky-500 shadow-sm transition-colors dark:bg-slate-900 dark:border-slate-800 dark:text-white">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="method-VIRTUAL_ACCOUNT" class="hidden space-y-3 pt-2">
+                            <div id="method-VIRTUAL_ACCOUNT" class="space-y-3 pt-2">
                                 <label class="block text-xs font-bold text-slate-600 mb-1 dark:text-slate-400">{{ $isEn ? 'Select Bank:' : 'Pilih Bank Virtual Account:' }}</label>
-                                <select name="va_bank" class="block w-full rounded-xl border-slate-200 border px-3.5 py-2.5 text-xs focus:border-sky-500 focus:ring-sky-500 shadow-sm transition-colors dark:bg-slate-900 dark:border-slate-800 dark:text-white">
-                                    <option value="BCA">Bank BCA</option>
-                                    <option value="MANDIRI">Bank Mandiri</option>
-                                    <option value="BNI">Bank BNI</option>
-                                    <option value="BRI">Bank BRI</option>
-                                    <option value="PERMATA">Bank Permata</option>
-                                </select>
-                            </div>
-
-                            <div id="method-EWALLET" class="hidden space-y-3 pt-2">
-                                <label class="block text-xs font-bold text-slate-600 mb-1 dark:text-slate-400">{{ $isEn ? 'Select E-Wallet Channel:' : 'Pilih Channel E-Wallet:' }}</label>
-                                <select name="ewallet_channel" class="block w-full rounded-xl border-slate-200 border px-3.5 py-2.5 text-xs focus:border-sky-500 focus:ring-sky-500 shadow-sm transition-colors dark:bg-slate-900 dark:border-slate-800 dark:text-white">
-                                    <option value="OVO">OVO</option>
-                                    <option value="DANA">DANA</option>
-                                    <option value="LINKAJA">LinkAja</option>
-                                    <option value="SHOPEEPAY">ShopeePay</option>
+                                <select name="va_bank" class="block w-full rounded-xl border-slate-200 border px-3.5 py-2.5 text-xs focus:border-sky-500 focus:ring-sky-500 shadow-sm transition-colors dark:bg-slate-900 dark:border-slate-800 dark:text-white font-semibold">
+                                    <option value="BCA">Bank BCA (Virtual Account)</option>
+                                    <option value="MANDIRI">Bank Mandiri (Virtual Account)</option>
+                                    <option value="BNI">Bank BNI (Virtual Account)</option>
+                                    <option value="BRI">Bank BRI (Virtual Account)</option>
+                                    <option value="PERMATA">Bank Permata (Virtual Account)</option>
                                 </select>
                             </div>
 
@@ -198,7 +167,7 @@
                                 <svg class="h-10 w-10 mx-auto text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                                 </svg>
-                                <p class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ $isEn ? 'QRIS code will be generated upon confirmation.' : 'Kode QRIS resmi akan diterbitkan setelah konfirmasi.' }}</p>
+                                <p class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ $isEn ? 'Official QRIS code will be generated upon confirmation.' : 'Kode QRIS resmi akan diterbitkan setelah konfirmasi.' }}</p>
                             </div>
                         </div>
                     </div>
@@ -253,7 +222,7 @@
     <script>
         function switchPaymentMethod(method) {
             document.getElementById('payment-method-type').value = method;
-            ['CARD', 'VIRTUAL_ACCOUNT', 'EWALLET', 'QR_CODE'].forEach(m => {
+            ['VIRTUAL_ACCOUNT', 'QR_CODE'].forEach(m => {
                 const tab = document.getElementById('tab-' + m);
                 const content = document.getElementById('method-' + m);
                 if (tab) {
@@ -267,8 +236,9 @@
 
             const activeTab = document.getElementById('tab-' + method);
             const activeContent = document.getElementById('method-' + method);
+
             if (activeTab) {
-                activeTab.classList.remove('border', 'border-slate-200', 'bg-white', 'text-slate-800', 'dark:bg-slate-950', 'dark:border-slate-800', 'dark:text-slate-200');
+                activeTab.classList.remove('border', 'border-slate-200', 'bg-white', 'text-slate-800', 'dark:bg-slate-900', 'dark:border-slate-800', 'dark:text-slate-200');
                 activeTab.classList.add('border-2', 'border-sky-600', 'bg-sky-50/20', 'text-sky-600', 'dark:bg-sky-950/30');
             }
             if (activeContent) {
