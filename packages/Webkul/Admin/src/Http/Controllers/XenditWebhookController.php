@@ -33,46 +33,56 @@ class XenditWebhookController extends Controller
             return response()->json(['message' => 'Invalid callback token'], 401);
         }
 
-        // TODO: Mengubah struktur body webhook agar sesuai dengan dokumentasi xendit.
-        $event = $request->input('event');
-        $data = $request->input('data', []);
+        $payload = $this->resolveWebhookPayload($request);
+        $event   = $payload['event'] ?? null;
+        $data    = $payload['data'] ?? [];
 
-        if ($event === 'payment_request.succeeded') {
-            $referenceId = $data['reference_id'] ?? null;
-            if (!$referenceId) {
-                return response()->json(['message' => 'Missing reference_id in data'], 400);
-            }
+        $referenceId      = $data['reference_id'] ?? null;
+        $paymentRequestId = $data['payment_request_id'] ?? null;
 
+        if (!$referenceId && !$paymentRequestId) {
+            return response()->json(['message' => 'Missing reference_id or payment_request_id in data'], 400);
+        }
+
+        // Find invoice by reference_id (invoice_number) or payment_request_id (xendit_invoice_id)
+        $invoice = null;
+        if ($referenceId) {
             $invoice = Invoice::where('invoice_number', $referenceId)->first();
-            if (!$invoice) {
-                return response()->json(['message' => 'Invoice not found'], 404);
-            }
+        }
+        if (!$invoice && $paymentRequestId) {
+            $invoice = Invoice::where('xendit_invoice_id', $paymentRequestId)->first();
+        }
 
+        if (!$invoice) {
+            return response()->json(['message' => 'Invoice not found'], 404);
+        }
+
+        // 1. Handle Payment Capture / Success
+        if (in_array($event, ['payment.capture', 'payment_request.succeeded']) || ($data['status'] ?? '') === 'SUCCEEDED') {
             if ($invoice->status === 'paid') {
                 return response()->json(['message' => 'Invoice already paid'], 200);
             }
 
-            // Update database records
             DB::beginTransaction();
             try {
                 // Update Invoice
-                $invoice->status = 'paid';
-                $invoice->paid_at = now();
-                $invoice->notes = json_encode($data);
+                $invoice->status           = 'paid';
+                $invoice->paid_at          = now();
+                $invoice->response_payment = json_encode($request->all());
+                $invoice->notes            = json_encode($data);
+                if (isset($data['channel_code'])) {
+                    $invoice->bank_code = $data['channel_code'];
+                }
                 $invoice->save();
 
                 // Update Subscription
                 $subscription = Subscription::find($invoice->subscription_id);
                 if ($subscription) {
-                    $subscription->status = 'active';
+                    $subscription->status    = 'active';
                     $subscription->starts_at = now();
                     
-                    // Set end date depending on billing cycle
-                    $plan = $subscription->plan;
-                    $endsAt = now()->addMonth();
-                    if ($plan && $plan->billing_cycle === 'yearly') {
-                        $endsAt = now()->addYear();
-                    }
+                    $plan   = $subscription->plan;
+                    $endsAt = ($plan && $plan->billing_cycle === 'yearly') ? now()->addYear() : now()->addMonth();
                     $subscription->ends_at = $endsAt;
                     $subscription->save();
                 }
@@ -100,7 +110,7 @@ class XenditWebhookController extends Controller
                 }
 
                 DB::commit();
-                return response()->json(['message' => 'Payment processed successfully'], 200);
+                return response()->json(['message' => 'Payment capture processed successfully'], 200);
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error('Xendit processing error: ' . $e->getMessage());
@@ -108,6 +118,80 @@ class XenditWebhookController extends Controller
             }
         }
 
+        // 2. Handle Payment Authorization
+        if ($event === 'payment.authorization' || ($data['status'] ?? '') === 'AUTHORIZED') {
+            $invoice->response_payment = json_encode($request->all());
+            $invoice->notes            = json_encode($data);
+            $invoice->save();
+
+            Log::info('Payment authorized for invoice: ' . $invoice->invoice_number);
+            return response()->json(['message' => 'Payment authorization recorded successfully'], 200);
+        }
+
+        // 3. Handle Payment Failure
+        if ($event === 'payment.failure' || ($data['status'] ?? '') === 'FAILED') {
+            $invoice->status           = 'failed';
+            $invoice->response_payment = json_encode($request->all());
+            $invoice->notes            = json_encode($data);
+            $invoice->save();
+
+            Log::warning('Payment failed for invoice: ' . $invoice->invoice_number, [
+                'failure_code' => $data['failure_code'] ?? 'UNKNOWN',
+            ]);
+            return response()->json(['message' => 'Payment failure recorded successfully'], 200);
+        }
+
         return response()->json(['message' => 'Event ignored'], 200);
+    }
+
+    /**
+     * Resolve the event name and data array from various Xendit webhook body structures.
+     * Supports:
+     * - paymentCapture.value
+     * - paymentAuthorization.value
+     * - paymentFailure.value
+     * - value (legacy/wrapper)
+     * - direct root format
+     */
+    protected function resolveWebhookPayload(Request $request): array
+    {
+        $body = $request->all();
+
+        if (isset($body['paymentCapture']['value'])) {
+            $val = $body['paymentCapture']['value'];
+            return [
+                'event' => $val['event'] ?? 'payment.capture',
+                'data'  => $val['data'] ?? [],
+            ];
+        }
+
+        if (isset($body['paymentAuthorization']['value'])) {
+            $val = $body['paymentAuthorization']['value'];
+            return [
+                'event' => $val['event'] ?? 'payment.authorization',
+                'data'  => $val['data'] ?? [],
+            ];
+        }
+
+        if (isset($body['paymentFailure']['value'])) {
+            $val = $body['paymentFailure']['value'];
+            return [
+                'event' => $val['event'] ?? 'payment.failure',
+                'data'  => $val['data'] ?? [],
+            ];
+        }
+
+        if (isset($body['value'])) {
+            $val = $body['value'];
+            return [
+                'event' => $val['event'] ?? $request->input('event'),
+                'data'  => $val['data'] ?? $val,
+            ];
+        }
+
+        return [
+            'event' => $request->input('event'),
+            'data'  => $request->input('data', $body),
+        ];
     }
 }

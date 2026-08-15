@@ -142,7 +142,7 @@
 								{
 									"key": "va_bank",
 									"value": "MANDIRI",
-									"description": "Pilihan: MANDIRI, BRI, BNI, PERMATA",
+									"description": "Pilihan: MANDIRI, BRI, BNI, PERMATA, BCA",
 									"type": "text"
 								}
 							]
@@ -347,8 +347,110 @@
 			]
 		},
 		{
-			"name": "03. Simulasi & Webhook Callback Xendit",
+			"name": "03. Webhook Callback Xendit",
 			"item": [
+				{
+					"name": "Xendit Webhook - Payment Capture (SUCCEEDED)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-callback-token",
+								"value": "{{x_callback_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentCapture\": {\n    \"value\": {\n      \"event\": \"payment.capture\",\n      \"business_id\": \"6094fa76c2fd53701b8e079c\",\n      \"created\": \"2021-12-02T14:52:21.566Z\",\n      \"data\": {\n        \"payment_id\": \"py-1fdaf346-dd2e-4b6c-b938-124c7167a822\",\n        \"business_id\": \"6094fa76c2fd53701b8e079c\",\n        \"status\": \"SUCCEEDED\",\n        \"payment_request_id\": \"pr-1fdaf346-dd2e-4b6c-b938-124c7167a822\",\n        \"request_amount\": 464000,\n        \"customer_id\": \"cust-5ed61c4e-499f-49bd-9d90-f3f45028a7a3\",\n        \"channel_code\": \"BRI_VIRTUAL_ACCOUNT\",\n        \"country\": \"ID\",\n        \"currency\": \"IDR\",\n        \"reference_id\": \"{{invoice_number}}\",\n        \"description\": \"Payment subscription\",\n        \"channel_properties\": {\n          \"failure_return_url\": \"https://xendit.co/failure\",\n          \"success_return_url\": \"https://xendit.co/success\"\n        },\n        \"type\": \"SINGLE_PAYMENT\",\n        \"created\": \"2021-12-02T14:52:21.566Z\",\n        \"updated\": \"2021-12-02T14:52:21.566Z\"\n      }\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/xendit/webhook",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"xendit",
+								"webhook"
+							]
+						},
+						"description": "Endpoint Webhook Xendit untuk event payment.capture (Pembayaran Sukses/Lunas)."
+					},
+					"response": []
+				},
+				{
+					"name": "Xendit Webhook - Payment Authorization (AUTHORIZED)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-callback-token",
+								"value": "{{x_callback_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentAuthorization\": {\n    \"value\": {\n      \"event\": \"payment.authorization\",\n      \"business_id\": \"6094fa76c2fd53701b8e079c\",\n      \"created\": \"2021-12-02T14:52:21.566Z\",\n      \"data\": {\n        \"payment_id\": \"py-1fdaf346-dd2e-4b6c-b938-124c7167a822\",\n        \"business_id\": \"6094fa76c2fd53701b8e079c\",\n        \"status\": \"AUTHORIZED\",\n        \"payment_request_id\": \"pr-1fdaf346-dd2e-4b6c-b938-124c7167a822\",\n        \"request_amount\": 464000,\n        \"customer_id\": \"cust-5ed61c4e-499f-49bd-9d90-f3f45028a7a3\",\n        \"channel_code\": \"CARDS\",\n        \"country\": \"ID\",\n        \"currency\": \"IDR\",\n        \"reference_id\": \"{{invoice_number}}\",\n        \"description\": \"Payment description\",\n        \"channel_properties\": {\n          \"failure_return_url\": \"https://xendit.co/failure\",\n          \"success_return_url\": \"https://xendit.co/success\"\n        },\n        \"type\": \"SINGLE_PAYMENT\",\n        \"created\": \"2021-12-02T14:52:21.566Z\",\n        \"updated\": \"2021-12-02T14:52:21.566Z\"\n      }\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/xendit/webhook",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"xendit",
+								"webhook"
+							]
+						},
+						"description": "Endpoint Webhook Xendit untuk event payment.authorization (Otorisasi Pembayaran Kartu)."
+					},
+					"response": []
+				},
+				{
+					"name": "Xendit Webhook - Payment Failure (FAILED)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-callback-token",
+								"value": "{{x_callback_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentFailure\": {\n    \"value\": {\n      \"event\": \"payment.failure\",\n      \"business_id\": \"6094fa76c2fd53701b8e079c\",\n      \"created\": \"2021-12-02T14:52:21.566Z\",\n      \"data\": {\n        \"payment_id\": \"py-1fdaf346-dd2e-4b6c-b938-124c7167a822\",\n        \"business_id\": \"6094fa76c2fd53701b8e079c\",\n        \"status\": \"FAILED\",\n        \"payment_request_id\": \"pr-1fdaf346-dd2e-4b6c-b938-124c7167a822\",\n        \"request_amount\": 464000,\n        \"customer_id\": \"cust-5ed61c4e-499f-49bd-9d90-f3f45028a7a3\",\n        \"channel_code\": \"CARDS\",\n        \"country\": \"ID\",\n        \"currency\": \"IDR\",\n        \"reference_id\": \"{{invoice_number}}\",\n        \"description\": \"Payment description\",\n        \"failure_code\": \"INSUFFICIENT_BALANCE\",\n        \"channel_properties\": {\n          \"failure_return_url\": \"https://xendit.co/failure\",\n          \"success_return_url\": \"https://xendit.co/success\"\n        },\n        \"type\": \"SINGLE_PAYMENT\",\n        \"created\": \"2021-12-02T14:52:21.566Z\",\n        \"updated\": \"2021-12-02T14:52:21.566Z\"\n      }\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/xendit/webhook",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"xendit",
+								"webhook"
+							]
+						},
+						"description": "Endpoint Webhook Xendit untuk event payment.failure (Pembayaran Gagal)."
+					},
+					"response": []
+				},
 				{
 					"name": "Simulasi Pembayaran Berhasil (Developer Helper)",
 					"request": {
@@ -373,75 +475,6 @@
 							]
 						},
 						"description": "Endpoint helper untuk mensimulasikan pembayaran invoice sukses secara instant saat testing/UAT."
-					},
-					"response": []
-				},
-				{
-					"name": "Official Xendit Webhook (payment_request.succeeded)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "x-callback-token",
-								"value": "{{x_callback_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"event\": \"payment_request.succeeded\",\n    \"data\": {\n        \"id\": \"pr-8123h12k3-mock\",\n        \"reference_id\": \"{{invoice_number}}\",\n        \"status\": \"SUCCEEDED\",\n        \"amount\": 464000,\n        \"currency\": \"IDR\",\n        \"payment_method\": {\n            \"type\": \"VIRTUAL_ACCOUNT\",\n            \"virtual_account\": {\n                \"channel_code\": \"MANDIRI\"\n            }\n        }\n    }\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/xendit/webhook",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"xendit",
-								"webhook"
-							]
-						},
-						"description": "Endpoint Webhook resmi dari Xendit ketika pembayaran invoice berhasil dilunasi."
-					},
-					"response": []
-				},
-				{
-					"name": "Standard Xendit Callback (Legacy/Standard Format)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "x-callback-token",
-								"value": "{{x_callback_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"reference_id\": \"{{invoice_number}}\",\n    \"id\": \"pr-8123h12k3-mock\",\n    \"status\": \"SUCCEEDED\",\n    \"payment_method\": \"VIRTUAL_ACCOUNT\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/xendit/callback",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"xendit",
-								"callback"
-							]
-						},
-						"description": "Standard webhook callback endpoint untuk notifikasi status pembayaran Xendit."
 					},
 					"response": []
 				}
