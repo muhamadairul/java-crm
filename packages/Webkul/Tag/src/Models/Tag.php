@@ -22,6 +22,7 @@ class Tag extends Model implements TagContract
         'name',
         'color',
         'user_id',
+        'company_id',
     ];
 
     /**

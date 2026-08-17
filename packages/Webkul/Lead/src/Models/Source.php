@@ -19,6 +19,7 @@ class Source extends Model implements SourceContract
      */
     protected $fillable = [
         'name',
+        'company_id',
     ];
 
     /**

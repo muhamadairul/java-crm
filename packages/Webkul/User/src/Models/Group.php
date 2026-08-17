@@ -17,6 +17,7 @@ class Group extends Model implements GroupContract
     protected $fillable = [
         'name',
         'description',
+        'company_id',
     ];
 
     /**

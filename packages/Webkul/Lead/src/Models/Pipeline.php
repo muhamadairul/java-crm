@@ -21,6 +21,7 @@ class Pipeline extends Model implements PipelineContract
         'name',
         'rotten_days',
         'is_default',
+        'company_id',
     ];
 
     /**
