@@ -144,7 +144,7 @@
                                 </span>
                                 <h3 class="text-lg font-extrabold text-slate-800 mt-1 dark:text-white">{{ $plan->name }}</h3>
                                 <div class="mt-2 flex items-baseline">
-                                    <span class="text-xl font-extrabold text-slate-900 dark:text-white">Rp {{ number_format($plan->converted_price, 0, ',', '.') }}</span>
+                                    <span class="text-xl font-extrabold text-slate-900 dark:text-white">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
                                     <span class="text-slate-400 text-xs font-semibold ml-1">/{{ $plan->billing_cycle === 'yearly' ? ($isEn ? 'year' : 'tahun') : ($isEn ? 'month' : 'bulan') }}</span>
                                 </div>
                                 <p class="mt-2 text-[11px] text-slate-500 font-medium leading-relaxed dark:text-slate-400">

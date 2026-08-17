@@ -130,7 +130,7 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-lg font-extrabold text-slate-900 dark:text-white">Rp {{ number_format($plan->converted_price, 0, ',', '.') }}</span>
+                                <span class="text-lg font-extrabold text-slate-900 dark:text-white">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
                                 <p class="text-[11px] text-slate-400 font-medium dark:text-slate-500">/{{ $plan->billing_cycle === 'yearly' ? ($isEn ? 'year' : 'tahun') : ($isEn ? 'month' : 'bulan') }}</p>
                             </div>
                         </div>
@@ -180,7 +180,7 @@
                             <div class="space-y-2 text-xs">
                                 <div class="flex justify-between text-slate-500 dark:text-slate-400">
                                     <span>{{ $isEn ? 'Subtotal Package' : 'Subtotal Paket' }} {{ $plan->name }}</span>
-                                    <span class="font-bold text-slate-800 dark:text-white">Rp {{ number_format($plan->converted_price, 0, ',', '.') }}</span>
+                                    <span class="font-bold text-slate-800 dark:text-white">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
                                 </div>
                                 <div class="flex justify-between text-slate-500 dark:text-slate-400">
                                     <span>{{ $isEn ? 'Tax & Admin Fee' : 'Pajak & Biaya Admin' }}</span>
@@ -190,7 +190,7 @@
 
                             <div class="pt-3 border-t border-slate-200/80 flex justify-between items-center dark:border-slate-800">
                                 <span class="text-xs font-extrabold text-slate-900 dark:text-white">{{ $isEn ? 'Total Tagihan' : 'Total Tagihan' }}</span>
-                                <span class="text-xl font-extrabold text-sky-600 dark:text-sky-400">Rp {{ number_format($plan->converted_price, 0, ',', '.') }}</span>
+                                <span class="text-xl font-extrabold text-sky-600 dark:text-sky-400">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
                             </div>
 
                             <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-sky-600/20 transition-all text-xs flex items-center justify-center gap-2 hover:scale-[1.01] mt-3">

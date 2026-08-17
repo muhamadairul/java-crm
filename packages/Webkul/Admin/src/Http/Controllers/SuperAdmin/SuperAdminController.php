@@ -179,9 +179,6 @@ class SuperAdminController extends Controller
         $mrr = 0.0;
         foreach ($activeCompaniesWithPlans as $p) {
             $price = (float) $p->price;
-            if ($price > 0 && $price < 1000) {
-                $price = $price * 16000.0; // Standardize IDR
-            }
             if ($p->billing_cycle === 'yearly') {
                 $mrr += ($price / 12.0);
             } else {

@@ -96,7 +96,7 @@ class RegistrationController extends Controller
         $plans = Plan::where('is_active', true)->orderBy('sort_order')->get();
 
         foreach ($plans as $plan) {
-            $plan->converted_price = ($plan->price > 0 && $plan->price < 1000) ? $plan->price * 16000.0 : $plan->price;
+            $plan->converted_price = $plan->price;
         }
 
         $selectedPlanCode = session()->get('registration_data.plan_code', 'pro');
@@ -138,7 +138,7 @@ class RegistrationController extends Controller
         $selectedCurrency = 'IDR';
         $currencySymbol = 'Rp ';
 
-        $plan->converted_price = ($plan->price > 0 && $plan->price < 1000) ? $plan->price * 16000.0 : $plan->price;
+        $plan->converted_price = $plan->price;
 
         return view('admin::front.register.step3', compact('registrationData', 'plan', 'selectedCurrency', 'currencySymbol'));
     }
@@ -267,7 +267,7 @@ class RegistrationController extends Controller
 
             if ($isPaid) {
                 $selectedCurrency = 'IDR';
-                $convertedAmount = ($plan->price > 0 && $plan->price < 1000) ? $plan->price * 16000.0 : $plan->price;
+                $convertedAmount = $plan->price;
 
                 $invoiceNumber = 'INV-' . strtoupper(Str::random(10));
                 
