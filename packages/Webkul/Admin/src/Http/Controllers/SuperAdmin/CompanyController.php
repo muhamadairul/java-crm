@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\Admin\Models\SuperAdminAuditLog;
 use Webkul\Core\Models\Company;
 use Webkul\Core\Models\Plan;
 
@@ -69,7 +70,7 @@ class CompanyController extends Controller
                 ->value('id') ?? 2;
 
             // Create initial admin user for this company
-            DB::table('users')->insert([
+            $adminUserId = DB::table('users')->insertGetId([
                 'name'       => $request->admin_name,
                 'email'      => $request->admin_email,
                 'password'   => Hash::make('password123'),
@@ -81,7 +82,7 @@ class CompanyController extends Controller
             ]);
 
             // Seed default initial data (pipeline, stages, sources, types, groups, tags)
-            \Webkul\Admin\Helpers\CompanyDefaultSeeder::seed($company->id);
+            \Webkul\Admin\Helpers\CompanyDefaultSeeder::seed($company->id, $adminUserId);
 
             // Create an active subscription
             $plan = Plan::find($request->plan_id);
@@ -96,6 +97,8 @@ class CompanyController extends Controller
             ]);
 
             DB::commit();
+
+            SuperAdminAuditLog::log('create_company', 'company', "Membuat perusahaan baru '{$company->name}' (ID: {$company->id})");
 
             session()->flash('success', "Perusahaan {$company->name} berhasil dibuat. Admin awal: {$request->admin_email} (password: password123)");
 
@@ -120,6 +123,9 @@ class CompanyController extends Controller
         $company->save();
 
         $statusText = $company->is_active ? 'diaktifkan' : 'dinonaktifkan';
+        
+        SuperAdminAuditLog::log('toggle_company_status', 'company', "Mengubah status keaktifan perusahaan '{$company->name}' (ID: {$company->id}) menjadi {$statusText}");
+
         session()->flash('success', "Perusahaan {$company->name} berhasil {$statusText}.");
 
         return redirect()->back();
@@ -157,6 +163,8 @@ class CompanyController extends Controller
             $company->delete();
 
             DB::commit();
+
+            SuperAdminAuditLog::log('delete_company', 'company', "Menghapus perusahaan '{$companyName}' (ID: {$id}) beserta seluruh datanya");
 
             session()->flash('success', "Perusahaan {$companyName} dan seluruh datanya berhasil dihapus.");
         } catch (\Exception $e) {
@@ -205,6 +213,8 @@ class CompanyController extends Controller
             $activeSub->plan_id = $request->plan_id;
             $activeSub->save();
         }
+
+        SuperAdminAuditLog::log('update_company', 'company', "Memperbarui detail perusahaan '{$company->name}' (ID: {$company->id})");
 
         session()->flash('success', "Detail perusahaan {$company->name} berhasil diperbarui.");
 

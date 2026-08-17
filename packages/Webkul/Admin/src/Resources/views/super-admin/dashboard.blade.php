@@ -13,8 +13,8 @@
 
         <script type="text/x-template" id="v-super-admin-dashboard-template">
             <div class="flex flex-col gap-6">
-                {{-- ── Header ─────────────────────────────────────────────── --}}
-                <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-6 py-5 dark:border-gray-800 dark:bg-gray-900">
+                {{-- ── Header & Filter Bar ─────────────────────────────────── --}}
+                <div class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white px-6 py-5 dark:border-gray-800 dark:bg-gray-900">
                     <div class="flex flex-col gap-1">
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
                             @lang('admin::app.super_admin.dashboard.title')
@@ -23,12 +23,82 @@
                             @lang('admin::app.super_admin.dashboard.description')
                         </p>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <span class="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300">
-                            <span class="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-                            @lang('admin::app.super_admin.title')
-                        </span>
-                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ now()->translatedFormat('d F Y') }}</span>
+
+                    <!-- Date Range Filter Form -->
+                    <form method="GET" action="{{ route('super_admin.dashboard.index') }}" class="flex items-center gap-3">
+                        <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-gray-800 dark:bg-gray-950">
+                            <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <select name="preset" onchange="this.form.submit()" class="bg-transparent text-xs font-semibold text-gray-700 focus:outline-none dark:text-gray-200">
+                                <option value="all" {{ ($preset ?? 'all') === 'all' ? 'selected' : '' }}>Semua Periode</option>
+                                <option value="7days" {{ ($preset ?? '') === '7days' ? 'selected' : '' }}>7 Hari Terakhir</option>
+                                <option value="30days" {{ ($preset ?? '') === '30days' ? 'selected' : '' }}>30 Hari Terakhir</option>
+                                <option value="this_month" {{ ($preset ?? '') === 'this_month' ? 'selected' : '' }}>Bulan Ini</option>
+                                <option value="last_month" {{ ($preset ?? '') === 'last_month' ? 'selected' : '' }}>Bulan Lalu</option>
+                                <option value="this_year" {{ ($preset ?? '') === 'this_year' ? 'selected' : '' }}>Tahun Ini</option>
+                            </select>
+                        </div>
+                        <a href="{{ route('super_admin.audit_logs.index') }}" class="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                            📜 Audit Logs
+                        </a>
+                    </form>
+                </div>
+
+                {{-- ── SaaS Revenue & Churn Cards (MRR, ARR, ARPU, Churn Rate) ──── --}}
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                    {{-- MRR --}}
+                    <div class="rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50/50 to-white p-5 shadow-xs dark:border-blue-900/50 dark:from-blue-950/20 dark:to-gray-900">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">MRR (Monthly Recurring)</p>
+                                <h3 class="mt-1 text-2xl font-black text-gray-900 dark:text-white">Rp {{ number_format($mrr, 0, ',', '.') }}</h3>
+                                <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">Estimasi pendapatan bulanan aktif</p>
+                            </div>
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-600/20">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ARR --}}
+                    <div class="rounded-xl border border-purple-100 bg-gradient-to-br from-purple-50/50 to-white p-5 shadow-xs dark:border-purple-900/50 dark:from-purple-950/20 dark:to-gray-900">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-purple-600 dark:text-purple-400">ARR (Annual Recurring)</p>
+                                <h3 class="mt-1 text-2xl font-black text-gray-900 dark:text-white">Rp {{ number_format($arr, 0, ',', '.') }}</h3>
+                                <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">Proyeksi tahunan ($\text{MRR} \times 12$)</p>
+                            </div>
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-600 text-white shadow-md shadow-purple-600/20">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ARPU --}}
+                    <div class="rounded-xl border border-emerald-100 bg-gradient-to-br from-emerald-50/50 to-white p-5 shadow-xs dark:border-emerald-900/50 dark:from-emerald-950/20 dark:to-gray-900">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">ARPU (Rata-rata / Tenant)</p>
+                                <h3 class="mt-1 text-2xl font-black text-gray-900 dark:text-white">Rp {{ number_format($arpu, 0, ',', '.') }}</h3>
+                                <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">Rata-rata pendapatan per tenant</p>
+                            </div>
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Churn Rate --}}
+                    <div class="rounded-xl border border-rose-100 bg-gradient-to-br from-rose-50/50 to-white p-5 shadow-xs dark:border-rose-900/50 dark:from-rose-950/20 dark:to-gray-900">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400">Churn Rate (30 Hari)</p>
+                                <h3 class="mt-1 text-2xl font-black text-gray-900 dark:text-white">{{ $churnRate }}%</h3>
+                                <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">Tingkat pembatalan / kadaluarsa</p>
+                            </div>
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-600 text-white shadow-md shadow-rose-600/20">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -420,6 +490,105 @@
                             </div>
                         @endif
                     </div>
+                </div>
+
+                {{-- ── Advanced Row: Tenant Health Score & Audit Trail ─────── --}}
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+                    {{-- Tenant Health Score / At-Risk Tenants --}}
+                    <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+                        <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4 dark:border-gray-800">
+                            <div>
+                                <h3 class="text-base font-bold text-gray-900 dark:text-white">Tenant Health Score (At-Risk Monitoring)</h3>
+                                <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">Analisis keaktifan & risiko churn tenant</p>
+                            </div>
+                            <span class="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700 border border-amber-200">
+                                Customer Health
+                            </span>
+                        </div>
+                        @if($atRiskTenants->isEmpty())
+                            <div class="px-6 py-10 text-center">
+                                <p class="text-xs text-gray-400">Seluruh tenant dalam kondisi sangat sehat (Healthy).</p>
+                            </div>
+                        @else
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b border-gray-100 dark:border-gray-800">
+                                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">Perusahaan</th>
+                                            <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">Health Score</th>
+                                            <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">Status Active</th>
+                                            <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-400">Kategori</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+                                        @foreach($atRiskTenants as $t)
+                                            <tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                                <td class="px-6 py-3.5">
+                                                    <a href="{{ route('super_admin.companies.show', $t['id']) }}" class="text-xs font-bold text-gray-900 hover:text-blue-600 dark:text-white">
+                                                        {{ $t['name'] }}
+                                                    </a>
+                                                    <span class="block text-[10px] text-gray-400">{{ $t['plan_name'] ?? '-' }}</span>
+                                                </td>
+                                                <td class="px-4 py-3.5 text-center">
+                                                    <div class="inline-flex items-center gap-1.5 font-black text-xs">
+                                                        <span class="h-2 w-2 rounded-full {{ $t['score'] < 40 ? 'bg-rose-500' : ($t['score'] < 80 ? 'bg-amber-500' : 'bg-emerald-500') }}"></span>
+                                                        <span>{{ $t['score'] }}/100</span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3.5 text-center text-xs text-gray-500">
+                                                    {{ $t['lead_count'] }} leads • {{ $t['user_count'] }} users
+                                                </td>
+                                                <td class="px-6 py-3.5 text-right">
+                                                    <span class="inline-flex rounded-md border px-2 py-0.5 text-[10px] font-extrabold uppercase {{ $t['status_badge_class'] }}">
+                                                        {{ $t['status_category'] }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Audit Trail Activity Log Feed --}}
+                    <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+                        <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4 dark:border-gray-800">
+                            <div>
+                                <h3 class="text-base font-bold text-gray-900 dark:text-white">Super Admin Audit Trail Log</h3>
+                                <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">5 aktivitas administratif terakhir</p>
+                            </div>
+                            <a href="{{ route('super_admin.audit_logs.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800 dark:text-blue-400">
+                                Semua Log →
+                            </a>
+                        </div>
+                        @if($recentAuditLogs->isEmpty())
+                            <div class="px-6 py-10 text-center">
+                                <p class="text-xs text-gray-400">Belum ada log aktivitas tercatat.</p>
+                            </div>
+                        @else
+                            <div class="divide-y divide-gray-100 p-4 dark:divide-gray-800">
+                                @foreach($recentAuditLogs as $log)
+                                    <div class="flex items-start justify-between py-2.5">
+                                        <div class="flex flex-col gap-0.5">
+                                            <div class="flex items-center gap-2">
+                                                <span class="inline-flex rounded-md bg-blue-50 px-1.5 py-0.5 text-[9px] font-extrabold text-blue-700 uppercase">
+                                                    {{ $log->module }}
+                                                </span>
+                                                <span class="text-xs font-bold text-gray-800 dark:text-gray-200">{{ $log->action }}</span>
+                                            </div>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $log->description }}</p>
+                                        </div>
+                                        <span class="text-[10px] text-gray-400 whitespace-nowrap">
+                                            {{ $log->created_at->diffForHumans() }}
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+
                 </div>
 
                 {{-- ── Status Platform ────────────────────────────────────── --}}

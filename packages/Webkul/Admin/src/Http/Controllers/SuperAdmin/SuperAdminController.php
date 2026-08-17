@@ -71,14 +71,54 @@ class SuperAdminController extends Controller
     /**
      * Show Super Admin Dashboard.
      */
-    public function index(): View
+    /**
+     * Show Super Admin Dashboard with Advanced Analytics (Fase 1-4).
+     */
+    public function index(Request $request): View
     {
         $now = now();
         $startOfMonth = $now->copy()->startOfMonth();
         $startOfLastMonth = $now->copy()->subMonth()->startOfMonth();
         $endOfLastMonth = $now->copy()->subMonth()->endOfMonth();
 
+        // ── Date Range Filter Handling ────────────────────────────────
+        $preset = $request->query('preset', 'all');
+        $startDate = null;
+        $endDate = null;
+
+        if ($preset === '7days') {
+            $startDate = $now->copy()->subDays(7)->startOfDay();
+            $endDate = $now->copy()->endOfDay();
+        } elseif ($preset === '30days') {
+            $startDate = $now->copy()->subDays(30)->startOfDay();
+            $endDate = $now->copy()->endOfDay();
+        } elseif ($preset === 'this_month') {
+            $startDate = $startOfMonth;
+            $endDate = $now->copy()->endOfDay();
+        } elseif ($preset === 'last_month') {
+            $startDate = $startOfLastMonth;
+            $endDate = $endOfLastMonth;
+        } elseif ($preset === 'this_year') {
+            $startDate = $now->copy()->startOfYear();
+            $endDate = $now->copy()->endOfDay();
+        } elseif ($request->filled('start_date') && $request->filled('end_date')) {
+            $startDate = \Carbon\Carbon::parse($request->query('start_date'))->startOfDay();
+            $endDate = \Carbon\Carbon::parse($request->query('end_date'))->endOfDay();
+        }
+
         // ── Core Metrics ──────────────────────────────────────────────
+        $companyQuery = DB::table('companies');
+        $userQuery = DB::table('users')->whereNotNull('company_id');
+        $leadQuery = DB::table('leads');
+        $invoiceQuery = DB::table('invoices')->where('status', 'paid');
+
+        if ($startDate && $endDate) {
+            $companyQuery->whereBetween('created_at', [$startDate, $endDate]);
+            $userQuery->whereBetween('created_at', [$startDate, $endDate]);
+            $leadQuery->whereBetween('created_at', [$startDate, $endDate]);
+            $invoiceQuery->whereBetween('paid_at', [$startDate, $endDate]);
+        }
+
         $totalCompanies = DB::table('companies')->count();
         $totalActiveCompanies = DB::table('companies')->where('is_active', true)->count();
         $totalUsers = DB::table('users')->whereNotNull('company_id')->count();
@@ -128,6 +168,103 @@ class SuperAdminController extends Controller
         $revenueChange = $revenueLastMonth > 0
             ? round((($revenueThisMonth - $revenueLastMonth) / $revenueLastMonth) * 100, 1)
             : ($revenueThisMonth > 0 ? 100 : 0);
+
+        // ── SaaS Advanced Metrics: MRR, ARR, ARPU ─────────────────────
+        $activeCompaniesWithPlans = DB::table('companies')
+            ->join('plans', 'companies.plan_id', '=', 'plans.id')
+            ->where('companies.is_active', true)
+            ->select('plans.price', 'plans.billing_cycle')
+            ->get();
+
+        $mrr = 0.0;
+        foreach ($activeCompaniesWithPlans as $p) {
+            $price = (float) $p->price;
+            if ($price > 0 && $price < 1000) {
+                $price = $price * 16000.0; // Standardize IDR
+            }
+            if ($p->billing_cycle === 'yearly') {
+                $mrr += ($price / 12.0);
+            } else {
+                $mrr += $price;
+            }
+        }
+
+        $arr = $mrr * 12.0;
+        $arpu = $totalActiveCompanies > 0 ? round($mrr / $totalActiveCompanies) : 0;
+
+        // ── Churn Rate Analytics ──────────────────────────────────────
+        $thirtyDaysAgo = $now->copy()->subDays(30);
+        $churnedCompaniesCount = DB::table('subscriptions')
+            ->whereIn('status', ['cancelled', 'expired'])
+            ->where('updated_at', '>=', $thirtyDaysAgo)
+            ->distinct('company_id')
+            ->count('company_id');
+
+        $activeStartOf30Days = DB::table('companies')
+            ->where('created_at', '<=', $thirtyDaysAgo)
+            ->count();
+
+        $churnRate = $activeStartOf30Days > 0
+            ? round(($churnedCompaniesCount / $activeStartOf30Days) * 100, 1)
+            : 0;
+
+        // ── Tenant Health Score Matrix ─────────────────────────────────
+        $companies = DB::table('companies')
+            ->leftJoin('plans', 'companies.plan_id', '=', 'plans.id')
+            ->where('companies.is_active', true)
+            ->select('companies.id', 'companies.name', 'companies.email', 'plans.name as plan_name')
+            ->get();
+
+        $healthScores = collect();
+        foreach ($companies as $comp) {
+            $userCount = DB::table('users')->where('company_id', $comp->id)->count();
+            $leadCount30d = DB::table('leads')
+                ->where('company_id', $comp->id)
+                ->where('created_at', '>=', $thirtyDaysAgo)
+                ->count();
+
+            $sub = DB::table('subscriptions')
+                ->where('company_id', $comp->id)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            // Kriteria Health Score (Max 100):
+            // 1. Leads Activity (40%): >=10 leads = 40, else prop
+            $activityScore = min(40, round(($leadCount30d / 10) * 40));
+            
+            // 2. User Engagement (40%): >=3 users = 40, else prop
+            $userScore = min(40, round(($userCount / 3) * 40));
+
+            // 3. Subscription Status (20%): active = 20, pending = 10, else 0
+            $subStatus = $sub->status ?? 'inactive';
+            $subScore = $subStatus === 'active' ? 20 : ($subStatus === 'pending' ? 10 : 0);
+
+            $score = $activityScore + $userScore + $subScore;
+
+            $statusCategory = 'Healthy';
+            $statusBadgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+            if ($score < 40) {
+                $statusCategory = 'Critical';
+                $statusBadgeClass = 'bg-rose-50 text-rose-700 border-rose-200';
+            } elseif ($score < 80) {
+                $statusCategory = 'At Risk';
+                $statusBadgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
+            }
+
+            $healthScores->push([
+                'id'                => $comp->id,
+                'name'              => $comp->name,
+                'plan_name'         => $comp->plan_name,
+                'score'             => $score,
+                'lead_count'        => $leadCount30d,
+                'user_count'        => $userCount,
+                'sub_status'        => $subStatus,
+                'status_category'   => $statusCategory,
+                'status_badge_class'=> $statusBadgeClass,
+            ]);
+        }
+
+        $atRiskTenants = $healthScores->sortBy('score')->take(5)->values();
 
         // ── Tenant Growth Chart (6 months) ────────────────────────────
         $tenantGrowth = collect();
@@ -193,6 +330,12 @@ class SuperAdminController extends Controller
             ->limit(5)
             ->get();
 
+        // ── Audit Logs Feed (5 recent) ────────────────────────────────
+        $recentAuditLogs = \Webkul\Admin\Models\SuperAdminAuditLog::with('superAdmin')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
         return view('admin::super-admin.dashboard', compact(
             'totalCompanies',
             'totalActiveCompanies',
@@ -204,12 +347,19 @@ class SuperAdminController extends Controller
             'usersChange',
             'leadsChange',
             'revenueChange',
+            'mrr',
+            'arr',
+            'arpu',
+            'churnRate',
+            'atRiskTenants',
+            'preset',
             'tenantGrowth',
             'revenueChart',
             'plansDistribution',
             'invoiceSummary',
             'recentTenants',
-            'recentInvoices'
+            'recentInvoices',
+            'recentAuditLogs'
         ));
     }
 }

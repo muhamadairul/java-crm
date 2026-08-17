@@ -5,6 +5,7 @@ use Webkul\Admin\Http\Controllers\SuperAdmin\SuperAdminController;
 use Webkul\Admin\Http\Controllers\SuperAdmin\CompanyController;
 use Webkul\Admin\Http\Controllers\SuperAdmin\PlanController;
 use Webkul\Admin\Http\Controllers\SuperAdmin\InvoiceController;
+use Webkul\Admin\Http\Controllers\SuperAdmin\AuditLogController;
 use Webkul\Admin\Http\Controllers\LocaleController;
 
 // Guest Routes
@@ -54,4 +55,7 @@ Route::middleware(['user'])->group(function () {
         Route::post('{id}/mark-paid', [InvoiceController::class, 'markAsPaid'])->name('super_admin.invoices.mark_paid');
         Route::get('{id}', [InvoiceController::class, 'show'])->name('super_admin.invoices.show');
     });
+
+    // Audit Logs (SA-07)
+    Route::get('audit-logs', [AuditLogController::class, 'index'])->name('super_admin.audit_logs.index');
 });
