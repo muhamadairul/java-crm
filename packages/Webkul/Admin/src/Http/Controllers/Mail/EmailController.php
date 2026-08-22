@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -115,10 +116,13 @@ class EmailController extends Controller
             try {
                 Mail::send(new Email($email));
 
+                Log::info('[EMAIL_OUTBOUND] Email sent successfully via SMTP to: ' . (is_array($email->reply_to) ? implode(', ', $email->reply_to) : $email->reply_to) . ' | Subject: ' . $email->subject);
+
                 $this->emailRepository->update([
                     'folders' => ['sent'],
                 ], $email->id);
             } catch (\Exception $e) {
+                Log::error('[EMAIL_OUTBOUND_ERROR] Failed to send email via SMTP: ' . $e->getMessage());
             }
         }
 
@@ -166,10 +170,13 @@ class EmailController extends Controller
             try {
                 Mail::send(new Email($email));
 
+                Log::info('[EMAIL_OUTBOUND] Email sent successfully via SMTP to: ' . (is_array($email->reply_to) ? implode(', ', $email->reply_to) : $email->reply_to) . ' | Subject: ' . $email->subject);
+
                 $this->emailRepository->update([
                     'folders' => ['inbox', 'sent'],
                 ], $email->id);
             } catch (\Exception $e) {
+                Log::error('[EMAIL_OUTBOUND_ERROR] Failed to send email via SMTP: ' . $e->getMessage());
             }
         }
 

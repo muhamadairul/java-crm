@@ -2,6 +2,7 @@
 
 namespace Webkul\Email\InboundEmailProcessor;
 
+use Illuminate\Support\Facades\Log;
 use Webklex\IMAP\Facades\Client;
 use Webkul\Email\Enums\SupportedFolderEnum;
 use Webkul\Email\InboundEmailProcessor\Contracts\InboundEmailProcessor;
@@ -144,6 +145,8 @@ class WebklexImapEmailProcessor implements InboundEmailProcessor
             'created_at'    => $this->convertToDesiredTimezone($message->date->toDate()),
             'parent_id'     => $parentEmail?->id,
         ]);
+
+        Log::info('[EMAIL_INBOUND] Inbound email received from: ' . $email->from . ' | Subject: ' . $email->subject);
 
         if ($message->hasAttachments()) {
             $this->attachmentRepository->uploadAttachments($email, [
