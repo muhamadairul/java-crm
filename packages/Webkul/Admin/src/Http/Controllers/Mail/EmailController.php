@@ -123,6 +123,16 @@ class EmailController extends Controller
                 ], $email->id);
             } catch (\Exception $e) {
                 Log::error('[EMAIL_OUTBOUND_ERROR] Failed to send email via SMTP: ' . $e->getMessage());
+
+                if (request()->ajax()) {
+                    return response()->json([
+                        'message' => 'Gagal mengirim email via SMTP: ' . $e->getMessage(),
+                    ], 500);
+                }
+
+                session()->flash('error', 'Gagal mengirim email via SMTP: ' . $e->getMessage());
+
+                return redirect()->back()->withInput();
             }
         }
 
@@ -177,6 +187,16 @@ class EmailController extends Controller
                 ], $email->id);
             } catch (\Exception $e) {
                 Log::error('[EMAIL_OUTBOUND_ERROR] Failed to send email via SMTP: ' . $e->getMessage());
+
+                if (request()->ajax()) {
+                    return response()->json([
+                        'message' => 'Gagal mengirim email via SMTP: ' . $e->getMessage(),
+                    ], 500);
+                }
+
+                session()->flash('error', 'Gagal mengirim email via SMTP: ' . $e->getMessage());
+
+                return redirect()->back()->withInput();
             }
         }
 
