@@ -45,6 +45,7 @@ class EmailRepository extends Repository
         $data = $this->sanitizeEmails(array_merge([
             'source'        => 'web',
             'from'          => config('mail.from.address'),
+            'name'          => auth()->guard('user')->check() ? auth()->guard('user')->user()->name : config('mail.from.name'),
             'user_type'     => 'admin',
             'folders'       => isset($data['is_draft']) ? ['draft'] : ['outbox'],
             'unique_id'     => $uniqueId,

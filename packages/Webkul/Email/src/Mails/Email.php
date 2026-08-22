@@ -25,9 +25,13 @@ class Email extends Mailable
      */
     public function build()
     {
-        $this->from($this->email->from)
+        $senderName = $this->email->name
+            ?: (auth()->guard('user')->check() ? auth()->guard('user')->user()->name : null)
+            ?: config('mail.from.name');
+
+        $this->from($this->email->from, $senderName)
             ->to($this->email->reply_to)
-            ->replyTo($this->email->from)
+            ->replyTo($this->email->from, $senderName)
             ->cc($this->email->cc ?? [])
             ->bcc($this->email->bcc ?? [])
             ->subject($this->email->parent_id ? $this->email->parent->subject : $this->email->subject)
