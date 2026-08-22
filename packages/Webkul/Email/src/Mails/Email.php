@@ -25,9 +25,10 @@ class Email extends Mailable
      */
     public function build()
     {
-        $senderName = $this->email->name
-            ?: (auth()->guard('user')->check() ? auth()->guard('user')->user()->name : null)
-            ?: config('mail.from.name');
+        $senderName = core()->getConfigData('email.smtp.account.sender_name')
+            ?: config('mail.from.name')
+            ?: $this->email->name
+            ?: (auth()->guard('user')->check() ? auth()->guard('user')->user()->name : null);
 
         $this->from($this->email->from, $senderName)
             ->to($this->email->reply_to)

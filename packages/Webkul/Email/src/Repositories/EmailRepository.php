@@ -42,10 +42,14 @@ class EmailRepository extends Repository
             $referenceIds = $parent->reference_ids ?? [];
         }
 
+        $senderName = core()->getConfigData('email.smtp.account.sender_name')
+            ?: config('mail.from.name')
+            ?: (auth()->guard('user')->check() ? auth()->guard('user')->user()->name : null);
+
         $data = $this->sanitizeEmails(array_merge([
             'source'        => 'web',
             'from'          => config('mail.from.address'),
-            'name'          => auth()->guard('user')->check() ? auth()->guard('user')->user()->name : config('mail.from.name'),
+            'name'          => $senderName,
             'user_type'     => 'admin',
             'folders'       => isset($data['is_draft']) ? ['draft'] : ['outbox'],
             'unique_id'     => $uniqueId,
