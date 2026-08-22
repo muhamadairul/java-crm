@@ -68,7 +68,24 @@ class EmailController extends Controller
     public function view()
     {
         $email = $this->emailRepository
-            ->with(['emails', 'attachments', 'emails.attachments', 'lead', 'lead.person', 'lead.tags', 'lead.source', 'lead.type', 'person'])
+            ->with([
+                'emails' => function ($query) {
+                    if (request('route') !== 'trash') {
+                        $query->where(function ($q) {
+                            $q->whereNull('folders')
+                              ->orWhere('folders', 'not like', '%"trash"%');
+                        });
+                    }
+                },
+                'attachments',
+                'emails.attachments',
+                'lead',
+                'lead.person',
+                'lead.tags',
+                'lead.source',
+                'lead.type',
+                'person',
+            ])
             ->findOrFail(request('id'));
 
         if ($userIds = bouncer()->getAuthorizedUserIds()) {

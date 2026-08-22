@@ -74,6 +74,7 @@
                         :action="action"
                         @on-discard="action = {}"
                         @on-email-action="emailAction($event)"
+                        @on-email-deleted="removeEmailFromThread($event)"
                     ></v-email-item>
 
                     {!! view_render_event('admin.mail.view.email-item.after', ['email' => $email]) !!}
@@ -89,6 +90,7 @@
                         :action="action"
                         @on-discard="action = {}"
                         @on-email-action="emailAction($event)"
+                        @on-email-deleted="removeEmailFromThread($event)"
                     ></v-email-item>
 
                     {!! view_render_event('admin.mail.view.email-item.after', ['email' => $email]) !!}
@@ -1244,6 +1246,14 @@
                         }
                     },
 
+                    removeEmailFromThread(deletedId) {
+                        if (this.email.id == deletedId) {
+                            window.location.href = "{{ route('admin.mail.index', ['route' => request('route', 'inbox')]) }}";
+                        } else if (this.email.emails) {
+                            this.email.emails = this.email.emails.filter(e => e.id != deletedId);
+                        }
+                    },
+
                     scrollBottom() {
                         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
@@ -1278,7 +1288,7 @@
 
                 props: ['index', 'email', 'action'],
 
-                emits: ['on-discard', 'on-email-action'],
+                emits: ['on-discard', 'on-email-action', 'on-email-deleted'],
 
                 methods: {
                     isImage(path) {
@@ -1308,6 +1318,8 @@
                                             this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
 
                                             this.$emit('on-discard');
+
+                                            this.$emit('on-email-deleted', this.email.id);
                                         }
                                     });
                                 }
