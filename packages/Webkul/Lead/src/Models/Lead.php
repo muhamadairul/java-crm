@@ -159,7 +159,15 @@ class Lead extends Model implements LeadContract
             return 0;
         }
 
-        if (in_array($this->stage->code, ['won', 'lost'])) {
+        if (
+            in_array($this->stage->code, ['won', 'lost'])
+            || str_contains((string) $this->stage->code, 'won')
+            || str_contains((string) $this->stage->code, 'lost')
+        ) {
+            return 0;
+        }
+
+        if ($this->closed_at) {
             return 0;
         }
 
@@ -167,7 +175,15 @@ class Lead extends Model implements LeadContract
             return 0;
         }
 
-        $rottenDate = $this->created_at->addDays($this->pipeline->rotten_days);
+        if (! $this->pipeline || empty($this->pipeline->rotten_days)) {
+            return 0;
+        }
+
+        $createdAt = $this->created_at instanceof Carbon
+            ? $this->created_at->copy()
+            : Carbon::parse($this->created_at);
+
+        $rottenDate = $createdAt->addDays((int) $this->pipeline->rotten_days);
 
         return $rottenDate->diffInDays(Carbon::now(), false);
     }
