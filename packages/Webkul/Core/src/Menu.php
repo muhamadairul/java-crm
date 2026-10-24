@@ -117,6 +117,10 @@ class Menu
         $menu = Arr::undot(Arr::dot($menuWithDotNotation));
 
         foreach ($menu as $menuItemKey => $menuItem) {
+            if (! isset($menuItem['name'])) {
+                continue;
+            }
+
             $this->addItem(new MenuItem(
                 key: $menuItemKey,
                 name: trans($menuItem['name']),
@@ -139,7 +143,7 @@ class Menu
 
         return collect($menuItem)
             ->sortBy('sort')
-            ->filter(fn ($value) => is_array($value))
+            ->filter(fn ($value) => is_array($value) && isset($value['name']))
             ->reject(function ($subMenuItem) use ($user) {
                 if ($user && $user->company_id !== null) {
                     $hiddenKeys = [

@@ -78,42 +78,42 @@ class LeadController extends Controller
             'pipeline' => $pipeline,
             'columns'  => $this->getKanbanColumns(),
         ]);
-     }
+    }
 
-     /**
-      * Export leads to Excel or PDF.
-      */
-     public function export(): \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\Response
-     {
-         $format = request('format', 'xlsx');
-         if (! in_array($format, ['xls', 'xlsx', 'csv', 'pdf'])) {
-             $format = 'xlsx';
-         }
+    /**
+     * Export leads to Excel or PDF.
+     */
+    public function export(): \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\Response
+    {
+        $format = request('format', 'xlsx');
+        if (! in_array($format, ['xls', 'xlsx', 'csv', 'pdf'])) {
+            $format = 'xlsx';
+        }
 
-         $query = $this->leadRepository->with(['source', 'type', 'pipeline', 'stage', 'user', 'person']);
-         if ($userIds = bouncer()->getAuthorizedUserIds()) {
-             $query = $query->scopeQuery(function ($q) use ($userIds) {
-                 return $q->whereIn('leads.user_id', $userIds);
-             });
-         }
-         $leads = $query->all();
+        $query = $this->leadRepository->with(['source', 'type', 'pipeline', 'stage', 'user', 'person']);
+        if ($userIds = bouncer()->getAuthorizedUserIds()) {
+            $query = $query->scopeQuery(function ($q) use ($userIds) {
+                return $q->whereIn('leads.user_id', $userIds);
+            });
+        }
+        $leads = $query->all();
 
-         if ($format === 'pdf') {
-             return $this->downloadPDF(
-                 view('admin::leads.pdf', compact('leads'))->render(),
-                 'leads_' . now()->format('Y-m-d')
-             );
-         }
+        if ($format === 'pdf') {
+            return $this->downloadPDF(
+                view('admin::leads.pdf', compact('leads'))->render(),
+                'leads_' . now()->format('Y-m-d')
+            );
+        }
 
-         return \Maatwebsite\Excel\Facades\Excel::download(
-             new \Webkul\Admin\Exports\LeadsExport($leads),
-             'leads.' . $format
-         );
-     }
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \Webkul\Admin\Exports\LeadsExport($leads),
+            'leads.' . $format
+        );
+    }
 
-     /**
-      * Returns a listing of the resource.
-      */
+    /**
+     * Returns a listing of the resource.
+     */
     public function get(): JsonResponse
     {
         if (request()->query('pipeline_id')) {
@@ -536,8 +536,8 @@ class LeadController extends Controller
          * Fetching on the basis of column options.
          */
         return app($column['filterable_options']['repository'])
-            ->select([$column['filterable_options']['column']['label'].' as label', $column['filterable_options']['column']['value'].' as value'])
-            ->where($column['filterable_options']['column']['label'], 'LIKE', '%'.$params['search'].'%')
+            ->select([$column['filterable_options']['column']['label'] . ' as label', $column['filterable_options']['column']['value'] . ' as value'])
+            ->where($column['filterable_options']['column']['label'], 'LIKE', '%' . $params['search'] . '%')
             ->get()
             ->map
             ->only('label', 'value');
@@ -715,7 +715,7 @@ class LeadController extends Controller
     {
         $validator = Validator::make(
             ['file' => $file],
-            ['file' => 'required|extensions:'.str_replace(' ', '', self::SUPPORTED_TYPES)]
+            ['file' => 'required|extensions:' . str_replace(' ', '', self::SUPPORTED_TYPES)]
         );
 
         if ($validator->fails()) {

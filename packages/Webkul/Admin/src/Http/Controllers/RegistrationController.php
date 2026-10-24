@@ -254,7 +254,10 @@ class RegistrationController extends Controller
             ]);
 
             // Seed default initial data (pipeline, stages, sources, types, groups, tags)
-            CompanyDefaultSeeder::seed($company->id, $adminUser->id);
+            // For free plan, seed immediately. For paid plan, seed after payment succeeds.
+            if (! $isPaid) {
+                CompanyDefaultSeeder::seed($company->id, $adminUser->id);
+            }
 
             // Create Subscription Record
             $subscription = Subscription::create([
@@ -332,6 +335,9 @@ class RegistrationController extends Controller
                     $company->is_active = true;
                     $company->save();
 
+                    // Seed default initial data upon immediate payment success
+                    CompanyDefaultSeeder::seedIfNotSeeded($company->id, $adminUser->id);
+
                     DB::commit();
                     session()->forget('registration_data');
                     auth()->guard('user')->login($adminUser);
@@ -408,6 +414,9 @@ class RegistrationController extends Controller
         if ($invoice->status === 'paid') {
             $adminUser = User::where('company_id', $invoice->company_id)->first();
             if ($adminUser) {
+                // Ensure default initial data is seeded upon confirmed payment
+                CompanyDefaultSeeder::seedIfNotSeeded($invoice->company_id, $adminUser->id);
+
                 auth()->guard('user')->login($adminUser);
             }
 

@@ -33,7 +33,13 @@ class AttributeController extends Controller
             }
 
             return $next($request);
-        });
+        })->except([
+            'checkUniqueValidation',
+            'lookup',
+            'lookupEntity',
+            'getAttributeOptions',
+            'download',
+        ]);
     }
 
     /**
@@ -62,7 +68,7 @@ class AttributeController extends Controller
     public function store(): RedirectResponse
     {
         $this->validate(request(), [
-            'code' => ['required', 'unique:attributes,code,NULL,NULL,entity_type,'.request('entity_type'), new Code],
+            'code' => ['required', 'unique:attributes,code,NULL,NULL,entity_type,' . request('entity_type'), new Code],
             'name' => 'required',
             'type' => 'required',
         ]);
@@ -96,7 +102,7 @@ class AttributeController extends Controller
     public function update($id): RedirectResponse
     {
         $this->validate(request(), [
-            'code' => ['required', 'unique:attributes,code,NULL,NULL,entity_type,'.$id, new Code],
+            'code' => ['required', 'unique:attributes,code,NULL,NULL,entity_type,' . $id, new Code],
             'name' => 'required',
             'type' => 'required',
         ]);

@@ -116,36 +116,67 @@ class AttributeRepository extends Repository
      */
     public function getLookUpOptions($lookup, $query = '', $columns = [])
     {
-        $lookup = config('attribute_lookups.'.$lookup);
+        $lookup = config('attribute_lookups.' . $lookup);
 
         if (! count($columns)) {
-            $columns = [($lookup['value_column'] ?? 'id').' as id', ($lookup['label_column'] ?? 'name').' as name'];
+            $columns = [($lookup['value_column'] ?? 'id') . ' as id', ($lookup['label_column'] ?? 'name') . ' as name'];
         }
 
         if (Str::contains($lookup['repository'], 'UserRepository')) {
-            $userRepository = app($lookup['repository'])->where('status', 1);
+            $userRepository = app($lookup['repository']);
+            $userQuery = $userRepository->getModel()->newQuery()->where('users.status', 1);
 
             $currentUser = auth()->guard('user')->user();
+
+            if ($currentUser && $currentUser->company_id !== null) {
+                $userQuery->where('users.company_id', $currentUser->company_id);
+            }
+
+            $isCompanyAdmin = $currentUser && (
+                $currentUser->company_id === null
+                || $currentUser->role?->name === 'Company Admin'
+                || $currentUser->role?->permission_type === 'all'
+            );
+
+            if (! $isCompanyAdmin && $currentUser) {
+                return $userQuery->where('users.id', $currentUser->id)->get();
+            }
 
             if ($currentUser?->view_permission === 'group') {
                 $query = urldecode($query);
 
                 $userIds = bouncer()->getAuthorizedUserIds();
 
-                return $userRepository
-                    ->when(! empty($userIds), fn ($queryBuilder) => $queryBuilder->whereIn('users.id', $userIds))
-                    ->when(! empty($query), fn ($queryBuilder) => $queryBuilder->where('users.name', 'like', "%{$query}%"))
+                return $userQuery
+                    ->when(! empty($userIds), fn($queryBuilder) => $queryBuilder->whereIn('users.id', $userIds))
+                    ->when(! empty($query), fn($queryBuilder) => $queryBuilder->where('users.name', 'like', "%{$query}%"))
                     ->get();
             } elseif ($currentUser?->view_permission === 'individual') {
-                return $userRepository->where('users.id', $currentUser->id);
+                return $userQuery->where('users.id', $currentUser->id)->get();
             }
 
-            return $userRepository->where('users.name', 'like', '%'.urldecode($query).'%')->get();
+            return $userQuery->where('users.name', 'like', '%' . urldecode($query) . '%')->get();
         }
 
-        return app($lookup['repository'])->findWhere([
-            [$lookup['label_column'] ?? 'name', 'like', '%'.urldecode($query).'%'],
-        ], $columns);
+        $repository = app($lookup['repository']);
+        $queryBuilder = $repository->getModel()->newQuery();
+
+        $currentUser = auth()->guard('user')->user();
+
+        if ($currentUser && $currentUser->company_id !== null) {
+            $table = $repository->getModel()->getTable();
+
+            if (\Illuminate\Support\Facades\Schema::hasColumn($table, 'company_id')) {
+                $queryBuilder->where($table . '.company_id', $currentUser->company_id);
+            }
+        }
+
+        $labelColumn = $lookup['label_column'] ?? 'name';
+        if (! empty($query)) {
+            $queryBuilder->where($labelColumn, 'like', '%' . urldecode($query) . '%');
+        }
+
+        return $queryBuilder->select($columns)->get();
     }
 
     /**
@@ -160,10 +191,10 @@ class AttributeRepository extends Repository
             return;
         }
 
-        $lookup = config('attribute_lookups.'.$lookup);
+        $lookup = config('attribute_lookups.' . $lookup);
 
         if (! count($columns)) {
-            $columns = [($lookup['value_column'] ?? 'id').' as id', ($lookup['label_column'] ?? 'name').' as name'];
+            $columns = [($lookup['value_column'] ?? 'id') . ' as id', ($lookup['label_column'] ?? 'name') . ' as name'];
         }
 
         if (is_array($entityId)) {

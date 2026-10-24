@@ -10,6 +10,27 @@ use Webkul\User\Models\Group;
 class CompanyDefaultSeeder
 {
     /**
+     * Seed initial default data only if not already seeded for this company.
+     * Uses DB transaction and row-level locking on companies to ensure idempotency even under concurrency.
+     */
+    public static function seedIfNotSeeded(int $companyId, int $userId): void
+    {
+        if (Pipeline::where('company_id', $companyId)->exists()) {
+            return;
+        }
+
+        DB::transaction(function () use ($companyId, $userId) {
+            DB::table('companies')->where('id', $companyId)->lockForUpdate()->first();
+
+            if (Pipeline::where('company_id', $companyId)->exists()) {
+                return;
+            }
+
+            self::seed($companyId, $userId);
+        });
+    }
+
+    /**
      * Seed initial default data for a newly created tenant company.
      */
     public static function seed(int $companyId, int $userId): void

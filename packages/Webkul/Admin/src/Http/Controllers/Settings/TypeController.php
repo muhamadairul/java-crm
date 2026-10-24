@@ -69,7 +69,7 @@ class TypeController extends Controller
     public function update(int $id): JsonResponse
     {
         $this->validate(request(), [
-            'name' => 'required|unique:lead_types,name,'.$id,
+            'name' => 'required|unique:lead_types,name,' . $id,
         ]);
 
         Event::dispatch('settings.type.update.before', $id);

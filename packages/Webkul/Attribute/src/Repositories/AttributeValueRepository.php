@@ -59,7 +59,8 @@ class AttributeValueRepository extends Repository
                 continue;
             }
 
-            if ($attribute->type === 'price'
+            if (
+                $attribute->type === 'price'
                 && isset($data[$attribute->code])
                 && $data[$attribute->code] === ''
             ) {
@@ -80,7 +81,7 @@ class AttributeValueRepository extends Repository
 
             if ($attribute->type === 'image' || $attribute->type === 'file') {
                 $data[$attribute->code] = $data[$attribute->code] instanceof UploadedFile
-                    ? $data[$attribute->code]->store($data['entity_type'].'/'.$data['entity_id'])
+                    ? $data[$attribute->code]->store($data['entity_type'] . '/' . $data['entity_id'])
                     : null;
             }
 
@@ -126,6 +127,23 @@ class AttributeValueRepository extends Repository
             ->where('attribute_id', $attribute->id)
             ->where('entity_type', $entityType)
             ->where('entity_id', '!=', $entityId);
+
+        $user = auth()->guard('user')->user();
+        $entityTable = $entityType;
+
+        if ($user && $user->company_id !== null && \Illuminate\Support\Facades\Schema::hasTable($entityTable)) {
+            if (\Illuminate\Support\Facades\Schema::hasColumn($entityTable, 'company_id')) {
+                $query->whereIn('entity_id', function ($subQuery) use ($user, $entityTable) {
+                    $subQuery->select('id')
+                        ->from($entityTable)
+                        ->where($entityTable . '.company_id', $user->company_id);
+                });
+            } else {
+                $query->whereIn('entity_id', function ($subQuery) use ($entityTable) {
+                    $subQuery->select('id')->from($entityTable);
+                });
+            }
+        }
 
         /**
          * If the attribute type is email or phone, check the JSON value.
@@ -212,7 +230,7 @@ class AttributeValueRepository extends Repository
                 $optionsLabels = [];
 
                 foreach ($value as $item) {
-                    $optionsLabels[] = $item['value'].' ('.$item['label'].')';
+                    $optionsLabels[] = $item['value'] . ' (' . $item['label'] . ')';
                 }
 
                 $label = implode(', ', $optionsLabels);
@@ -227,10 +245,10 @@ class AttributeValueRepository extends Repository
                     break;
                 }
 
-                $label = $value['address'].'<br>'
-                    .$value['postcode'].'  '.$value['city'].'<br>'
-                    .core()->state_name($value['state']).'<br>'
-                    .core()->country_name($value['country']).'<br>';
+                $label = $value['address'] . '<br>'
+                    . $value['postcode'] . '  ' . $value['city'] . '<br>'
+                    . core()->state_name($value['state']) . '<br>'
+                    . core()->country_name($value['country']) . '<br>';
 
                 break;
 

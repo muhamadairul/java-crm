@@ -117,10 +117,15 @@ class CompanyController extends Controller
     {
         $company = Company::findOrFail($id);
         
-        // Prevent disabling main platform host or default seeded company if desired,
-        // but here we toggle it dynamically
         $company->is_active = !$company->is_active;
         $company->save();
+
+        if ($company->is_active) {
+            $adminUser = \Webkul\User\Models\User::where('company_id', $company->id)->first();
+            if ($adminUser) {
+                \Webkul\Admin\Helpers\CompanyDefaultSeeder::seedIfNotSeeded($company->id, $adminUser->id);
+            }
+        }
 
         $statusText = $company->is_active ? 'diaktifkan' : 'dinonaktifkan';
         

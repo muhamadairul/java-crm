@@ -16,10 +16,7 @@
     @endphp
 
     <x-admin::form.control-group class="mb-2.5 w-full">
-        <x-admin::form.control-group.label
-            for="{{ $attribute->code }}"
-            :class="$attribute->is_required ? 'required' : ''"
-        >
+        <x-admin::form.control-group.label for="{{ $attribute->code }}" :class="$attribute->is_required ? 'required' : ''">
             {{ $attribute->name }}
 
             @if ($attribute->type == 'price')
@@ -28,11 +25,7 @@
         </x-admin::form.control-group.label>
 
         @if (isset($attribute))
-            <x-admin::attributes.edit.index
-                :attribute="$attribute"
-                :validations="$validations"
-                :value="isset($entity) ? $entity[$attribute->code] : null"
-            />
+            <x-admin::attributes.edit.index :attribute="$attribute" :validations="$validations" :value="isset($entity) ? $entity[$attribute->code] : null" />
         @endif
 
         <x-admin::form.control-group.error :control-name="$attribute->code" />

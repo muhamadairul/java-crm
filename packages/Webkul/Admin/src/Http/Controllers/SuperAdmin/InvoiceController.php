@@ -76,6 +76,19 @@ class InvoiceController extends Controller
             }
         }
 
+        // Activate company and seed default data if not already seeded
+        $company = \Webkul\Core\Models\Company::find($invoice->company_id);
+        if ($company) {
+            if (!$company->is_active) {
+                $company->update(['is_active' => true]);
+            }
+
+            $adminUser = \Webkul\User\Models\User::where('company_id', $company->id)->first();
+            if ($adminUser) {
+                \Webkul\Admin\Helpers\CompanyDefaultSeeder::seedIfNotSeeded($company->id, $adminUser->id);
+            }
+        }
+
         session()->flash('success', "Invoice #{$invoice->invoice_number} berhasil ditandai sebagai Lunas (Paid).");
 
         return redirect()->back();

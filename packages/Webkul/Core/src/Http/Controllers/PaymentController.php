@@ -86,6 +86,12 @@ class PaymentController extends Controller
                 if ($company) {
                     $company->is_active = true;
                     $company->save();
+
+                    // Seed default initial data upon payment confirmation if not already seeded
+                    $adminUser = \Webkul\User\Models\User::where('company_id', $company->id)->first();
+                    if ($adminUser) {
+                        \Webkul\Admin\Helpers\CompanyDefaultSeeder::seedIfNotSeeded($company->id, $adminUser->id);
+                    }
                 }
             }
 
@@ -130,6 +136,7 @@ class PaymentController extends Controller
         // Log in the user immediately
         $adminUser = \Webkul\User\Models\User::where('company_id', $invoice->company_id)->first();
         if ($adminUser) {
+            \Webkul\Admin\Helpers\CompanyDefaultSeeder::seedIfNotSeeded($invoice->company_id, $adminUser->id);
             auth()->guard('user')->login($adminUser);
         }
 

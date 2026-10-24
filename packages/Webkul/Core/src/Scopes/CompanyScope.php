@@ -31,10 +31,7 @@ class CompanyScope implements Scope
 
             if ($user && $user->company_id) {
                 $table = $model->getTable();
-                $builder->where(function ($q) use ($table, $user) {
-                    $q->where($table . '.company_id', $user->company_id)
-                      ->orWhereNull($table . '.company_id');
-                });
+                $builder->where($table . '.company_id', $user->company_id);
             }
         } finally {
             static::$resolvingUser = false;

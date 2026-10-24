@@ -70,7 +70,7 @@ class SourceController extends Controller
     public function update(int $id): JsonResponse
     {
         $this->validate(request(), [
-            'name' => 'required|unique:lead_sources,name,'.$id,
+            'name' => 'required|unique:lead_sources,name,' . $id,
         ]);
 
         Event::dispatch('settings.source.update.before', $id);

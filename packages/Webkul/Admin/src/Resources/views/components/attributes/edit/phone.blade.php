@@ -1,17 +1,13 @@
 @if (isset($attribute))
-    <v-phone-component
-        :attribute="{{ json_encode($attribute) }}"
-        :validations="'{{ $validations }}'"
-        :value="{{ json_encode(old($attribute->code) ?? $value) }}"
-    >
+    <v-phone-component :attribute="{{ json_encode($attribute) }}" :validations="'{{ $validations }}'"
+        :value="{{ json_encode(old($attribute->code) ?? $value) }}">
         <div class="mb-2 flex items-center">
-            <input
-                type="text"
-                class="w-full rounded rounded-r-none border border-gray-200 px-2.5 py-2 text-sm font-normal text-gray-800 hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400"
-            >
+            <input type="text"
+                class="w-full rounded rounded-r-none border border-gray-200 px-2.5 py-2 text-sm font-normal text-gray-800 hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400">
 
             <div class="relative">
-                <select class="custom-select w-full rounded rounded-l-none border bg-white px-2.5 py-2 text-sm font-normal text-gray-800 hover:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 ltr:mr-6 ltr:pr-8 rtl:ml-6 rtl:pl-8">
+                <select
+                    class="custom-select w-full rounded rounded-l-none border bg-white px-2.5 py-2 text-sm font-normal text-gray-800 hover:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 ltr:mr-6 ltr:pr-8 rtl:ml-6 rtl:pl-8">
                     <option value="work" selected>@lang('admin::app.common.custom-attributes.work')</option>
                     <option value="home">@lang('admin::app.common.custom-attributes.home')</option>
                 </select>
@@ -21,7 +17,7 @@
         <span class="flex cursor-pointer items-center gap-2 text-brandColor">
             <i class="icon-add text-md !text-brandColor"></i>
 
-            @lang("admin::app.common.custom-attributes.add-more")
+            @lang('admin::app.common.custom-attributes.add-more')
         </span>
     </v-phone-component>
 @endif
@@ -91,14 +87,20 @@
 
             data() {
                 return {
-                    contactNumbers: this.value || [{'value': '', 'label': 'work'}],
+                    contactNumbers: this.value || [{
+                        'value': '',
+                        'label': 'work'
+                    }],
                 };
             },
 
             watch: {
                 value(newValue, oldValue) {
                     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-                        this.contactNumbers = newValue || [{'value': '', 'label': 'work'}];
+                        this.contactNumbers = newValue || [{
+                            'value': '',
+                            'label': 'work'
+                        }];
                     }
                 },
             },
@@ -108,7 +110,9 @@
                     return {
                         phone: true,
                         unique_contact_number: this.contactNumbers ?? [],
-                        ...(this.validations === 'required' ? { required: true } : {}),
+                        ...(this.validations === 'required' ? {
+                            required: true
+                        } : {}),
                     };
                 },
             },
@@ -116,7 +120,7 @@
             created() {
                 this.extendValidations();
 
-                if (! this.contactNumbers || ! this.contactNumbers.length) {
+                if (!this.contactNumbers || !this.contactNumbers.length) {
                     this.contactNumbers = [{
                         'value': '',
                         'label': 'work'
@@ -139,13 +143,14 @@
                 extendValidations() {
                     defineRule('unique_contact_number', async (value, contactNumbers) => {
                         if (
-                            ! value
-                            || ! value.length
+                            !value ||
+                            !value.length
                         ) {
                             return true;
                         }
 
-                        const phoneOccurrences = contactNumbers.filter(contactNumber => contactNumber.value === value).length;
+                        const phoneOccurrences = contactNumbers.filter(contactNumber => contactNumber
+                            .value === value).length;
 
                         if (phoneOccurrences > 1) {
                             return 'This phone number is already in use.';
@@ -154,26 +159,29 @@
                         /**
                          * Check if the phone number is unique. This support is only for person phone numbers only.
                          */
-                         if (this.attribute.code === 'person[contact_numbers]') {
+                        if (this.attribute.code === 'person[contact_numbers]') {
                             try {
-                                const { data } = await this.$axios.get('{{ route('admin.settings.attributes.check_unique_validation') }}', {
-                                    params: {
-                                        entity_id: this.attribute.id,
-                                        entity_type: 'persons',
-                                        attribute_code: 'contact_numbers',
-                                        attribute_value: value
-                                    }
-                                });
+                                const {
+                                    data
+                                } = await this.$axios.get(
+                                    '{{ route('admin.settings.attributes.check_unique_validation') }}', {
+                                        params: {
+                                            entity_id: this.attribute.id,
+                                            entity_type: 'persons',
+                                            attribute_code: 'contact_numbers',
+                                            attribute_value: value
+                                        }
+                                    });
 
-                                if (! data.validated) {
+                                if (!data.validated) {
                                     return 'This phone number is already in use.';
                                 }
 
                                 return true;
                             } catch (error) {
-                                console.error('Error checking email: ', error);
+                                console.error('Error checking phone: ', error);
 
-                                return 'Error validating email. Please try again.';
+                                return 'Error validating phone number. Please try again.';
                             }
                         } else {
                             return true;

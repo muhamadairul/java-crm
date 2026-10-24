@@ -98,7 +98,14 @@ class XenditWebhookController extends Controller
                             $query->where('name', 'Company Admin');
                         })->first();
 
+                    if (! $adminUser) {
+                        $adminUser = \Webkul\User\Models\User::where('company_id', $company->id)->first();
+                    }
+
                     if ($adminUser) {
+                        // Ensure default CRM data is seeded for this company
+                        \Webkul\Admin\Helpers\CompanyDefaultSeeder::seedIfNotSeeded($company->id, $adminUser->id);
+
                         try {
                             $adminUser->notify(new \Webkul\Admin\Notifications\InApp\InvoicePaid($invoice));
                             $adminUser->notify(new \Webkul\Admin\Notifications\InApp\TenantActivated($company));
