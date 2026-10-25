@@ -1,8 +1,8 @@
 <div class="box-shadow rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
     <div class="flex gap-4 max-md:flex-wrap">
         <!-- Total Revenue -->
-        <div class="flex gap-2 max-md:flex-wrap md:flex-col">
-            <div class="flex min-w-[177px] flex-col gap-2 rounded-lg border border-gray-200 bg-white px-4 py-5 dark:border-gray-800 dark:bg-gray-900">
+        <div class="flex flex-col justify-between gap-3 min-w-[210px] shrink-0 max-sm:w-full">
+            <div class="flex flex-col justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-4 dark:border-gray-800 dark:bg-gray-900 h-[88px] max-sm:w-full">
                 <div class="shimmer h-[17px] w-20"></div>
 
                 <div class="flex gap-2">
@@ -12,7 +12,7 @@
                 </div>
             </div>
             
-            <div class="flex min-w-[177px] flex-col gap-2 rounded-lg border border-gray-200 bg-white px-4 py-5 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex flex-col justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-4 dark:border-gray-800 dark:bg-gray-900 h-[88px] max-sm:w-full">
                 <div class="shimmer h-[17px] w-20"></div>
 
                 <div class="flex gap-2">
@@ -24,10 +24,10 @@
         </div>
 
         <!-- Bar Chart -->
-        <div class="flex w-full max-w-full flex-col gap-11">
-            <div class="flex flex-col gap-4 p-2">
-                <div class="shimmer h-[49px] w-full max-w-full"></div>
-                <div class="shimmer h-12 w-3/4"></div>
+        <div class="flex flex-1 flex-col justify-between gap-3 min-w-0">
+            <div class="flex flex-col justify-around h-[188px] w-full p-2">
+                <div class="shimmer h-[36px] w-full rounded-md"></div>
+                <div class="shimmer h-[36px] w-1/3 rounded-md"></div>
             </div>
 
             <div class="flex justify-center gap-5">

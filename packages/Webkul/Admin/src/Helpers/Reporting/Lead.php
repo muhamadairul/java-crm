@@ -42,20 +42,20 @@ class Lead extends AbstractReporting
 
         $this->allStageIds = $this->stageRepository->resetModel()
             ->join('lead_pipelines', 'lead_pipeline_stages.lead_pipeline_id', '=', 'lead_pipelines.id')
-            ->where('lead_pipelines.company_id', $companyId)
+            ->when($companyId, fn ($q) => $q->where('lead_pipelines.company_id', $companyId))
             ->pluck('lead_pipeline_stages.id')
             ->toArray();
 
         $this->wonStageIds = $this->stageRepository->resetModel()
             ->join('lead_pipelines', 'lead_pipeline_stages.lead_pipeline_id', '=', 'lead_pipelines.id')
-            ->where('lead_pipelines.company_id', $companyId)
+            ->when($companyId, fn ($q) => $q->where('lead_pipelines.company_id', $companyId))
             ->where('lead_pipeline_stages.code', 'won')
             ->pluck('lead_pipeline_stages.id')
             ->toArray();
 
         $this->lostStageIds = $this->stageRepository->resetModel()
             ->join('lead_pipelines', 'lead_pipeline_stages.lead_pipeline_id', '=', 'lead_pipelines.id')
-            ->where('lead_pipelines.company_id', $companyId)
+            ->when($companyId, fn ($q) => $q->where('lead_pipelines.company_id', $companyId))
             ->where('lead_pipeline_stages.code', 'lost')
             ->pluck('lead_pipeline_stages.id')
             ->toArray();
@@ -88,7 +88,7 @@ class Lead extends AbstractReporting
 
         $period = $this->determinePeriod($period);
 
-        return $this->getOverTimeStats($this->startDate, $this->endDate, 'leads.id', 'closed_at', $period);
+        return $this->getOverTimeStats($this->startDate, $this->endDate, 'leads.lead_value', 'closed_at', $period);
     }
 
     /**
@@ -102,7 +102,7 @@ class Lead extends AbstractReporting
 
         $period = $this->determinePeriod($period);
 
-        return $this->getOverTimeStats($this->startDate, $this->endDate, 'leads.id', 'closed_at', $period);
+        return $this->getOverTimeStats($this->startDate, $this->endDate, 'leads.lead_value', 'closed_at', $period);
     }
 
     /**
@@ -265,7 +265,7 @@ class Lead extends AbstractReporting
         return $this->leadRepository
             ->resetModel()
             ->whereIn('lead_pipeline_stage_id', $this->wonStageIds)
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween(DB::raw('COALESCE(closed_at, created_at)'), [$startDate, $endDate])
             ->sum('lead_value');
     }
 
@@ -294,7 +294,7 @@ class Lead extends AbstractReporting
         return $this->leadRepository
             ->resetModel()
             ->whereIn('lead_pipeline_stage_id', $this->lostStageIds)
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween(DB::raw('COALESCE(closed_at, created_at)'), [$startDate, $endDate])
             ->sum('lead_value');
     }
 
@@ -311,7 +311,7 @@ class Lead extends AbstractReporting
             )
             ->leftJoin('lead_sources', 'leads.lead_source_id', '=', 'lead_sources.id')
             ->whereIn('lead_pipeline_stage_id', $this->wonStageIds)
-            ->whereBetween('leads.created_at', [$this->startDate, $this->endDate])
+            ->whereBetween(DB::raw('COALESCE(leads.closed_at, leads.created_at)'), [$this->startDate, $this->endDate])
             ->groupBy('lead_source_id')
             ->get();
     }
@@ -329,7 +329,7 @@ class Lead extends AbstractReporting
             )
             ->leftJoin('lead_types', 'leads.lead_type_id', '=', 'lead_types.id')
             ->whereIn('lead_pipeline_stage_id', $this->wonStageIds)
-            ->whereBetween('leads.created_at', [$this->startDate, $this->endDate])
+            ->whereBetween(DB::raw('COALESCE(leads.closed_at, leads.created_at)'), [$this->startDate, $this->endDate])
             ->groupBy('lead_type_id')
             ->get();
     }
@@ -369,7 +369,9 @@ class Lead extends AbstractReporting
 
         $intervals = $this->generateTimeIntervals($startDate, $endDate, $period);
 
-        $groupColumn = $this->getGroupColumn($dateColumn, $period);
+        $effectiveDate = $dateColumn === 'created_at' ? 'created_at' : "COALESCE($dateColumn, created_at)";
+
+        $groupColumn = $this->getGroupColumn($effectiveDate, $period);
 
         $query = $this->leadRepository
             ->resetModel()
@@ -379,7 +381,7 @@ class Lead extends AbstractReporting
                 DB::raw('SUM('.DB::getTablePrefix()."$valueColumn) AS total")
             )
             ->whereIn('lead_pipeline_stage_id', $this->stageIds)
-            ->whereBetween($dateColumn, [$startDate, $endDate])
+            ->whereBetween(DB::raw($effectiveDate), [$startDate, $endDate])
             ->groupBy(DB::raw($groupColumn))
             ->orderBy(DB::raw($groupColumn));
 

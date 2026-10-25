@@ -64,7 +64,7 @@ abstract class AbstractReporting
      */
     public function setEndDate(?Carbon $endDate = null): self
     {
-        $this->endDate = ($endDate && $endDate->endOfDay() <= now()) ? $endDate->endOfDay() : now();
+        $this->endDate = $endDate ? $endDate->endOfDay() : now()->endOfDay();
 
         $this->setLastEndDate();
 
